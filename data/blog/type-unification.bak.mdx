@@ -75,31 +75,27 @@ $$
     }
 $$
 
-{/\*
-
-$$
-\text{map ::}
-\overbrace{\text{(a}\rightarrow\text{b)}}^{\begin{array}{c}
-\textrm{\footnotesize Function to be applied} \\
-\textrm{\footnotesize to each element}
-\\ \\
-\textrm{1. argument}
-\end{array}}
-\rightarrow
-\overbrace{\text{[a]}}^{\begin{array}{c}
-\textrm{\footnotesize List of elements}
-\\ \\
-\textrm{2. argument}
-\end{array}}
-\rightarrow
-\overbrace{\text{[b]}}^{\begin{array}{c}
-%\textrm{\footnotesize Processed list}
-\\ \\
-\textrm{return value}
-\end{array}}
-$$
-
-\*/}
+{/* $$ */}
+{/* \text{map ::} */}
+{/* \overbrace{\text{(a}\rightarrow\text{b)}}^{\begin{array}{c} */}
+{/* \textrm{\footnotesize Function to be applied} \\ */}
+{/* \textrm{\footnotesize to each element} */}
+{/* \\ \\ */}
+{/* \textrm{1. argument} */}
+{/* \end{array}} */}
+{/* \rightarrow */}
+{/* \overbrace{\text{[a]}}^{\begin{array}{c} */}
+{/* \textrm{\footnotesize List of elements} */}
+{/* \\ \\ */}
+{/* \textrm{2. argument} */}
+{/* \end{array}} */}
+{/* \rightarrow */}
+{/* \overbrace{\text{[b]}}^{\begin{array}{c} */}
+{/* %\textrm{\footnotesize Processed list} */}
+{/* \\ \\ */}
+{/* \textrm{return value} */}
+{/* \end{array}} */}
+{/* $$ */}
 
 {/* $\text{map :: }\underbrace{\text{(a -> b)}}_{\text{1st argument}}\text{ -> }\underbrace{\text{[a]}}_{\text{2nd argument}}\text{ -> }\underbrace{\text{[b]}}_{\text{return value}}$ */}
 
@@ -132,43 +128,43 @@ abs :: Num a => a -> a
 
 </div>
 
-{/_ https://hoogle.haskell.org/?hoogle=map
-https://hackage.haskell.org/package/base-4.20.0.1/docs/Prelude.html#v:map
-https://hoogle.haskell.org/?hoogle=abs _/}
+{/* https://hoogle.haskell.org/?hoogle=map */}
+{/* https://hackage.haskell.org/package/base-4.20.0.1/docs/Prelude.html#v:map */}
+{/* https://hoogle.haskell.org/?hoogle=abs */}
 
 {/* https://headlessui.com/react/popover  https://github.com/tailwindlabs/headlessui/discussions/425 */}
-{/\* <Popover as="span">
-<PopoverButton
-        as="span"
-        className="focus:outline-none data-[active]:text-white data-[hover]:text-white data-[focus]:outline-1 data-[focus]:outline-white"
-    >`abs`</PopoverButton>
-<PopoverPanel
-        anchor="top start"
-        className="divide-y divide-white/5 rounded-xl bg-white/5 text-sm/6"
-    >
-<div className="p-3">
-<a className="block rounded-lg py-2 px-3 transition hover:bg-white/5" href="#">
-<p className="font-semibold text-white">Insights</p>
-<p className="text-white/50">Measure actions your users take</p>
-</a>
-<a className="block rounded-lg py-2 px-3 transition hover:bg-white/5" href="#">
-<p className="font-semibold text-white">Automations</p>
-<p className="text-white/50">Create your own targeted content</p>
-</a>
-<a className="block rounded-lg py-2 px-3 transition hover:bg-white/5" href="#">
-<p className="font-semibold text-white">Reports</p>
-<p className="text-white/50">Keep track of your growth</p>
-</a>
-</div>
-<div className="p-3">
-<a className="block rounded-lg py-2 px-3 transition hover:bg-white/5" href="#">
-<p className="font-semibold text-white">Documentation</p>
-<p className="text-white/50">Start integrating products and tools</p>
-</a>
-</div>
-</PopoverPanel>
 
-</Popover> */}
+{/* <Popover as="span"> */}
+{/* <PopoverButton */}
+{/* as="span" */}
+{/* className="focus:outline-none data-[active]:text-white data-[hover]:text-white data-[focus]:outline-1 data-[focus]:outline-white" */}
+{/* >`abs`</PopoverButton> */}
+{/* <PopoverPanel */}
+{/* anchor="top start" */}
+{/* className="divide-y divide-white/5 rounded-xl bg-white/5 text-sm/6" */}
+{/* > */}
+{/* <div className="p-3"> */}
+{/* <a className="block rounded-lg py-2 px-3 transition hover:bg-white/5" href="#"> */}
+{/* <p className="font-semibold text-white">Insights</p> */}
+{/* <p className="text-white/50">Measure actions your users take</p> */}
+{/* </a> */}
+{/* <a className="block rounded-lg py-2 px-3 transition hover:bg-white/5" href="#"> */}
+{/* <p className="font-semibold text-white">Automations</p> */}
+{/* <p className="text-white/50">Create your own targeted content</p> */}
+{/* </a> */}
+{/* <a className="block rounded-lg py-2 px-3 transition hover:bg-white/5" href="#"> */}
+{/* <p className="font-semibold text-white">Reports</p> */}
+{/* <p className="text-white/50">Keep track of your growth</p> */}
+{/* </a> */}
+{/* </div> */}
+{/* <div className="p-3"> */}
+{/* <a className="block rounded-lg py-2 px-3 transition hover:bg-white/5" href="#"> */}
+{/* <p className="font-semibold text-white">Documentation</p> */}
+{/* <p className="text-white/50">Start integrating products and tools</p> */}
+{/* </a> */}
+{/* </div> */}
+{/* </PopoverPanel> */}
+{/* </Popover> */}
 
 This function expects a list and will apply the
 
@@ -192,13 +188,13 @@ First we will look at the typing rules, particularly the application rule
 and then we will look at some examples, where we will calculate the types of different expressions.
 {/* Using type unification we can calculate the type of expressions like `mapAbs` */}
 
-{/_ """hs
-Prelude> :t map
-map :: (a -> b) -> [a] -> [b]
-Prelude> :t map abs
-map abs :: Num b => [b] -> [b]
-Prelude> :t abs
-abs :: Num a => a -> a """ _/}
+{/* """hs */}
+{/* Prelude> :t map */}
+{/* map :: (a -> b) -> [a] -> [b] */}
+{/* Prelude> :t map abs */}
+{/* map abs :: Num b => [b] -> [b] */}
+{/* Prelude> :t abs */}
+{/* abs :: Num a => a -> a """ */}
 
 # Typing Rules
 
@@ -302,12 +298,12 @@ Application Rule for multiple arguments
 </div>
 </div>
 
-{/_ export function ColorEquation({ color, text }) {
-// return <InlineMath>{`\\color{${color}}{${text}}`}</InlineMath>;
-// return <span className="equation-inline">{`$ {\\color{${color}}${text}} $`}</span>;
-return <code className="language-math math-inline"><span className="katex">{`$$ {\\color{${color}}${text}} $$`}</span></code>;
-}
-<ColorEquation color="OrangeRed" text="s" /> _/}
+{/* export function ColorEquation({ color, text }) { */}
+{/* // return <InlineMath>{`\\color{${color}}{${text}}`}</InlineMath>; */}
+{/* // return <span className="equation-inline">{`$ {\\color{${color}}${text}} $`}</span>; */}
+{/* return <code className="language-math math-inline"><span className="katex">{`$$ {\\color{${color}}${text}} $$`}</span></code>; */}
+{/* } */}
+{/* <ColorEquation color="OrangeRed" text="s" /> */}
 
 <span className="equation-inline">${\color{OrangeRed}s}$</span>
 and
@@ -321,19 +317,19 @@ and
 is the most general unifier
 .
 
-{/\* - https://inria.hal.science/inria-00076025/file/RR-0529.pdf
-
-- https://arxiv.org/pdf/1306.6032
-- https://gallium.inria.fr/~remy/ftp/eq-theory-on-types.pdf
-- https://okmij.org/ftp/ML/generalization.html
-- https://www.reddit.com/r/haskell/comments/89pu1m/resources_for_writing_a_type_checker/
-- https://wiki.haskell.org/Research_papers/Type_systems
-- Wikipedia
-  - https://en.wikipedia.org/wiki/Functional_programming#Type_systems
-  - https://en.wikipedia.org/wiki/Type_inference
-  - https://en.wikipedia.org/wiki/Simply_typed_lambda_calculus
-  - https://en.wikipedia.org/wiki/Hindley%E2%80%93Milner_type_system#Typing_rules
-  - https://en.wikipedia.org/wiki/Typing_rule \*/}
+{/* - https://inria.hal.science/inria-00076025/file/RR-0529.pdf */}
+{/*  */}
+{/* - https://arxiv.org/pdf/1306.6032 */}
+{/* - https://gallium.inria.fr/~remy/ftp/eq-theory-on-types.pdf */}
+{/* - https://okmij.org/ftp/ML/generalization.html */}
+{/* - https://www.reddit.com/r/haskell/comments/89pu1m/resources_for_writing_a_type_checker/ */}
+{/* - https://wiki.haskell.org/Research_papers/Type_systems */}
+{/* - Wikipedia */}
+{/* - https://en.wikipedia.org/wiki/Functional_programming#Type_systems */}
+{/* - https://en.wikipedia.org/wiki/Type_inference */}
+{/* - https://en.wikipedia.org/wiki/Simply_typed_lambda_calculus */}
+{/* - https://en.wikipedia.org/wiki/Hindley%E2%80%93Milner_type_system#Typing_rules */}
+{/* - https://en.wikipedia.org/wiki/Typing_rule */}
 
 # Example
 
@@ -359,11 +355,11 @@ g x y = x
 -- type of the second argument which has to be of type Int here.
 ```
 
-{/_ g :: c -> Int -> c
-g x y = x
-where z = replicate y 1
-where z = even y
-where z = div 2 y _/}
+{/* g :: c -> Int -> c */}
+{/* g x y = x */}
+{/* where z = replicate y 1 */}
+{/* where z = even y */}
+{/* where z = div 2 y */}
 
 ## Application Rule
 
@@ -411,6 +407,7 @@ $$
 >
 > <span className="equation-inline">${\color{Orange}\rho}$</span>
 and
+
 <span className="equation-inline">${\color{Cyan}\sigma}$</span>
 must be distinct.
 If they are not, we have to rename them.
@@ -424,8 +421,8 @@ We find
 
 In the following we decompose the expression and use expressions that cannot be further decomposed to substitute all their occurrences. {CiteURLs([["https://cs.brown.edu/~sk/Publications/Books/ProgLangs/2007-04-26/plai-2007-04-26.pdf", "p 281"]])}
 
-{/_ E: Menge von Typgleichungen, G: Lösung mit Komponenten der Form x → t.
-G: Generated Constraint, E: Expression at Node _/}
+{/* E: Menge von Typgleichungen, G: Lösung mit Komponenten der Form x → t. */}
+{/* G: Generated Constraint, E: Expression at Node */}
 
 <div className="prose-tr:border-b-slate-500 prose-thead:border-b-slate-500 prose-table:table-fixed [&_td:first-child]:equation-cell [&_td:nth-child(2)]:equation-cell">
 G | E | |

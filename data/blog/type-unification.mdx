@@ -213,22 +213,19 @@ and
 is the most general unifier
 .
 
-{/\*
-
-- https://inria.hal.science/inria-00076025/file/RR-0529.pdf
-
-- https://arxiv.org/pdf/1306.6032
-- https://gallium.inria.fr/~remy/ftp/eq-theory-on-types.pdf
-- https://okmij.org/ftp/ML/generalization.html
-- https://www.reddit.com/r/haskell/comments/89pu1m/resources_for_writing_a_type_checker/
-- https://wiki.haskell.org/Research_papers/Type_systems
-- Wikipedia
-  - https://en.wikipedia.org/wiki/Functional_programming#Type_systems
-  - https://en.wikipedia.org/wiki/Type_inference
-  - https://en.wikipedia.org/wiki/Simply_typed_lambda_calculus
-  - https://en.wikipedia.org/wiki/Hindley%E2%80%93Milner_type_system#Typing_rules
-  - https://en.wikipedia.org/wiki/Typing_rule
-    \*/}
+{/* - https://inria.hal.science/inria-00076025/file/RR-0529.pdf */}
+{/*  */}
+{/* - https://arxiv.org/pdf/1306.6032 */}
+{/* - https://gallium.inria.fr/~remy/ftp/eq-theory-on-types.pdf */}
+{/* - https://okmij.org/ftp/ML/generalization.html */}
+{/* - https://www.reddit.com/r/haskell/comments/89pu1m/resources_for_writing_a_type_checker/ */}
+{/* - https://wiki.haskell.org/Research_papers/Type_systems */}
+{/* - Wikipedia */}
+{/* - https://en.wikipedia.org/wiki/Functional_programming#Type_systems */}
+{/* - https://en.wikipedia.org/wiki/Type_inference */}
+{/* - https://en.wikipedia.org/wiki/Simply_typed_lambda_calculus */}
+{/* - https://en.wikipedia.org/wiki/Hindley%E2%80%93Milner_type_system#Typing_rules */}
+{/* - https://en.wikipedia.org/wiki/Typing_rule */}
 
 # Example
 
@@ -254,13 +251,11 @@ g x y = x
 -- type of the second argument which has to be of type Int here.
 ```
 
-{/_
-g :: c -> Int -> c
-g x y = x
-where z = replicate y 1
-where z = even y
-where z = div 2 y
-_/}
+{/* g :: c -> Int -> c */}
+{/* g x y = x */}
+{/* where z = replicate y 1 */}
+{/* where z = even y */}
+{/* where z = div 2 y */}
 
 ## Application Rule
 
@@ -319,10 +314,8 @@ We find
 
 In the following we decompose the expression and use expressions that cannot be further decomposed to substitute all their occurrences. {CiteURLs([["https://cs.brown.edu/~sk/Publications/Books/ProgLangs/2007-04-26/plai-2007-04-26.pdf", "p 281"]])}
 
-{/_
-E: Menge von Typgleichungen, G: Lösung mit Komponenten der Form x → t.
-G: Generated Constraint, E: Expression at Node
-_/}
+{/* E: Menge von Typgleichungen, G: Lösung mit Komponenten der Form x → t. */}
+{/* G: Generated Constraint, E: Expression at Node */}
 
 <div className="prose-tr:border-b-slate-500 prose-thead:border-b-slate-500 prose-table:table-fixed [&_td:first-child]:equation-cell [&_td:nth-child(2)]:equation-cell">
 G | E | |
@@ -397,28 +390,25 @@ g x y = x
 :type (f g)
 ```
 
-{/\*
-If you want to use GHC instead of GHCi, run this
-
-````hs
-import Data.Typeable
-
-f :: (a -> a -> b) -> a -> b
-f g xs = g xs xs
-
-g :: c -> Int -> c
-g x y = x
-
-main = do
-    putStrLn $ "The type of (f g) is: " ++ show (typeOf (f g))
-```
-*/}
+{/* If you want to use GHC instead of GHCi, run this */}
+{/*  */}
+{/* ````hs */}
+{/* import Data.Typeable */}
+{/*  */}
+{/* f :: (a -> a -> b) -> a -> b */}
+{/* f g xs = g xs xs */}
+{/*  */}
+{/* g :: c -> Int -> c */}
+{/* g x y = x */}
+{/*  */}
+{/* main = do */}
+{/* putStrLn $ "The type of (f g) is: " ++ show (typeOf (f g)) */}
+{/* ``` */}
 
 > [!TIP]
 >
 > - On [hoogle.haskell.org](https://hoogle.haskell.org/) you can search for functions by their type signature.
 > - For a list of all available commands in GHCi type `:help` in the GHCi prompt.
->
 
 # Example `(f length words)`
 
@@ -431,7 +421,7 @@ f :: (a -> b) -> (c -> [a]) -> c -> [b]
 f g1 g2 xs = map g1 $ g2 xs
 -- :type (f length words)       -- output: (f length words) :: String -> [Int]
 -- f length words "a bb cccc"   -- output: [1,2,4]
-````
+```
 
 <div className="comment-box-center">
 The builtin functions (from the `Prelude` library) `length` and `words` have the following types
@@ -604,26 +594,23 @@ words ["a bb ccc", "dd ee"]
 -- ["a bb ccc", "dd ee"]    :: [[Char]]
 ```
 
-{/\*
-
-# Links
-
-- https://pp.ipd.kit.edu/lehre/WS202021/pse_typeinference/files/TypinferenzEinfuehrung.pdf
-- https://formal.kastel.kit.edu/~beckert/teaching/Logik-SS06/10PraedikatenlogikSubstitutionenUnifikation_Teil2.pdf
-- https://tuprints.ulb.tu-darmstadt.de/544/1/diss.pdf
-- https://www.pst.ifi.lmu.de/Lehre/WS0203/psem/doku/eckl_aus.pdf
-
-english
-
-- https://www.cs.cornell.edu/courses/cs3110/2011sp/Lectures/lec26-type-inference/type-inference.htm#5
-- https://www.andres-loeh.de/math-uu.pdf
-- wiki
-  - https://en.wikipedia.org/wiki/Functional_programming#Type_systems
-  - https://en.wikipedia.org/wiki/Type_inference
-  - https://en.wikipedia.org/wiki/Simply_typed_lambda_calculus
-  - https://en.wikipedia.org/wiki/Hindley%E2%80%93Milner_type_system#Typing_rules
-  - https://en.wikipedia.org/wiki/Typing_rule
-    \*/}
+{/* # Links */}
+{/*  */}
+{/* - https://pp.ipd.kit.edu/lehre/WS202021/pse_typeinference/files/TypinferenzEinfuehrung.pdf */}
+{/* - https://formal.kastel.kit.edu/~beckert/teaching/Logik-SS06/10PraedikatenlogikSubstitutionenUnifikation_Teil2.pdf */}
+{/* - https://tuprints.ulb.tu-darmstadt.de/544/1/diss.pdf */}
+{/* - https://www.pst.ifi.lmu.de/Lehre/WS0203/psem/doku/eckl_aus.pdf */}
+{/*  */}
+{/* english */}
+{/*  */}
+{/* - https://www.cs.cornell.edu/courses/cs3110/2011sp/Lectures/lec26-type-inference/type-inference.htm#5 */}
+{/* - https://www.andres-loeh.de/math-uu.pdf */}
+{/* - wiki */}
+{/* - https://en.wikipedia.org/wiki/Functional_programming#Type_systems */}
+{/* - https://en.wikipedia.org/wiki/Type_inference */}
+{/* - https://en.wikipedia.org/wiki/Simply_typed_lambda_calculus */}
+{/* - https://en.wikipedia.org/wiki/Hindley%E2%80%93Milner_type_system#Typing_rules */}
+{/* - https://en.wikipedia.org/wiki/Typing_rule */}
 
 {/* Helper Funcitons */}
 
