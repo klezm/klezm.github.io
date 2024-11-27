@@ -75,7 +75,9 @@ $$
     }
 $$
 
-{/\* $$
+{/\*
+
+$$
 \text{map ::}
 \overbrace{\text{(a}\rightarrow\text{b)}}^{\begin{array}{c}
 \textrm{\footnotesize Function to be applied} \\
@@ -95,9 +97,9 @@ $$
 \\ \\
 \textrm{return value}
 \end{array}}
-
 $$
-*/}
+
+\*/}
 
 {/* $\text{map :: }\underbrace{\text{(a -> b)}}_{\text{1st argument}}\text{ -> }\underbrace{\text{[a]}}_{\text{2nd argument}}\text{ -> }\underbrace{\text{[b]}}_{\text{return value}}$ */}
 
@@ -115,6 +117,7 @@ mapAbs = map abs -- which is equivalent to: mapAbs xs = map abs xs
 {/* > [!INFO] */}
 {/* > [!NOTE] */}
 {/* > [!TIP] */}
+
 <div className="comment-box-center">
 Where
 <span className="tooltip" data-tip="Applies a function to each element of a list">`map`</span>
@@ -129,52 +132,55 @@ abs :: Num a => a -> a
 
 </div>
 
-{/* https://hoogle.haskell.org/?hoogle=map
+{/_ https://hoogle.haskell.org/?hoogle=map
 https://hackage.haskell.org/package/base-4.20.0.1/docs/Prelude.html#v:map
-https://hoogle.haskell.org/?hoogle=abs */}
+https://hoogle.haskell.org/?hoogle=abs _/}
 
 {/* https://headlessui.com/react/popover  https://github.com/tailwindlabs/headlessui/discussions/425 */}
-{/* <Popover as="span">
-    <PopoverButton
+{/\* <Popover as="span">
+<PopoverButton
         as="span"
         className="focus:outline-none data-[active]:text-white data-[hover]:text-white data-[focus]:outline-1 data-[focus]:outline-white"
     >`abs`</PopoverButton>
-    <PopoverPanel
+<PopoverPanel
         anchor="top start"
         className="divide-y divide-white/5 rounded-xl bg-white/5 text-sm/6"
     >
-        <div className="p-3">
-            <a className="block rounded-lg py-2 px-3 transition hover:bg-white/5" href="#">
-                <p className="font-semibold text-white">Insights</p>
-                <p className="text-white/50">Measure actions your users take</p>
-            </a>
-            <a className="block rounded-lg py-2 px-3 transition hover:bg-white/5" href="#">
-                <p className="font-semibold text-white">Automations</p>
-                <p className="text-white/50">Create your own targeted content</p>
-            </a>
-            <a className="block rounded-lg py-2 px-3 transition hover:bg-white/5" href="#">
-                <p className="font-semibold text-white">Reports</p>
-                <p className="text-white/50">Keep track of your growth</p>
-            </a>
-        </div>
-        <div className="p-3">
-            <a className="block rounded-lg py-2 px-3 transition hover:bg-white/5" href="#">
-                <p className="font-semibold text-white">Documentation</p>
-                <p className="text-white/50">Start integrating products and tools</p>
-            </a>
-        </div>
-    </PopoverPanel>
+<div className="p-3">
+<a className="block rounded-lg py-2 px-3 transition hover:bg-white/5" href="#">
+<p className="font-semibold text-white">Insights</p>
+<p className="text-white/50">Measure actions your users take</p>
+</a>
+<a className="block rounded-lg py-2 px-3 transition hover:bg-white/5" href="#">
+<p className="font-semibold text-white">Automations</p>
+<p className="text-white/50">Create your own targeted content</p>
+</a>
+<a className="block rounded-lg py-2 px-3 transition hover:bg-white/5" href="#">
+<p className="font-semibold text-white">Reports</p>
+<p className="text-white/50">Keep track of your growth</p>
+</a>
+</div>
+<div className="p-3">
+<a className="block rounded-lg py-2 px-3 transition hover:bg-white/5" href="#">
+<p className="font-semibold text-white">Documentation</p>
+<p className="text-white/50">Start integrating products and tools</p>
+</a>
+</div>
+</PopoverPanel>
+
 </Popover> */}
 
 This function expects a list and will apply the
+
 <span className="peer/ref-abs">`abs`</span>
-funciton on each element.
-Since
-<span className="peer-hover/ref-abs:bg-yellow-400/40">`abs` gives us the absolute value of a number</span>
+funciton on each element. Since
+<span className="peer-hover/ref-abs:bg-yellow-400/40">
+  `abs` gives us the absolute value of a number
+</span>
 the most general type of `mapAbs` will be stricter than `map`'s type. {/* Since `abs` gives us the absolute value of a number (`abs :: Num a => a -> a`) can we pass a list of Char (e.g. ['a', 'b', 'c']) to `mapAbs`? */}
-As you can see, the arguments of `mapAbs` have to be derived from the class `Num` (e.g. `Int`, `Float`)
-and cannot be of type `Char` for example.
-Running `:type map abs` in GHCi returns the type of `mapAbs`:
+As you can see, the arguments of `mapAbs` have to be derived from the class `Num` (e.g. `Int`,
+`Float`) and cannot be of type `Char` for example. Running `:type map abs` in GHCi returns the type
+of `mapAbs`:
 
 ```hs
 mapAbs :: Num b => [b] -> [b]
@@ -186,29 +192,36 @@ First we will look at the typing rules, particularly the application rule
 and then we will look at some examples, where we will calculate the types of different expressions.
 {/* Using type unification we can calculate the type of expressions like `mapAbs` */}
 
-{/* """hs
+{/_ """hs
 Prelude> :t map
 map :: (a -> b) -> [a] -> [b]
 Prelude> :t map abs
 map abs :: Num b => [b] -> [b]
 Prelude> :t abs
-abs :: Num a => a -> a    """ */}
+abs :: Num a => a -> a """ _/}
 
 # Typing Rules
 
 export const TypingRulesSources = [
-        ["https://inria.hal.science/inria-00076025/file/RR-0529.pdf", "Page 7 fig. 2, DOI:10.1145/319838.319847"],
-        ["https://pp.ipd.kit.edu/lehre/WS202021/pse_typeinference/files/TypinferenzEinfuehrung.pdf", "Slide 9"],
-        ["https://tuprints.ulb.tu-darmstadt.de/544/1/diss.pdf", "Page 16 fig. 2.2, p. 18, pp. 21-22"],
-        ["https://www.pst.ifi.lmu.de/Lehre/WS0203/psem/doku/eckl_aus.pdf", "Page 6"],
-        ["https://www.andres-loeh.de/math-uu.pdf", "Slide 34"],
-    ]
+  [
+    'https://inria.hal.science/inria-00076025/file/RR-0529.pdf',
+    'Page 7 fig. 2, DOI:10.1145/319838.319847',
+  ],
+  [
+    'https://pp.ipd.kit.edu/lehre/WS202021/pse_typeinference/files/TypinferenzEinfuehrung.pdf',
+    'Slide 9',
+  ],
+  ['https://tuprints.ulb.tu-darmstadt.de/544/1/diss.pdf', 'Page 16 fig. 2.2, p. 18, pp. 21-22'],
+  ['https://www.pst.ifi.lmu.de/Lehre/WS0203/psem/doku/eckl_aus.pdf', 'Page 6'],
+  ['https://www.andres-loeh.de/math-uu.pdf', 'Slide 34'],
+]
 
 {/* There are several typing rules <CiteURLs urls={TypingRulesSources} />. */}
 There are several typing rules {CiteURLs(TypingRulesSources)}.
 For type unification we are interested in the application rule:
 
 {/* <div className="my-center dy-join dy-join-vertical"> */}
+
 <div className="my-center">
     {/* <img className="h-auto max-w-full rounded-lg" src="data/logo.svg" alt="image description"></img> */}
 
@@ -216,8 +229,8 @@ For type unification we are interested in the application rule:
 {/* <div className="equation-box-center dy-card dy-card-compact bg-base-100 shadow-xl"> */}
 {/* <div className="equation-box-center tooltip tooltip-open tooltip-bottom" data-tip="Application Rule"> */}
 {/* <div className="equation-box-center dy-join-item"> */}
-<div className="equation-box-center">
 
+<div className="equation-box-center">
 
 $$
 
@@ -232,9 +245,11 @@ $$
 }
 %\end{equation}
 
+
 $$
 
 {/* <div className="dy-join-item"> */}
+
 </div>
 <div className="-mt-2 text-sm font-bold text-center text-gray-500 dark:text-gray-400">
 Application Rule
@@ -243,7 +258,6 @@ Application Rule
 
 <div className="my-center">
 <div className="equation-box-center">
-
 
 $$
 
@@ -279,6 +293,7 @@ $$
 }
 %\end{equation}
 
+
 $$
 
 </div>
@@ -287,13 +302,12 @@ Application Rule for multiple arguments
 </div>
 </div>
 
-
-{/* export function ColorEquation({ color, text }) {
-    // return <InlineMath>{`\\color{${color}}{${text}}`}</InlineMath>;
-    // return <span className="equation-inline">{`$ {\\color{${color}}${text}} $`}</span>;
-    return <code className="language-math math-inline"><span className="katex">{`$$ {\\color{${color}}${text}} $$`}</span></code>;
-    }
-    <ColorEquation color="OrangeRed" text="s" /> */}
+{/_ export function ColorEquation({ color, text }) {
+// return <InlineMath>{`\\color{${color}}{${text}}`}</InlineMath>;
+// return <span className="equation-inline">{`$ {\\color{${color}}${text}} $`}</span>;
+return <code className="language-math math-inline"><span className="katex">{`$$ {\\color{${color}}${text}} $$`}</span></code>;
+}
+<ColorEquation color="OrangeRed" text="s" /> _/}
 
 <span className="equation-inline">${\color{OrangeRed}s}$</span>
 and
@@ -307,18 +321,19 @@ and
 is the most general unifier
 .
 
-{/* - https://inria.hal.science/inria-00076025/file/RR-0529.pdf
+{/\* - https://inria.hal.science/inria-00076025/file/RR-0529.pdf
+
 - https://arxiv.org/pdf/1306.6032
 - https://gallium.inria.fr/~remy/ftp/eq-theory-on-types.pdf
 - https://okmij.org/ftp/ML/generalization.html
 - https://www.reddit.com/r/haskell/comments/89pu1m/resources_for_writing_a_type_checker/
 - https://wiki.haskell.org/Research_papers/Type_systems
 - Wikipedia
-    - https://en.wikipedia.org/wiki/Functional_programming#Type_systems
-    - https://en.wikipedia.org/wiki/Type_inference
-    - https://en.wikipedia.org/wiki/Simply_typed_lambda_calculus
-    - https://en.wikipedia.org/wiki/Hindley%E2%80%93Milner_type_system#Typing_rules
-    - https://en.wikipedia.org/wiki/Typing_rule */}
+  - https://en.wikipedia.org/wiki/Functional_programming#Type_systems
+  - https://en.wikipedia.org/wiki/Type_inference
+  - https://en.wikipedia.org/wiki/Simply_typed_lambda_calculus
+  - https://en.wikipedia.org/wiki/Hindley%E2%80%93Milner_type_system#Typing_rules
+  - https://en.wikipedia.org/wiki/Typing_rule \*/}
 
 # Example
 
@@ -327,15 +342,9 @@ $(f \ g)$
 .
 Calculate the type of the application `(f g)`.
 
-<div className="max-w-fit justify-self-center compact">
-> [!TIP]
->
-> It might help to imagine defining a function `h` which applies `f` to `g`:
->
-> ```hs
-> h = (f g)
-> ```
->
+<div className="compact max-w-fit justify-self-center">
+  > [!TIP] > > It might help to imagine defining a function `h` which applies `f` to `g`: > > ```hs
+  > h = (f g) > ``` >
 </div>
 
 The types of the functions `f` and `g` are defined as follows:
@@ -350,18 +359,17 @@ g x y = x
 -- type of the second argument which has to be of type Int here.
 ```
 
-{/* g :: c -> Int -> c
+{/_ g :: c -> Int -> c
 g x y = x
-    where z = replicate y 1
-    where z = even y
-    where z = div 2 y */}
+where z = replicate y 1
+where z = even y
+where z = div 2 y _/}
 
 ## Application Rule
 
 Applying the types defined above to the application rule gives us:
 
 <div className="equation-box-center">
-
 
 $$
 
@@ -392,6 +400,7 @@ $$
 )
 }
 
+
 $$
 
 </div>
@@ -399,22 +408,24 @@ $$
 > [!CAUTION]
 >
 > The type variables in
+>
 > <span className="equation-inline">${\color{Orange}\rho}$</span>
-> and
-> <span className="equation-inline">${\color{Cyan}\sigma}$</span>
-> must be distinct.
-> If they are not, we have to rename them.
+and
+<span className="equation-inline">${\color{Cyan}\sigma}$</span>
+must be distinct.
+If they are not, we have to rename them.
 
 ## Calculation of $γ$
 
 We find
+
 <span className="equation-inline">$γ({\color{Orange}a \rightarrow a \rightarrow b}) = γ({\color{Cyan}c \rightarrow \text{Int} \rightarrow c})$</span>
 .
 
 In the following we decompose the expression and use expressions that cannot be further decomposed to substitute all their occurrences. {CiteURLs([["https://cs.brown.edu/~sk/Publications/Books/ProgLangs/2007-04-26/plai-2007-04-26.pdf", "p 281"]])}
 
-{/* E: Menge von Typgleichungen, G: Lösung mit Komponenten der Form x → t.
-    G: Generated Constraint, E: Expression at Node */}
+{/_ E: Menge von Typgleichungen, G: Lösung mit Komponenten der Form x → t.
+G: Generated Constraint, E: Expression at Node _/}
 
 <div className="prose-tr:border-b-slate-500 prose-thead:border-b-slate-500 prose-table:table-fixed [&_td:first-child]:equation-cell [&_td:nth-child(2)]:equation-cell">
 G | E | |
@@ -429,10 +440,10 @@ ${\color{Orange}a} \mapsto {\color{red}\underline{\color{Cyan}\text{Int}}} \\ {\
 ## Type Substitution
 
 Thus, the most general unifier (MGU) {CiteURLs([
-    ["https://www.cs.cornell.edu/courses/cs3110/2011sp/Lectures/lec26-type-inference/type-inference.htm", "Section Unification"],
-    ["https://www.javatpoint.com/ai-unification-in-first-order-logic", ""],
-    ["https://www.cs.trincoll.edu/~ram/cpsc352/notes/unification.html", ""],
-    ])} is:
+["https://www.cs.cornell.edu/courses/cs3110/2011sp/Lectures/lec26-type-inference/type-inference.htm", "Section Unification"],
+["https://www.javatpoint.com/ai-unification-in-first-order-logic", ""],
+["https://www.cs.trincoll.edu/~ram/cpsc352/notes/unification.html", ""],
+])} is:
 
 <div className="equation-box-center">
 $$
