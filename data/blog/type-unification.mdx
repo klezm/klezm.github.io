@@ -615,17 +615,23 @@ english
 
 {/* Helper Funcitons */}
 
-{/_ export function CiteURLs({ urls }) {
+{/_
+export function CiteURLs({ urls }) {
 <CiteURLs urls={TypingRulesSources} />
-{CiteURLs(TypingRulesSources)} _/}
+{CiteURLs(TypingRulesSources)}
+_/}
+
+{/\*
+/\*\*
+
+- Generates a list of citation URLs.
+-
+- @param {string[]} urls - An array of arrays, where the 1. element is the URL and the 2. element is the popup text.
+- @returns {JSX.Element} A JSX element containing the list of citation URLs.
+  _/
+  _/}
 
 export function CiteURLs(urls) {
-  /**
-   * Generates a list of citation URLs.
-   *
-   * @param {string[]} urls - An array of arrays, where the 1. element is the URL and the 2. element is the popup text.
-   * @returns {JSX.Element} A JSX element containing the list of citation URLs.
-   */
   return (
     <sup>
       [
