@@ -300,6 +300,7 @@ $$
 >
 > <span className="equation-inline">${\color{Orange}\rho}$</span>
 and
+
 <span className="equation-inline">${\color{Cyan}\sigma}$</span>
 must be distinct.
 If they are not, we have to rename them.
@@ -617,26 +618,28 @@ english
 {/_ export function CiteURLs({ urls }) {
 <CiteURLs urls={TypingRulesSources} />
 {CiteURLs(TypingRulesSources)} _/}
+
 export function CiteURLs(urls) {
-/\*\*
-_ Generates a list of citation URLs.
-_
-_ @param {string[]} urls - An array of arrays, where the 1. element is the URL and the 2. element is the popup text.
-_ @returns {JSX.Element} A JSX element containing the list of citation URLs.
-\*/
-return <sup>[
-{
-urls.map(([url, text], index) => (
-<React.Fragment key={index}>
-<a href={url} title={text}>
-{index + 1}
-</a>
-{index < urls.length - 1 && ","}
-</React.Fragment>
-)
-)
-}
-]</sup>
+  /**
+   * Generates a list of citation URLs.
+   *
+   * @param {string[]} urls - An array of arrays, where the 1. element is the URL and the 2. element is the popup text.
+   * @returns {JSX.Element} A JSX element containing the list of citation URLs.
+   */
+  return (
+    <sup>
+      [
+      {urls.map(([url, text], index) => (
+        <React.Fragment key={index}>
+          <a href={url} title={text}>
+            {index + 1}
+          </a>
+          {index < urls.length - 1 && ','}
+        </React.Fragment>
+      ))}
+      ]
+    </sup>
+  )
 }
 
 {/* # References */}
