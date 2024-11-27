@@ -1,0 +1,642 @@
+---
+# title: Type Inference and Unification
+title: Type Unification
+date: '2024-10-23'
+tags: ['haskell', 'functional programming', 'type unification']
+draft: false
+# layout: PostBanner
+layout: PostSimple
+summary: some summary
+bibliography: bib/type-unification.bib
+---
+
+<div className="my-toc">
+  {/* <TOCInline toc={props.toc} exclude="Validierung" asDisclosure /> */}
+  <TOCInline toc={props.toc} asDisclosure />
+</div>
+
+Type unification is a fundamental concept in functional programming.
+During my time tutoring a university course on Haskell I noticed that many students found this concept challenging.
+To help bridge this gap I wrote this summary, complete with visualized examples to make type unification more approachable and easier to grasp.
+
+# Motivation
+
+Type unification lets us determine the types of an expression and helps us check if the types of an expression are consistent.
+
+the `map` function in Haskell has the following type:
+
+$$
+    \textsf{map ::}
+    \underbrace{\textsf{(a} \rightarrow \textsf{b)}}_{
+        \colorbox{slategray}{$
+            \displaystyle
+            \color{white}{
+                \begin{array}{c}
+                    \textrm{1. argument} \\ \\
+                    %\hline
+                    \textrm{\footnotesize Function to be applied} \\
+                    \textrm{\footnotesize to each element}
+                \end{array}
+            }
+        $}
+    }
+    \rightarrow
+    \underbrace{\textsf{[a]}}_{
+        \colorbox{slategray}{$
+            \displaystyle
+            \color{white}{
+                \begin{array}{c}
+                    \textrm{2. argument} \\ \\
+                    \textrm{\footnotesize List of elements}
+                \end{array}
+            }
+        $}
+    }
+    \rightarrow
+    \underbrace{\textsf{[b]}}_{
+        \colorbox{slategray}{$
+            \displaystyle
+            \color{white}{
+                \begin{array}{c}
+                    \textrm{return value} \\ \\
+                    \textrm{\footnotesize Processed list}
+                    %\textrm{\footnotesize List of elements where the} \\
+                    %\textrm{\footnotesize function in argument 1 has ben applied}
+                \end{array}
+            }
+        $}
+    }
+$$
+
+Its 1st argument is a function that will be applied to each element of the list in the 2nd argument
+(e.g. `map abs [-1,-2,3,4]` returns `[1,2,3,4]`)
+
+Imagine we define a function:
+
+```hs
+mapAbs = map abs -- which is equivalent to: mapAbs xs = map abs xs
+```
+
+<div className="comment-box-center">
+Where
+<span className="tooltip" data-tip="Applies a function to each element of a list">`map`</span>
+and
+<span className="tooltip" data-tip="Returns the absolute value of a number">`abs`</span>
+have these types:
+
+```hs
+map :: (a -> b) -> [a] -> [b]
+abs :: Num a => a -> a
+```
+
+</div>
+
+This function expects a list and will apply the
+
+<span className="peer/ref-abs">`abs`</span>
+funciton on each element. Since
+<span className="peer-hover/ref-abs:bg-yellow-400/40">
+  `abs` gives us the absolute value of a number
+</span>
+the most general type of `mapAbs` will be stricter than `map`'s type. {/* Since `abs` gives us the absolute value of a number (`abs :: Num a => a -> a`) can we pass a list of Char (e.g. ['a', 'b', 'c']) to `mapAbs`? */}
+As you can see, the arguments of `mapAbs` have to be derived from the class `Num` (e.g. `Int`,
+`Float`) and cannot be of type `Char` for example. Running `:type map abs` in GHCi returns the type
+of `mapAbs`:
+
+```hs
+mapAbs :: Num b => [b] -> [b]
+```
+
+How can we determine the types of such expressions ourselves though?
+This is where type unification comes into play.
+First we will look at the typing rules, particularly the application rule
+and then we will look at some examples, where we will calculate the types of different expressions.
+
+# Typing Rules
+
+export const TypingRulesSources = [
+  [
+    'https://inria.hal.science/inria-00076025/file/RR-0529.pdf',
+    'Page 7 fig. 2, DOI:10.1145/319838.319847',
+  ],
+  [
+    'https://pp.ipd.kit.edu/lehre/WS202021/pse_typeinference/files/TypinferenzEinfuehrung.pdf',
+    'Slide 9',
+  ],
+  ['https://tuprints.ulb.tu-darmstadt.de/544/1/diss.pdf', 'Page 16 fig. 2.2, p. 18, pp. 21-22'],
+  ['https://www.pst.ifi.lmu.de/Lehre/WS0203/psem/doku/eckl_aus.pdf', 'Page 6'],
+  ['https://www.andres-loeh.de/math-uu.pdf', 'Slide 34'],
+]
+
+There are several typing rules {CiteURLs(TypingRulesSources)}.
+For type unification we are interested in the application rule:
+
+{/* <div className="my-center dy-join dy-join-vertical"> */}
+
+<div className="my-center">
+{/* <div className="equation-box-center dy-join-item"> */}
+<div className="equation-box-center">
+
+$$
+%\begin{equation}
+\dfrac{
+        {\color{OrangeRed}s} :: {\color{Orange}σ} \rightarrow {\color{Plum}τ}; \quad
+        {\color{YellowGreen}t} :: {\color{Cyan}ρ}
+        \quad \text{and} \quad
+        γ({\color{Orange}σ}) = γ({\color{Cyan}ρ})
+    }{
+        ({\color{OrangeRed}s} \; {\color{YellowGreen}t}) :: γ({\color{Plum}τ})
+    }
+%\end{equation}
+$$
+
+{/* <div className="dy-join-item"> */}
+
+</div>
+<div className="-mt-2 text-sm font-bold text-center text-gray-500 dark:text-gray-400">
+Application Rule
+</div>
+</div>
+
+<div className="my-center">
+<div className="equation-box-center">
+
+$$
+%\begin{equation}
+% https://latexeditor.lagrida.com/
+% https://hslpicker.com/#98CC70
+% https://color.adobe.com/de/create/color-wheel
+% https://paletton.com/#uid=10o0u0koPuKf7I6klzytTrovplp
+% Orange	    #F58137 (max saturation = #ff7d2d) (ffa46b ff7d2d ff6200) (#f9b58b Orange #ff7d2d)
+% YellowGreen	#98CC70 (#75b842) (#a0d07b #75b842)
+% cyan	        #00FFFF (#00c7c7) (#7affff #00c7c7)
+% OrangeRed	    #ED135A
+\dfrac{
+        {\color{OrangeRed}s} ::
+            {\color{#f9b58b}σ_1} \rightarrow
+            {\color{Orange}σ_2} \ \cdots \rightarrow
+            {\color{#ff7d2d}σ_n} \rightarrow
+            {\color{Plum}τ}; \quad
+        {\color{#a0d07b}t_1} :: {\color{#7affff}ρ_1}, \
+            \ldots \ ,
+            {\color{#75b842}t_n} :: {\color{#00c7c7}ρ_n}
+        \quad \text{and} \quad
+        γ({\color{#f9b58b}σ_1}) = γ({\color{#7affff}ρ_1}), \
+            \ldots \ ,
+            γ({\color{#ff7d2d}σ_n}) = γ({\color{#00c7c7}ρ_n})
+    }{
+        (
+            {\color{OrangeRed}s} \;
+            {\color{#a0d07b}t_1}
+                \ \ldots \
+                {\color{#75b842}t_n}
+        ) :: γ({\color{Plum}τ})
+    }
+%\end{equation}
+$$
+
+</div>
+<div className="-mt-2 text-sm font-bold text-center text-gray-500 dark:text-gray-400">
+Application Rule for multiple arguments
+</div>
+</div>
+
+<span className="equation-inline">${\color{OrangeRed}s}$</span>
+and
+<span className="equation-inline">${\color{YellowGreen}t}$</span>
+are two functions where
+<span className="equation-inline">${\color{YellowGreen}t}$</span>
+is passed as the first argument to
+<span className="equation-inline">${\color{OrangeRed}s}$</span>
+and
+<span className="equation-inline">$γ$</span>
+is the most general unifier
+.
+
+{/\* - https://inria.hal.science/inria-00076025/file/RR-0529.pdf
+
+- https://arxiv.org/pdf/1306.6032
+- https://gallium.inria.fr/~remy/ftp/eq-theory-on-types.pdf
+- https://okmij.org/ftp/ML/generalization.html
+- https://www.reddit.com/r/haskell/comments/89pu1m/resources_for_writing_a_type_checker/
+- https://wiki.haskell.org/Research_papers/Type_systems
+- Wikipedia
+  - https://en.wikipedia.org/wiki/Functional_programming#Type_systems
+  - https://en.wikipedia.org/wiki/Type_inference
+  - https://en.wikipedia.org/wiki/Simply_typed_lambda_calculus
+  - https://en.wikipedia.org/wiki/Hindley%E2%80%93Milner_type_system#Typing_rules
+  - https://en.wikipedia.org/wiki/Typing_rule \*/}
+
+# Example
+
+Given two functions $f$ and $g$ we want to determine the type of the application
+$(f \ g)$
+.
+Calculate the type of the application `(f g)`.
+
+<div className="compact max-w-fit justify-self-center">
+  > [!TIP] > > It might help to imagine defining a function `h` which applies `f` to `g`: > > ```hs
+  > h = (f g) > ``` >
+</div>
+
+The types of the functions `f` and `g` are defined as follows:
+
+```hs
+f :: (a -> a -> b) -> a -> b
+f g xs = g xs xs
+
+g :: c -> Int -> c
+g x y = x
+-- This is the const function, but with a constraint on the
+-- type of the second argument which has to be of type Int here.
+```
+
+{/_ g :: c -> Int -> c
+g x y = x
+where z = replicate y 1
+where z = even y
+where z = div 2 y _/}
+
+## Application Rule
+
+Applying the types defined above to the application rule gives us:
+
+<div className="equation-box-center">
+
+$$
+\dfrac{
+        {\color{OrangeRed}f} ::
+            % σ
+            {\color{Orange}(a \rightarrow a \rightarrow b)}
+            \rightarrow
+            % τ
+            {\color{Plum}a \rightarrow b}
+            ; \quad
+        {\color{YellowGreen}g} ::
+            % ρ
+            {\color{Cyan}c \rightarrow \text{Int} \rightarrow c}
+        \quad \text{and} \quad
+        γ(
+            % σ
+            {\color{Orange}a \rightarrow a \rightarrow b}
+        ) = γ(
+            % ρ
+            {\color{Cyan}c \rightarrow \text{Int} \rightarrow c}
+        )
+    }{
+        ({\color{OrangeRed}f} \; {\color{YellowGreen}g}) ::
+        γ(
+            % τ
+            {\color{Plum}a \rightarrow b}
+        )
+    }
+$$
+
+</div>
+
+> [!CAUTION]
+>
+> The type variables in
+>
+> <span className="equation-inline">${\color{Orange}\rho}$</span>
+and
+<span className="equation-inline">${\color{Cyan}\sigma}$</span>
+must be distinct.
+If they are not, we have to rename them.
+
+## Calculation of $γ$
+
+We find
+
+<span className="equation-inline">$γ({\color{Orange}a \rightarrow a \rightarrow b}) = γ({\color{Cyan}c \rightarrow \text{Int} \rightarrow c})$</span>
+.
+
+In the following we decompose the expression and use expressions that cannot be further decomposed to substitute all their occurrences. {CiteURLs([["https://cs.brown.edu/~sk/Publications/Books/ProgLangs/2007-04-26/plai-2007-04-26.pdf", "p 281"]])}
+
+{/_ E: Menge von Typgleichungen, G: Lösung mit Komponenten der Form x → t.
+G: Generated Constraint, E: Expression at Node _/}
+
+<div className="prose-tr:border-b-slate-500 prose-thead:border-b-slate-500 prose-table:table-fixed [&_td:first-child]:equation-cell [&_td:nth-child(2)]:equation-cell">
+G | E | |
+--- | --- | --- |
+$\emptyset$ | ${\color{Orange}a \rightarrow a \rightarrow b} \doteq {\color{Cyan}c \rightarrow \text{Int} \rightarrow c}$ |
+$\emptyset$ | ${\color{Orange}a} \doteq {\color{Cyan}c} \\ {\color{Orange}a} \doteq {\color{Cyan}\text{Int}} \\ {\color{Orange}b} \doteq {\color{Cyan}c}$ | **Decomposition**
+${\color{Orange}a} \mapsto {\color{Cyan}c}$ | ${\color{red}\underline{\color{Orange}c}} \doteq {\color{Cyan}\text{Int}} \\ {\color{Orange}b} \doteq {\color{Cyan}c}$ | **Substitution**: <span className="equation-inline">${\color{Orange}a} \doteq {\color{Cyan}c}$</span> cannot be further decomposed. Therefore, we substitute all occurrences of <span className="equation-inline">$a$</span> with <span className="equation-inline">$\rlap{\raisebox{1pt}{c}}{{\color{red}\bold\_}}$</span>.
+${\color{Orange}a} \mapsto {\color{red}\underline{\color{Cyan}\text{Int}}} \\ {\color{red}\underline{\color{Orange}c}} \mapsto {\color{Cyan}\text{Int}}$ | ${\color{Orange}b} \doteq {\color{red}\underline{\color{Cyan}\text{Int}}}$ | **Substitution**: Now we substitute all occurrences of <span className="equation-inline">$c$</span> with <span className="equation-inline">$\rlap{\text{Int}}{{\color{red}\underline{\hphantom{\text{Int}}}}}$</span>. Notice that we substitute also on the left side.
+${\color{Orange}a} \mapsto {\color{red}\underline{\color{Cyan}\text{Int}}} \\ {\color{red}\underline{\color{Orange}c}} \mapsto {\color{Cyan}\text{Int}} \\ {\color{Orange}b} \mapsto {\color{red}\underline{\color{Cyan}\text{Int}}}$ | $\emptyset$ | **Substitution**: Nothing to substitute (no further occurences of <span className="equation-inline">$b$</span> ).
+</div>
+
+## Type Substitution
+
+Thus, the most general unifier (MGU) {CiteURLs([
+["https://www.cs.cornell.edu/courses/cs3110/2011sp/Lectures/lec26-type-inference/type-inference.htm", "Section Unification"],
+["https://www.javatpoint.com/ai-unification-in-first-order-logic", ""],
+["https://www.cs.trincoll.edu/~ram/cpsc352/notes/unification.html", ""],
+])} is:
+
+<div className="equation-box-center">
+$$
+γ = \{\;
+    {\color{Orange}a} \mapsto {\color{Cyan}\text{Int}}, \quad
+    {\color{Orange}c} \mapsto {\color{Cyan}\text{Int}}, \quad
+    {\color{Orange}b} \mapsto {\color{Cyan}\text{Int}}
+\;\}
+$$
+</div>
+
+## Type of $({\color{OrangeRed}f} \; {\color{YellowGreen}g})$
+
+{/* and the type of $(f \ g)$ is: */}
+Now we can determine the type of
+
+<span className="equation-inline">$({\color{OrangeRed}f} \; {\color{YellowGreen}g})$</span>
+by applying the type substitution to
+<span className="equation-inline">$γ({\color{Plum}a \rightarrow b})$</span>
+:
+
+<div className="equation-box-center">
+$$
+({\color{OrangeRed}f} \; {\color{YellowGreen}g}) ::
+{\color{Cyan}\text{Int}} \rightarrow {\color{Cyan}\text{Int}}
+=
+γ({\color{Plum}a \rightarrow b})
+%\qquad \phantom{}_{\square} \quad
+\quad \raisebox{-0.5em}{$\blacksquare$} \;
+$$
+</div>
+
+## Validation
+
+We can validate the type calculation using the Haskell interpreter.
+Therefore, open `ghci` in your terminal and enter the following commands.
+If you don't have GHCi installed you can open GHCi in the terminal online on [tutorialspoint.com](http://tpcg.io/_6UKYKW), {/* (https://www.tutorialspoint.com/compile_haskell_online.php), */}
+or you can run Haskell locally in your browser using WASM on [VaibhavSagar.com/WebVM](https://vaibhavsagar.com/webvm/) {CiteURLs([["https://vaibhavsagar.com/blog/2024/07/03/ghci-in-the-browser/", ""]])}.
+
+```hs
+-- This will always print the type after evaluation
+:set +t
+
+-- Multiline input can be entered in GHCi by surrounding it with :{ and :}
+:{
+f :: (a -> a -> b) -> a -> b
+f g xs = g xs xs
+
+g :: c -> Int -> c
+g x y = x
+:}
+
+-- Now we can check the type of (f g)
+:type (f g)
+```
+
+{/\* If you want to use GHC instead of GHCi, run this
+
+````hs
+import Data.Typeable
+
+f :: (a -> a -> b) -> a -> b
+f g xs = g xs xs
+
+g :: c -> Int -> c
+g x y = x
+
+main = do
+    putStrLn $ "The type of (f g) is: " ++ show (typeOf (f g))
+``` */}
+
+> [!TIP]
+>
+> - On [hoogle.haskell.org](https://hoogle.haskell.org/) you can search for functions by their type signature.
+> - For a list of all available commands in GHCi type `:help` in the GHCi prompt.
+>
+
+# Example `(f length words)`
+
+How do we determine the type of the application `(f length words)`?
+
+This is type of `f`:
+
+```hs
+f :: (a -> b) -> (c -> [a]) -> c -> [b]
+f g1 g2 xs = map g1 $ g2 xs
+-- :type (f length words)       -- output: (f length words) :: String -> [Int]
+-- f length words "a bb cccc"   -- output: [1,2,4]
+````
+
+<div className="comment-box-center">
+The builtin functions (from the `Prelude` library) `length` and `words` have the following types
+(Note that `String = [Char]` {CiteURLs([["https://hackage.haskell.org/package/base-4.3.1.0/docs/Data-Char.html#t:Char", "type String = [Char]"]])})
+
+```hs
+length :: Foldable t => t a -> Int -- ≅ [a] -> Int
+words :: String -> [String] -- = [Char] -> [[Char]]
+```
+
+</div>
+
+Next we apply the application rule:
+
+<div className="equation-box-center">
+
+$$
+\dfrac{
+        {\color{OrangeRed}f} ::
+            {\color{#f9b58b}(a \rightarrow b)} \rightarrow
+            {\color{#ff7d2d}(c \rightarrow [a])} \rightarrow
+            {\color{Plum}c \rightarrow [b]}; \
+        \begin{array}{c}
+            {\color{#a0d07b}length} :: {\color{#7affff}[d] \rightarrow \text{Int}}, \\
+            {\color{#75b842}words} :: {\color{#00c7c7}\text{String} \rightarrow [\text{String}]}
+        \end{array}
+        \ \text{and} \
+        \begin{array}{c}
+            γ({\color{#f9b58b}a \rightarrow b}) = γ({\color{#7affff}[d] \rightarrow \text{Int}}), \\
+            γ({\color{#ff7d2d}c \rightarrow [a]}) = γ({\color{#00c7c7}\text{String} \rightarrow [\text{String}]})
+        \end{array}
+    }{
+        (
+            {\color{OrangeRed}f} \;
+            {\color{#a0d07b}length} \;
+                {\color{#75b842}words}
+        ) :: γ({\color{Plum}c \rightarrow [b]})
+    }
+$$
+
+</div>
+
+Now that we have the constraints we can calculate the most general unifier
+
+<div className="prose-tr:border-b-slate-500 prose-thead:border-b-slate-500 prose-table:table-fixed [&_td:first-child]:equation-cell [&_td:nth-child(2)]:equation-cell">
+G | E | |
+--- | --- | --- |
+$\emptyset$ | ${\color{Orange}a \rightarrow b} \doteq {\color{Cyan}[d] \rightarrow \text{Int}} \\ {\color{Orange}c \rightarrow [a]} \doteq {\color{Cyan}\text{[Char]} \rightarrow [\text{[Char]}]}$
+$\emptyset$ | ${\color{Orange}a} \doteq {\color{Cyan}[d]} \\ {\color{Orange}b} \doteq {\color{Cyan}\text{Int}} \\ {\color{Orange}c \rightarrow [a]} \doteq {\color{Cyan}\text{[Char]} \rightarrow [\text{[Char]}]}$ | **Decomposition**
+${\color{Orange}a} \doteq {\color{Cyan}[d]}$ | ${\color{Orange}b} \doteq {\color{Cyan}\text{Int}} \\ {\color{Orange}c \rightarrow [{\color{red}\underline{{\color{Orange}[d]}}}]} \doteq {\color{Cyan}\text{[Char]} \rightarrow [\text{[Char]}]}$ | **Substitution**: <span className="equation-inline">${\color{Orange}a} \doteq {\color{Cyan}[d]}$</span> cannot be further decomposed. Therefore, we substitute all occurrences of <span className="equation-inline">$a$</span> with <span className="equation-inline">$\rlap{{\color{red}\underline{\hphantom{[d]}}}}{[d]}$</span>.
+${\color{Orange}a} \doteq {\color{Cyan}[d]} \\ {\color{Orange}b} \doteq {\color{Cyan}\text{Int}}$ | ${\color{Orange}c \rightarrow [{\color{red}\underline{{\color{Orange}[d]}}}]} \doteq {\color{Cyan}\text{[Char]} \rightarrow [\text{[Char]}]}$ | **Substitution**: Nothing to substitute (no further occurences of <span className="equation-inline">$b$</span> ).
+${\color{Orange}a} \doteq {\color{Cyan}[d]} \\ {\color{Orange}b} \doteq {\color{Cyan}\text{Int}}$ | ${\color{Orange}c} \doteq {\color{Cyan}\text{[Char]}} \\ {\color{Orange}[{\color{red}\underline{{\color{Orange}[d]}}}]} \doteq {\color{Cyan}[\text{[Char]}]}$ | **Decomposition**
+${\color{Orange}a} \doteq {\color{Cyan}[d]} \\ {\color{Orange}b} \doteq {\color{Cyan}\text{Int}} \\ {\color{Orange}c} \doteq {\color{Cyan}\text{[Char]}}$ | ${\color{Orange}[{\color{red}\underline{{\color{Orange}[d]}}}]} \doteq {\color{Cyan}[\text{[Char]}]}$ | **Substitution**: Nothing to substitute (no further occurences of <span className="equation-inline">$c$</span> ).
+${\color{Orange}a} \doteq {\color{Cyan}[d]} \\ {\color{Orange}b} \doteq {\color{Cyan}\text{Int}} \\ {\color{Orange}c} \doteq {\color{Cyan}\text{[Char]}}$ | ${\color{Orange}{\color{red}\underline{{\color{Orange}d}}}} \doteq {\color{Cyan}\text{Char}}$ | We unpack the lists on both sides.
+${\color{Orange}a} \doteq {\color{Cyan}[{\color{red}\underline{\color{Cyan}\text{Char}}}]} \\ {\color{Orange}b} \doteq {\color{Cyan}\text{Int}} \\ {\color{Orange}c} \doteq {\color{Cyan}\text{[Char]}} \\ {\color{Orange}{\color{red}\underline{{\color{Orange}d}}}} \doteq {\color{Cyan}\text{Char}}$ | $\emptyset$ | **Substitution**: <span className="equation-inline">${\color{Orange}d} \doteq {\color{Cyan}\text{Char}}$</span> cannot be further decomposed. Therefore, we substitute all occurrences of <span className="equation-inline">$d$</span> with <span className="equation-inline">$\rlap{{\color{red}\underline{\hphantom{\text{Char}}}}}{\text{Char}}$</span>.
+</div>
+
+The most general unifier (MGU) is:
+
+<div className="equation-box-center">
+$$
+γ = \{\;
+    {\color{Orange}a} \mapsto {\color{Cyan}[\text{Char}]}, \quad
+    {\color{Orange}b} \mapsto {\color{Cyan}\text{Int}}, \quad
+    {\color{Orange}c} \mapsto {\color{Cyan}\text{[Char]}}, \quad
+    {\color{Orange}d} \mapsto {\color{Cyan}\text{Char}}
+\;\}
+$$
+</div>
+
+The type of `(f length words)` is:
+
+<div className="equation-box-center">
+$$
+(
+{\color{OrangeRed}f} \;
+{\color{#a0d07b}length} \;
+{\color{#75b842}words}
+) ::
+{\color{Cyan}[\text{Char}]} \rightarrow {\color{Cyan}[\text{Int}]}
+=
+γ({\color{Plum}c \rightarrow [b]})
+%\qquad \phantom{}_{\square} \quad
+\quad \raisebox{-0.5em}{$\blacksquare$} \;
+$$
+</div>
+
+Do you want to try to find the type of `(f2 length words)` yourself?
+
+```hs
+f2 :: (a -> b) -> (c -> a) -> [c] -> [b]
+f2 g1 g2 xs = map (g1 . g2) xs
+-- :type (f2 length words)                   -- output: (f2 length words) :: [String] -> [Int]
+-- f2 length words ["a", "b b", "c c c c"]   -- output: [1,2,4]
+```
+
+# Example Error
+
+Calculate the type of the application `(all g)`.
+
+```hs
+all :: Foldable t => (a -> Bool) -> t a -> Bool -- ≅ (a -> Bool) -> [a] -> Bool
+
+g :: (Ord a, Num a) => a -> [Bool] -- ≅ a -> [Bool]
+g x = [x > 5, x > 50]
+g = zipWith (>) [5, 50] . replicate 2
+```
+
+Next we apply the application rule:
+
+<div className="equation-box-center">
+$$
+\dfrac{
+        {\color{OrangeRed}all} ::
+            % σ
+            {\color{Orange}(a \rightarrow Bool)}
+            \rightarrow
+            % τ
+            {\color{Plum}[a] \rightarrow Bool}
+            ; \quad
+        {\color{YellowGreen}g} ::
+            % ρ
+            {\color{Cyan}b \rightarrow [Bool]}
+        \quad \text{and} \quad
+        γ(
+            % σ
+            {\color{Orange}a \rightarrow Bool}
+        ) = γ(
+            % ρ
+            {\color{Cyan}b \rightarrow [Bool]}
+        )
+    }{
+        ({\color{OrangeRed}all} \; {\color{YellowGreen}g}) ::
+        γ(
+            % τ
+            {\color{Plum}[a] \rightarrow Bool}
+        )
+    }
+$$
+</div>
+
+Now that we have the constraints we can calculate the most general unifier
+
+<div className="prose-tr:border-b-slate-500 prose-thead:border-b-slate-500 prose-table:table-fixed">
+G | E | |
+--- | --- | ---
+<span className="eq-cell">$\emptyset$</span> | <span className="eq-cell">${\color{Orange}a \rightarrow Bool} \doteq {\color{Cyan}b \rightarrow [Bool]}$</span>
+<span className="eq-cell">$\emptyset$</span> | <span className="eq-cell">${\color{Orange}a} \doteq {\color{Cyan}b} \\ {\color{Orange}Bool} \doteq {\color{Cyan}[Bool]}$</span>
+<span className="eq-cell">${\color{Orange}a} \doteq {\color{Cyan}b}$</span> | <span className="eq-cell">${\color{Orange}Bool} \doteq {\color{Cyan}[Bool]}$</span> | **Substitution**. Error, because <span className="equation-inline">${\color{Orange}Bool}$</span> is in the domain of <span className="equation-inline">${\color{Cyan}[Bool]}$</span>.
+</div>
+
+The application `(all g)` is not typable because
+
+<span className="equation-inline">${\color{Orange}Bool}$</span>
+is in the domain of
+<span className="equation-inline">${\color{Cyan}[Bool]}$</span>.
+Therefore, we cannot unify the types.
+$$ \quad \raisebox{-0.5em}{$\blacksquare$} $$
+
+Other examples of untypable applications are:
+
+```hs
+foldl (:) []
+-- foldl    :: (b -> a -> b) -> b -> [a] -> b
+-- (:)      :: c -> [c] -> [c]
+-- []       :: [d]
+
+words ["a bb ccc", "dd ee"]
+-- words                    :: [Char] -> [[Char]]
+-- ["a bb ccc", "dd ee"]    :: [[Char]]
+```
+
+{/\* # Links
+
+- https://pp.ipd.kit.edu/lehre/WS202021/pse_typeinference/files/TypinferenzEinfuehrung.pdf
+- https://formal.kastel.kit.edu/~beckert/teaching/Logik-SS06/10PraedikatenlogikSubstitutionenUnifikation_Teil2.pdf
+- https://tuprints.ulb.tu-darmstadt.de/544/1/diss.pdf
+- https://www.pst.ifi.lmu.de/Lehre/WS0203/psem/doku/eckl_aus.pdf
+
+english
+
+- https://www.cs.cornell.edu/courses/cs3110/2011sp/Lectures/lec26-type-inference/type-inference.htm#5
+- https://www.andres-loeh.de/math-uu.pdf
+- wiki
+  - https://en.wikipedia.org/wiki/Functional_programming#Type_systems
+  - https://en.wikipedia.org/wiki/Type_inference
+  - https://en.wikipedia.org/wiki/Simply_typed_lambda_calculus
+  - https://en.wikipedia.org/wiki/Hindley%E2%80%93Milner_type_system#Typing_rules
+  - https://en.wikipedia.org/wiki/Typing_rule \*/}
+
+{/* Helper Funcitons */}
+
+{/_ export function CiteURLs({ urls }) {
+<CiteURLs urls={TypingRulesSources} />
+{CiteURLs(TypingRulesSources)} _/}
+export function CiteURLs(urls) {
+/\*\*
+_ Generates a list of citation URLs.
+_
+_ @param {string[]} urls - An array of arrays, where the 1. element is the URL and the 2. element is the popup text.
+_ @returns {JSX.Element} A JSX element containing the list of citation URLs.
+\*/
+return <sup>[
+{
+urls.map(([url, text], index) => (
+<React.Fragment key={index}>
+<a href={url} title={text}>
+{index + 1}
+</a>
+{index < urls.length - 1 && ","}
+</React.Fragment>
+)
+)
+}
+]</sup>
+}
+
+{/* # References */}

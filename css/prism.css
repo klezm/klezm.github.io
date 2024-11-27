@@ -5,6 +5,19 @@
  * https://github.com/PrismJS/prism-themes
  */
 
+pre {
+  overflow-x: auto;
+  /* @apply dark:bg-gray-700 dark:bg-opacity-50; */
+}
+
+.dark pre {
+  /* @apply bg-[#50505080]; */
+  @apply bg-gray-700 bg-opacity-50;
+  /* @apply bg-[#374151] bg-gray-700; */
+  /* @apply bg-[#4b5563] bg-gray-600; */
+  /* @apply bg-[#334155] bg-slate-700; */
+}
+
 /* Code title styles */
 .remark-code-title {
   @apply rounded-t bg-gray-700 px-5 py-3 font-mono text-sm font-bold text-gray-200 dark:bg-gray-800;
