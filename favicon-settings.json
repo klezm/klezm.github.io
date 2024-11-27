@@ -1,0 +1,36 @@
+{
+  "icon": {
+    "desktop": {
+      "regularIconTransformation": {
+        "type": "none"
+      },
+      "regularIconTransformationXXX": {
+        "type": "brightness",
+        "brightness": 0.8
+      },
+      "regularIconTransformationYYY": {
+        "type": "background",
+        "backgroundColor": "#ffffff",
+        "backgroundRadius": 0.7,
+        "imageScale": 0.7
+      },
+      "darkIconType": "none"
+    },
+    "touch": {
+      "transformation": {
+        "type": "none"
+      },
+      "appTitle": ""
+    },
+    "webAppManifest": {
+      "transformation": {
+        "type": "none"
+      },
+      "backgroundColor": "#ffffff",
+      "name": "",
+      "shortName": "",
+      "themeColor": "#ffffff"
+    }
+  },
+  "path": "/"
+}

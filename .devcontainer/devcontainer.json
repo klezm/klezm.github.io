@@ -1,12 +1,14 @@
 {
   "image": "mcr.microsoft.com/devcontainers/javascript-node:20",
-  "hostRequirements": {
-    "memory": "8gb"
-  },
-  "waitFor": "onCreateCommand",
-  "updateContentCommand": "yarn",
-  "postCreateCommand": "",
-  "postAttachCommand": "yarn dev",
+  // "hostRequirements": {
+  //   "memory": "8gb"
+  // },
+
+  // "waitFor": "onCreateCommand",
+  // "updateContentCommand": "yarn install",
+  // "postCreateCommand": "",
+  // "postAttachCommand": "yarn dev",
+
   "customizations": {
     "codespaces": {
       "openFiles": ["data/blog/code-sample.mdx"]
@@ -15,14 +17,28 @@
       "settings": {
         "editor.formatOnSave": true
       },
-      "extensions": ["dbaeumer.vscode-eslint", "esbenp.prettier-vscode"]
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "unifiedjs.vscode-mdx",
+        "bradlc.vscode-tailwindcss",
+        "GitHub.copilot-chat",
+        "GitHub.copilot"
+      ]
     }
   },
+
   "portsAttributes": {
     "3000": {
       "label": "Nextjs server",
       "onAutoForward": "openPreview"
     }
   },
-  "forwardPorts": [3000]
+
+  "forwardPorts": [3000],
+
+  "features": {
+    "ghcr.io/stuartleeks/dev-container-features/shell-history:0.0.3": {}
+    // "ghcr.io/devcontainers-extra/features/deno:1": {}
+  }
 }

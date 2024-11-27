@@ -1,0 +1,60 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "deno",
+      "command": "task",
+      "args": ["dev"],
+      "problemMatcher": ["$deno"],
+      "label": "deno: dev",
+      "detail": "$ cross-env INIT_CWD=$PWD next dev",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "deno: install",
+      "type": "deno",
+      "command": "install",
+      "problemMatcher": ["$deno"]
+    },
+    {
+      "label": "yarn install",
+      "type": "shell",
+      "command": "yarn install",
+      "problemMatcher": []
+    },
+    {
+      "label": "yarn dev",
+      "type": "shell",
+      "command": "yarn dev",
+      "problemMatcher": []
+    },
+    {
+      "label": "ncu semVer",
+      "type": "shell",
+      "command": "npx npm-check-updates --packageManager yarn --target semver --interactive",
+      // "command": "npx npm-check-updates --packageManager yarn --target semver --interactive --format installedVersion",
+      // "command": "npx npm-check-updates --packageManager deno --target semver --interactive",
+      "problemMatcher": []
+    },
+    {
+      "label": "ncu latest",
+      "type": "shell",
+      "command": "npx npm-check-updates --packageManager yarn --target latest --interactive"
+    },
+    {
+      "label": "favicon generate",
+      "type": "shell",
+      "command": "npx realfavicon@0.4.8 generate ./data/logo.svg favicon-settings.json output-data.json ./public/static/favicons/"
+      // npx realfavicon inject output-data.json app/layout.tsx # path/to/output/html <your HTML files...>
+      // npx realfavicon check <port>
+      //
+      // convert -background transparent -define 'icon:auto-resize=16,24,32,64' public/static/images/logo-k.png public/static/favicons/favicon.ico
+      // npx --package=favicons favicons --help
+      // npx pwa-asset-generator data/logo.svg TMP/ --type png --icon-only --favicon # --no-sandbox
+      // npx --package=@vite-pwa/assets-generator -- pwa-assets-generator --help # https://vite-pwa-org.netlify.app/assets-generator/cli.html
+    }
+  ]
+}
