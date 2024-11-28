@@ -11,7 +11,7 @@ on:
       cache:
         description: 'Cache node & nextjs'
         required: false
-        default: false
+        default: true
         type: boolean
 
 permissions:
@@ -59,6 +59,7 @@ jobs:
           mv out a
           mkdir out
           mv a out/
+          cp out/a/index.html out/index.html
 
       - continue-on-error: true
         run: |
