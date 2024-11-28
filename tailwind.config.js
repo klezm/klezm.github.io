@@ -1,6 +1,7 @@
 // @ts-check
 const { fontFamily } = require('tailwindcss/defaultTheme')
 const colors = require('tailwindcss/colors')
+// const flowbite = require('flowbite-react/tailwind')
 
 /** @type {import("tailwindcss/types").Config } */
 module.exports = {
@@ -11,6 +12,10 @@ module.exports = {
     './components/**/*.{js,ts,tsx}',
     './layouts/**/*.{js,ts,tsx}',
     './data/**/*.mdx',
+    // flowbite.content(),
+    // './node_modules/flowbite/**/*.js',
+    // './src/**/*.{html,js}', // if using `src` directory
+    // './node_modules/tw-elements/js/**/*.js',
   ],
   darkMode: 'class',
   theme: {
@@ -75,8 +80,23 @@ module.exports = {
   plugins: [
     require('@tailwindcss/forms'),
     require('@tailwindcss/typography'),
+    // require("tailwindcss-animate"),
+    // https://github.com/aniftyco/awesome-tailwindcss
     // https://daisyui.com/docs/themes/
+    // https://daisyui.com/theme-generator/
     require('daisyui'),
+    // https://flyonui.com/docs/customization/themes/
+    // require('flyonui'),
+    // // require("flyonui/plugin"),
+    // https://www.ripple-ui.com/docs/get-started/customization#theme
+    // require("rippleui"),
+    // flowbite.plugin(),
+    // require('flowbite/plugin')({
+    //   charts: true,
+    //   datatables: true,
+    //   wysiwyg: true,
+    // }),
+    // require('tw-elements/plugin.cjs'),
   ],
   daisyui: {
     themes: ['light'], // false: only light + dark | true: all themes | array: specific themes like this ["light", "dark", "cupcake"]
@@ -89,4 +109,7 @@ module.exports = {
     logs: false, // Shows info about daisyUI version and used config in the console when building your CSS
     themeRoot: ':root', // The element that receives theme color CSS variables
   },
+  // flyonui: {
+  //   themes: ['light', 'dark'],
+  // },
 }

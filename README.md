@@ -328,6 +328,15 @@ Consider removing the following features that cannot be used in a static build:
 
 Using the template? Support this effort by giving a star on GitHub, sharing your own blog and giving a shoutout on Twitter or becoming a project [sponsor](https://github.com/sponsors/timlrx).
 
+## Deno
+
+The imports need to be modified. you can use this regex:
+`(^import ((?:.|\n)*?from '(?!\.|@|app/seo|contentlayer|npm:)| *'(?=katex|pliny|remark)))`
+and replace it with
+`$1npm:`
+only include these files:
+`*.ts,*.tsx,*.js,*.jsx`
+
 ## Licence
 
 [MIT](https://github.com/timlrx/tailwind-nextjs-starter-blog/blob/main/LICENSE) © [Timothy Lin](https://www.timlrx.com)

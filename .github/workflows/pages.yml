@@ -5,6 +5,12 @@ on:
   push:
     branches: main
   workflow_dispatch:
+    inputs:
+      cache:
+        description: 'Cache node & nextjs'
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -23,11 +29,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: yarn
+          cache: ${{ inputs.cache && 'yarn' || ''}}
       - id: configurepages
         uses: actions/configure-pages@v5
       - name: Restore cache
         uses: actions/cache@v4
+        if: ${{ inputs.cache }}
         with:
           path: .next/cache
           key: ${{ runner.os }}-nextjs-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
