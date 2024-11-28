@@ -18,6 +18,14 @@ pre {
   /* @apply bg-[#334155] bg-slate-700; */
 }
 
+code {
+  @apply bg-gray-400/50;
+  &::before,
+  &::after {
+    content: none !important;
+  }
+}
+
 /* Code title styles */
 .remark-code-title {
   @apply rounded-t bg-gray-700 px-5 py-3 font-mono text-sm font-bold text-gray-200 dark:bg-gray-800;

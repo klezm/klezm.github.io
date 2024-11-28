@@ -28,12 +28,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: ${{ inputs.cache && 'yarn' || ''}}
+
       - id: configurepages
         uses: actions/configure-pages@v5
+      - continue-on-error: true
+        run: |
+          echo "BASE_PATH:  ${{ steps.configurepages.outputs.base_path }}"
+
       - name: Restore cache
         uses: actions/cache@v4
         if: ${{ inputs.cache }}
@@ -42,7 +48,8 @@ jobs:
           key: ${{ runner.os }}-nextjs-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
           restore-keys: |
             ${{ runner.os }}-nextjs-${{ hashFiles('**/yarn.lock') }}-
-      - run: yarn
+
+      - run: yarn #--immutable false --check-cache
       - run: yarn build
         env:
           EXPORT: 1
@@ -53,17 +60,12 @@ jobs:
         run: |
           echo ">>> pwd";         pwd
           echo ">>> ls -lha";     ls -lha
+          echo "BASE_PATH:  ${{ steps.configurepages.outputs.base_path }}"
           echo "----------------------------------------------"
-          echo "::group::find"
-          find . -maxdepth 4 -not -path "./.git*" -not -path "./.yarn*" -not -path "./node_modules*"
-          echo "::endgroup::"
-          echo "::group::find ./out"
-          find ./out -maxdepth 3
-          echo "::endgroup::"
+          echo "::group::find";           find . -maxdepth 4 -not -path "./.git*" -not -path "./.yarn*" -not -path "./node_modules*"; echo "::endgroup::"
+          echo "::group::tree ./out";     tree ./out -L 4; echo "::endgroup::"
+          echo "::group::tree";           echo ">>> tree -L 4"; tree -L 4; echo "::endgroup::"
           echo "----------------------------------------------"
-          echo "::group::tree"
-          echo ">>> tree -L 4";   tree -L 4
-          echo "::endgroup::"
 
       - uses: actions/upload-pages-artifact@v3
         with:

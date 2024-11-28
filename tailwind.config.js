@@ -30,7 +30,7 @@ module.exports = {
         sans: ['var(--font-space-grotesk)', ...fontFamily.sans],
       },
       colors: {
-        primary: colors.pink,
+        primary: colors.blue,
         gray: colors.gray,
       },
       zIndex: {
@@ -84,7 +84,7 @@ module.exports = {
     // https://github.com/aniftyco/awesome-tailwindcss
     // https://daisyui.com/docs/themes/
     // https://daisyui.com/theme-generator/
-    require('daisyui'),
+    // require('daisyui'),
     // https://flyonui.com/docs/customization/themes/
     // require('flyonui'),
     // // require("flyonui/plugin"),
@@ -105,7 +105,7 @@ module.exports = {
     base: true, // applies background color and foreground color for root element by default
     styled: true, // include daisyUI colors and design decisions for all components
     utils: true, // adds responsive and modifier utility classes
-    prefix: '', // prefix for daisyUI classnames (components, modifiers and responsive class names. Not colors)
+    prefix: 'dsy-', // prefix for daisyUI classnames (components, modifiers and responsive class names. Not colors)
     logs: false, // Shows info about daisyUI version and used config in the console when building your CSS
     themeRoot: ':root', // The element that receives theme color CSS variables
   },

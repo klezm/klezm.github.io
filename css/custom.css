@@ -35,11 +35,13 @@
 
 .equation-bg {
   /* bg-blue-500 */
-  @apply bg-gray-700 text-primary-content dark:bg-sky-900;
+  /* @apply bg-gray-700 text-primary-content dark:bg-sky-900; */
+  @apply bg-gray-700 text-white dark:bg-sky-900;
 }
 
 .equation-box {
-  @apply equation-bg card max-w-fit px-2;
+  /* @apply equation-bg dsy-card max-w-fit px-2; */
+  @apply equation-bg max-w-fit rounded-md px-2 py-px;
 }
 
 .equation-box-center {
