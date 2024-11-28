@@ -3,7 +3,9 @@ name: GitHub Pages
 
 on:
   push:
-    branches: main
+    branches:
+      - main
+      - main**
   workflow_dispatch:
     inputs:
       cache:
