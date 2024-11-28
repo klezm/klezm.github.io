@@ -48,6 +48,23 @@ jobs:
           EXPORT: 1
           UNOPTIMIZED: 1
           BASE_PATH: ${{ steps.configurepages.outputs.base_path }}
+
+      - continue-on-error: true
+        run: |
+          echo ">>> pwd";         pwd
+          echo ">>> ls -lha";     ls -lha
+          echo "----------------------------------------------"
+          echo "::group::find"
+          find . -maxdepth 4 -not -path "./.git*" -not -path "./.yarn*" -not -path "./node_modules*"
+          echo "::endgroup::"
+          echo "::group::find ./out"
+          find ./out -maxdepth 3
+          echo "::endgroup::"
+          echo "----------------------------------------------"
+          echo "::group::tree"
+          echo ">>> tree -L 4";   tree -L 4
+          echo "::endgroup::"
+
       - uses: actions/upload-pages-artifact@v3
         with:
           path: ./out
