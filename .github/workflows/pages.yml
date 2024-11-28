@@ -36,9 +36,6 @@ jobs:
 
       - id: configurepages
         uses: actions/configure-pages@v5
-      - continue-on-error: true
-        run: |
-          echo "BASE_PATH:  ${{ steps.configurepages.outputs.base_path }}"
 
       - name: Restore cache
         uses: actions/cache@v4
@@ -54,14 +51,20 @@ jobs:
         env:
           EXPORT: 1
           UNOPTIMIZED: 1
-          BASE_PATH: ${{ steps.configurepages.outputs.base_path }}
+          BASE_PATH: ${{ steps.configurepages.outputs.base_path || '/a'}}
+
+      - name: GitHub User Page Fix
+        if: ${{ ! steps.configurepages.outputs.base_path }}
+        run: |
+          mv out a
+          mkdir out
+          mv a out/
 
       - continue-on-error: true
         run: |
-          echo ">>> pwd";         pwd
-          echo ">>> ls -lha";     ls -lha
           echo "BASE_PATH:  ${{ steps.configurepages.outputs.base_path }}"
-          echo "----------------------------------------------"
+          echo ">>> pwd: $(pwd)"
+          echo "::group::ls -lha";        echo ">>> ls -lha";     ls -lha; echo "::endgroup::"
           echo "::group::find";           find . -maxdepth 4 -not -path "./.git*" -not -path "./.yarn*" -not -path "./node_modules*"; echo "::endgroup::"
           echo "::group::tree ./out";     tree ./out -L 4; echo "::endgroup::"
           echo "::group::tree";           echo ">>> tree -L 4"; tree -L 4; echo "::endgroup::"
