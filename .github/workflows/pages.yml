@@ -9,7 +9,7 @@ on:
       cache:
         description: 'Cache the build'
         required: false
-        default: true
+        default: false
         type: boolean
 
 permissions:
@@ -30,7 +30,7 @@ jobs:
         with:
           node-version: '20'
           # cache: yarn
-          cache: ${{ inputs.cache && 'yarn' }}
+          # cache: ${{ inputs.cache && 'yarn' || ''}}
       - id: configurepages
         uses: actions/configure-pages@v5
       - name: Restore cache
