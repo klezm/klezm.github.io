@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       cache:
-        description: 'Cache the build'
+        description: 'Cache node & nextjs'
         required: false
         default: false
         type: boolean
@@ -29,8 +29,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-          # cache: yarn
-          # cache: ${{ inputs.cache && 'yarn' || ''}}
+          cache: ${{ inputs.cache && 'yarn' || ''}}
       - id: configurepages
         uses: actions/configure-pages@v5
       - name: Restore cache

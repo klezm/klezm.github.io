@@ -81,7 +81,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       />
       <link rel="icon" type="image/svg+xml" href={`${basePath}/static/favicons/favicon.svg`} />
       <link rel="manifest" href={`${basePath}/static/favicons/site.webmanifest`} />
-      <link rel="shortcut-icon" href={`${basePath}/static/favicons/favicon.ico`} />
+      <link rel="shortcut icon" href={`${basePath}/static/favicons/favicon.ico`} />
       <meta name="msapplication-TileColor" content="#000000" />
       <meta name="theme-color" media="(prefers-color-scheme: light)" content="#fff" />
       <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000" />
