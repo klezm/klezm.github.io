@@ -4,21 +4,25 @@ name: GitHub Pages
 on:
   push:
     branches:
+      # - $default-branch
       - main
       - main-v2.3.0
   workflow_dispatch:
     inputs:
       cache:
-        description: 'Cache node & nextjs'
+        description: 'Cache yarn & .next'
         required: false
         default: true
         type: boolean
 
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
   contents: read
   pages: write
   id-token: write
 
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
 concurrency:
   group: 'pages'
   cancel-in-progress: false
@@ -36,30 +40,49 @@ jobs:
 
       - id: configurepages
         uses: actions/configure-pages@v5
+        # with:
+        #   # Automatically inject basePath in your Next.js configuration file and disable
+        #   # server side image optimization (https://nextjs.org/docs/api-reference/next/image#unoptimized).
+        #   # You may remove this line if you want to manage the configuration yourself.
+        #   static_site_generator: next
+        #   # generator_config_file: next.config.js
+        #   # enablement: true
 
       - name: Restore cache
         uses: actions/cache@v4
         if: ${{ inputs.cache }}
         with:
           path: .next/cache
-          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
+          # Generate a new cache whenever packages or source files change.
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json', '**/yarn.lock') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
+          # If source files changed but packages didn't, rebuild from a prior cache.
           restore-keys: |
-            ${{ runner.os }}-nextjs-${{ hashFiles('**/yarn.lock') }}-
+            ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json', '**/yarn.lock') }}-
 
-      - run: yarn #--immutable false --check-cache
-      - run: yarn build
+      # - name: Remove drafts
+      #   run: |
+      #     find . -name "*.mdx" -exec grep -zl -P "^---(.|\n)*?\ndraft: true(.|\n)*?---" {} \; exec -t rm -f {} \;
+
+      - name: Install dependencies
+        run: yarn
+      - name: 🏗️ Build
+        run: yarn build
         env:
           EXPORT: 1
           UNOPTIMIZED: 1
-          BASE_PATH: ${{ steps.configurepages.outputs.base_path || '/a'}}
+          # BASE_PATH: ${{ steps.configurepages.outputs.base_path || '/a' }}
+          BASE_PATH: ${{ steps.configurepages.outputs.base_path }}
 
-      - name: GitHub User Page Fix
-        if: ${{ ! steps.configurepages.outputs.base_path }}
-        run: |
-          mv out a
-          mkdir out
-          mv a out/
-          cp out/a/index.html out/index.html
+      # - name: GitHub User Page Fix
+      #   if: ${{ ! steps.configurepages.outputs.base_path }}
+      #   # if: ${{ steps.configurepages.outputs.base_url == steps.configurepages.outputs.origin }}
+      #   run: |
+      #     mv out a
+      #     mkdir out
+      #     mv a out/
+      #     cp out/a/index.html out/index.html
+      #     # sed -i 's|href="\./|href="/a/|g' out/index.html
+      #     # sed -i 's|src="\./|src="/a/|g' out/index.html
 
       - continue-on-error: true
         run: |

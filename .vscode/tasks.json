@@ -1,17 +1,20 @@
 {
   "version": "2.0.0",
   "tasks": [
+    //
+    //      Deno
+    //
     {
+      "label": "deno: dev",
+      "detail": "$ cross-env INIT_CWD=$PWD next dev",
       "type": "deno",
       "command": "task",
       "args": ["dev"],
       "problemMatcher": ["$deno"],
-      "label": "deno: dev",
-      "detail": "$ cross-env INIT_CWD=$PWD next dev",
-      "group": {
-        "kind": "build",
-        "isDefault": true
-      }
+      // "group": {
+      //   "kind": "build",
+      //   "isDefault": true
+      // }
     },
     {
       "label": "deno: install",
@@ -19,42 +22,75 @@
       "command": "install",
       "problemMatcher": ["$deno"]
     },
+    //
+    //      Yarn
+    //
     {
       "label": "yarn install",
+      "detail": "Installs all dependencies",
       "type": "shell",
       "command": "yarn install",
+      // "command": "yarn install && yarn info --name-only",
       "problemMatcher": []
     },
     {
       "label": "yarn dev",
+      "detail": "Starts the development server (requires yarn install)",
       "type": "shell",
       "command": "yarn dev",
       "problemMatcher": []
     },
+    //
+    //      npm-check-updates
+    //
     {
-      "label": "ncu semVer",
+      "label": "update npm in package.json (target: semVer)",
       "type": "shell",
-      "command": "npx npm-check-updates --packageManager yarn --target semver --interactive",
-      // "command": "npx npm-check-updates --packageManager yarn --target semver --interactive --format installedVersion",
-      // "command": "npx npm-check-updates --packageManager deno --target semver --interactive",
+      "command": "npx --no-install npm-check-updates --packageManager yarn --target semver --interactive",
+      // "command": "npx --no-install npm-check-updates --packageManager yarn --target semver --interactive --format installedVersion",
+      // "command": "npx --no-install npm-check-updates --packageManager deno --target semver --interactive",
       "problemMatcher": []
     },
     {
-      "label": "ncu latest",
+      "label": "update npm in package.json (target: latest)",
       "type": "shell",
-      "command": "npx npm-check-updates --packageManager yarn --target latest --interactive"
+      "command": "npx --no-install npm-check-updates --packageManager yarn --target latest --interactive"
     },
+    //
+    //      Favicons
+    //
     {
       "label": "favicon generate",
+      "detail": "Generates all needed favicons from ./data/logo.svg. The settings are in favicon-settings.json (This file can be generated on https://realfavicongenerator.net/ in the last step go to the Node tab, there you'll find it). The favicons are saved in ./public/static/favicons/. The ./app/layout.tsx might need adjustment according output-data.json.",
       "type": "shell",
-      "command": "npx realfavicon@0.4.8 generate ./data/logo.svg favicon-settings.json output-data.json ./public/static/favicons/"
-      // npx realfavicon inject output-data.json app/layout.tsx # path/to/output/html <your HTML files...>
-      // npx realfavicon check <port>
+      "command": "npx --no-install realfavicon@0.4.8 generate ./data/logo.svg favicon-settings.json output-data.json ./public/static/favicons/"
+      // npx --no-install realfavicon inject output-data.json app/layout.tsx # path/to/output/html <your HTML files...>
+      // npx --no-install realfavicon check <port>
       //
       // convert -background transparent -define 'icon:auto-resize=16,24,32,64' public/static/images/logo-k.png public/static/favicons/favicon.ico
-      // npx --package=favicons favicons --help
-      // npx pwa-asset-generator data/logo.svg TMP/ --type png --icon-only --favicon # --no-sandbox
-      // npx --package=@vite-pwa/assets-generator -- pwa-assets-generator --help # https://vite-pwa-org.netlify.app/assets-generator/cli.html
+      // npx --no-install --package=favicons favicons --help
+      // npx --no-install pwa-asset-generator data/logo.svg TMP/ --type png --icon-only --favicon # --no-sandbox
+      // npx --no-install --package=@vite-pwa/assets-generator -- pwa-assets-generator --help # https://vite-pwa-org.netlify.app/assets-generator/cli.html
+    },
+    //
+    //      Act - run GitHub Actions locally
+    //
+    {
+      "label": "act",
+      "detail": "Runs GitHub Actions locally",
+      "type": "shell",
+      // "command": "UNOPTIMIZED=1 EXPORT=1 yarn build"
+      "command": "act --workflows '.github/workflows/pages.yml' # --dryrun"
+    },
+    {
+      "label": "act: deploy",
+      "detail": "Deploys the out directory to GitHub Pages",
+      "type": "shell",
+      // "command": "act --job deploy --input cache=false --defaultbranch main-v2.3.0"
+      "command": "sed -iE '/^[^#\\w]*out\\W*/s/^/#/' .gitignore && act --workflows '.github/workflows/act.yml' --artifact-server-path tmp/act --job deploy; sed -iE '/\\W*out\\W*/s/^#//' .gitignore"
+      // "command": "act --workflows '.github/workflows/act.yml' --job deploy --bind"
+      // -s GITHUB_TOKEN="$(gh auth token)"
+      // --bind   binds working directory to the container (changes will affect the host)
     }
   ]
 }

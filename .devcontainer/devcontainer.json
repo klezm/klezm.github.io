@@ -39,6 +39,10 @@
 
   "features": {
     "ghcr.io/stuartleeks/dev-container-features/shell-history:0.0.3": {}
-    // "ghcr.io/devcontainers-extra/features/deno:1": {}
+    // "ghcr.io/devcontainers-extra/features/deno:1": {},
+    // "ghcr.io/devcontainers/features/github-cli:1": {},
+    // "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+    // "ghcr.io/devcontainers-extra/features/act-asdf:2": {}
+    // // "ghcr.io/devcontainers-extra/features/act:1": {}
   }
 }
