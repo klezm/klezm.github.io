@@ -92,12 +92,9 @@ abs :: Num a => a -> a
 </div>
 
 This function expects a list and will apply the
-
 <span className="peer/ref-abs">`abs`</span>
 funciton on each element. Since
-<span className="peer-hover/ref-abs:bg-yellow-400/40">
-  `abs` gives us the absolute value of a number
-</span>
+<span className="peer-hover/ref-abs:bg-yellow-400/40">`abs` gives us the absolute value of a number</span>
 the most general type of `mapAbs` will be stricter than `map`'s type. {/* Since `abs` gives us the absolute value of a number (`abs :: Num a => a -> a`) can we pass a list of Char (e.g. ['a', 'b', 'c']) to `mapAbs`? */}
 As you can see, the arguments of `mapAbs` have to be derived from the class `Num` (e.g. `Int`,
 `Float`) and cannot be of type `Char` for example. Running `:type map abs` in GHCi returns the type
@@ -235,8 +232,14 @@ $(f \ g)$
 Calculate the type of the application `(f g)`.
 
 <div className="compact max-w-fit justify-self-center">
-  > [!TIP] > > It might help to imagine defining a function `h` which applies `f` to `g`: > > ```hs
-  > h = (f g) > ``` >
+> [!TIP]
+>
+> It might help to imagine defining a function `h` which applies `f` to `g`:
+>
+> ```hs
+> h = (f g)
+> ```
+>
 </div>
 
 The types of the functions `f` and `g` are defined as follows:
@@ -297,18 +300,15 @@ $$
 > [!CAUTION]
 >
 > The type variables in
->
 > <span className="equation-inline">${\color{Orange}\rho}$</span>
-and
-
-<span className="equation-inline">${\color{Cyan}\sigma}$</span>
-must be distinct.
-If they are not, we have to rename them.
+> and
+> <span className="equation-inline">${\color{Cyan}\sigma}$</span>
+> must be distinct.
+> If they are not, we have to rename them.
 
 ## Calculation of $γ$
 
 We find
-
 <span className="equation-inline">$γ({\color{Orange}a \rightarrow a \rightarrow b}) = γ({\color{Cyan}c \rightarrow \text{Int} \rightarrow c})$</span>
 .
 
@@ -349,7 +349,6 @@ $$
 
 {/* and the type of $(f \ g)$ is: */}
 Now we can determine the type of
-
 <span className="equation-inline">$({\color{OrangeRed}f} \; {\color{YellowGreen}g})$</span>
 by applying the type substitution to
 <span className="equation-inline">$γ({\color{Plum}a \rightarrow b})$</span>
@@ -574,7 +573,6 @@ G | E | |
 </div>
 
 The application `(all g)` is not typable because
-
 <span className="equation-inline">${\color{Orange}Bool}$</span>
 is in the domain of
 <span className="equation-inline">${\color{Cyan}[Bool]}$</span>.
