@@ -130,9 +130,9 @@ For type unification we are interested in the application rule:
 
 {/* <div className="my-center dy-join dy-join-vertical"> */}
 
-<div className="my-center">
+{/* <div className="my-center"> */}
 {/* <div className="equation-box-center dy-join-item"> */}
-<div className="equation-box-center">
+<div className="equation-box-center !rounded-b-none">
 
 $$
 %\begin{equation}
@@ -148,15 +148,15 @@ $$
 $$
 
 {/* <div className="dy-join-item"> */}
-
 </div>
-<div className="-mt-2 text-sm font-bold text-center text-gray-500 dark:text-gray-400">
+{/* <div className="-mt-2 text-sm font-bold text-center text-gray-500 dark:text-gray-400"> */}
+<div className="prose-p:mt-1 text-sm font-bold text-center text-gray-500 dark:text-gray-400">
 Application Rule
 </div>
-</div>
+{/* </div> */}
 
-<div className="my-center">
-<div className="equation-box-center">
+{/* <div className="my-center"> */}
+<div className="equation-box-center !rounded-b-none">
 
 $$
 %\begin{equation}
@@ -192,11 +192,16 @@ $$
 %\end{equation}
 $$
 
+{/* <div className="bg-black/80 *:my-0 py-1 text-sm font-bold text-center text-gray-500 dark:text-gray-400"> */}
+{/* <div className="bg-[document.body.style.backgroundColor] *:my-0 py-1 text-sm font-bold text-center text-gray-500 dark:text-gray-400">
+Application Rule for multiple arguments
+</div> */}
+
 </div>
-<div className="-mt-2 text-sm font-bold text-center text-gray-500 dark:text-gray-400">
+<div className="prose-p:mt-1 text-sm font-bold text-center text-gray-500 dark:text-gray-400">
 Application Rule for multiple arguments
 </div>
-</div>
+{/* </div> */}
 
 <span className="equation-inline">${\color{OrangeRed}s}$</span>
 and
@@ -264,7 +269,7 @@ g x y = x
 
 Applying the types defined above to the application rule gives us:
 
-<div className="equation-box-center">
+<div className="equation-box-center mb-2">
 
 $$
 \dfrac{

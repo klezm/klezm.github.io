@@ -16,7 +16,7 @@
   @apply flex w-fit max-w-[98vw] flex-col rounded-md px-5 md:flex-row md:items-center md:space-x-5;
 }
 .my-center {
-  @apply w-fit justify-self-center;
+  @apply lg:w-fit justify-self-center;
 }
 .my-box-center {
   @apply my-box my-center;
@@ -43,13 +43,20 @@
 .equation-bg {
   /* bg-blue-500 */
   /* @apply bg-gray-700 text-primary-content dark:bg-sky-900; */
+  /* > :first-child {   */
   @apply bg-gray-700 text-white dark:bg-sky-900;
+  /* } */
 }
 
 .equation-box {
   /* @apply equation-bg dsy-card max-w-fit px-2; */
-  @apply equation-bg max-w-[98vw] rounded-md py-px md:max-w-full;
+  /* py-px */
+  @apply equation-bg max-w-[98vw] rounded-md md:max-w-full;
   /* @apply hover:overflow-scroll hover:overflow-x-visible md:px-2 w-[100%] */
+
+  /* > :first-child {
+    @apply rounded-t-md;
+  } */
 
   & > .katex-display {
     @apply !my-0 py-[1em];
@@ -76,7 +83,39 @@
 }
 
 .equation-inline {
-  @apply equation-bg max-w-fit justify-self-center rounded-md px-2 py-[3px];
+  /* @apply equation-bg max-w-fit justify-self-center rounded-md px-2 py-[3px]; */
+  @apply equation-bg max-w-fit justify-self-center rounded-md px-2 py-[3px] whitespace-nowrap;
+  /* white-space: nowrap; */
+  /* display: inline-block; */
+
+  > * > * {
+    /* @apply !inline; */
+    @apply whitespace-break-spaces;
+  }
+
+  /* > * {
+    display: unset;
+  } */
+
+  /* > :first-child::before {
+    @apply pl-2;
+  } */
+
+  /* &::before {
+    content: "";
+    display: inline-block;
+    width: 0;
+    padding-right: 0.5rem;
+    white-space: nowrap;
+  }
+
+  &::after {
+    content: "";
+    display: inline-block;
+    width: 0;
+    padding-left: 0.5rem;
+  } */
+
 }
 
 @layer base {

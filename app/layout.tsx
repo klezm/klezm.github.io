@@ -86,6 +86,27 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <meta name="theme-color" media="(prefers-color-scheme: light)" content="#fff" />
       <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000" />
       <link rel="alternate" type="application/rss+xml" href={`${basePath}/feed.xml`} />
+
+      {/*
+      https://cmppartnerprogram.withgoogle.com/
+      https://www.npmjs.com/package/vanilla-cookieconsent
+      https://www.npmjs.com/package/react-cookie-consent
+      https://www.osano.com/cookieconsent/documentation/javascript-api/
+      */}
+      {/* <script type="text/javascript" id="cookiebanner"
+        src="https://cdn.jsdelivr.net/gh/dobarkod/cookie-banner@1.2.2/dist/cookiebanner.min.js"
+        async
+        data-message="my message"
+        >
+      </script> */}
+      {/* <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/cookie-banner/1.2.2/cookiebanner.min.js"
+        integrity="sha512-ZYGEOS7yOZQcU0PR3emmWbLNGlPJK2d7k7PxHLu8yM8saGbZpBiI0ujjh2EWZSx6Ujw0o8+Xe5WAca0DsCgCvg=="
+        crossOrigin="anonymous"
+        async
+        referrerpolicy="no-referrer">
+      </script> */}
+
       <body className="bg-white pl-[calc(100vw-100%)] text-black antialiased dark:bg-gray-950 dark:text-white">
         <ThemeProviders>
           <Analytics analyticsConfig={siteMetadata.analytics as AnalyticsConfig} />

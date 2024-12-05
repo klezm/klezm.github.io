@@ -1,3 +1,10 @@
 {
-  "recommendations": ["denoland.vscode-deno", "xyc.vscode-mdx-preview"]
+  "recommendations": [
+    "denoland.vscode-deno",
+    "xyc.vscode-mdx-preview",
+    "unifiedjs.vscode-mdx",
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "bradlc.vscode-tailwindcss"
+  ]
 }
