@@ -13,6 +13,7 @@ import PostBanner from '@/layouts/PostBanner'
 import { Metadata } from 'next'
 import siteMetadata from '@/data/siteMetadata'
 import { notFound } from 'next/navigation'
+import NavToc from '@/components/NavToc'
 
 const defaultLayout = 'PostLayout'
 const layouts = {
@@ -112,9 +113,21 @@ export default async function Page(props: { params: Promise<{ slug: string[] }> 
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
+      {/* <div className='content-toc-wrapper'> */}
+      {/* <main> */}
       <Layout content={mainContent} authorDetails={authorDetails} next={next} prev={prev}>
-        <MDXLayoutRenderer code={post.body.code} components={components} toc={post.toc} />
+        {/* <NavToc /> */}
+        <div className="js-toc-content">
+          <MDXLayoutRenderer code={post.body.code} components={components} toc={post.toc} />
+        </div>
       </Layout>
+      {/* </main> */}
+      {/* <side> <NavToc /> </side> */}
+      {/* <div className="fixed top-180 right-20 hidden 2xl:block"> */}
+      {/* <div className="nav-toc-container"> */}
+      <NavToc />
+      {/* </div> */}
+      {/* </div> */}
     </>
   )
 }

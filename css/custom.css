@@ -2,20 +2,96 @@
 /* @tailwind components; */
 /* @tailwind utilities; */
 
-/* My Styles */
+/* TOC */
 
 .my-toc {
   /* @apply my-box bg-orange-700 bg-opacity-20 */
   /* @apply rounded-md bg-sky-800 bg-opacity-20 border-2 border-slate-800 */
   /* https://flowbite.com/docs/components/card */
   /* @apply max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 */
-  @apply rounded-md border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800;
+  @apply rounded-md border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800 lg:hidden;
 }
+
+/* Tocbot styles */
+.toc-container {
+  /* @apply fixed top-180 right-20 hidden 2xl:block; */
+  /* @apply fixed sticky right-20 top-0 top-60 float-right flex hidden self-start lg:block justify-end inset-0; */
+  /* @apply fixed right-20 top-52 hidden lg:block float-right prose-ol:*:text-white prose-li:list-none; */
+
+  /* @apply fixed right-5 top-52 z-[1000] hidden max-w-64 lg:block; */
+
+  /* position: fixed; /* Make the TOC fixed */
+  /* top: 180px; /* Move the TOC down */
+  /* right: 20px; */
+  /* z-index: 1000; /* Ensure it stays above other content */
+  /* font-size: 0.8rem; */
+  /* padding: 1rem; */
+  /* background-color: rgba(255, 255, 255, 0.05); */
+  /* border-radius: 0.5rem; */
+  /* max-width: 250px; */
+  /* text-align: right; */
+  line-height: 1.6;
+  z-index: 1000;
+  margin-right: 5px;
+  /* margin-top: anchor(start); */
+  /* height: anchor-size(height); */
+  /* height: calc(anchor(start) - anchor-size(height)); */
+  /* height: calc(anchor-size(height) - anchor(start)); */
+  top: 0px;
+  /* top: 200px; */
+  /* right: auto; */
+  position: absolute;
+  position: fixed;
+  /* position: sticky; */
+  /* display: block; */
+  /* https://css-tricks.com/css-anchor-positioning-guide/ */
+  position-anchor: --content-container;
+  /* position-visibility: always | anchors-visible | no-overflow */
+  /* position-try-fallbacks: none | [ [<dashed-ident> || <try-tactic>] | <'inset-area'>  ] */
+  /* position-try-fallbacks: flip-block; */
+  /* position-try-order: normal | most-width | most-height | most-block-size | most-inline-size */
+  /* position-try-order: normal; */
+  /* https://anchor-tool.com/ */
+  /* position-area: top right; */
+  /* position-area: span-start right; */
+  /* position-area: right span-bottom; */
+  /* left: calc(anchor(end) + 10px); */
+  left: calc(anchor(right) + 10px);
+  top: max(anchor(start), 0px);
+  /* top: anchor(start); */
+}
+
+.toc-container-2 {
+  position: fixed;
+  /* top: 0px; */
+}
+
+/* Add this rule to remove the left bar */
+.toc-link::before {
+  display: none !important;
+}
+
+.toc-container .is-active-link {
+  @apply text-blue-500;
+}
+
+.content-toc-wrapper {
+  /* display: flex; */
+  /* height: 100%; */
+}
+
+/* .js-toc-content, */
+.blog-content-anchor {
+  anchor-name: --content-container
+}
+
+/* Boxes */
 
 .my-box {
   @apply flex w-fit max-w-[98vw] flex-col rounded-md px-5 md:flex-row md:items-center md:space-x-5;
 }
 .my-center {
+  @apply justify-self-center lg:w-fit;
   @apply lg:w-fit justify-self-center;
 }
 .my-box-center {
@@ -44,7 +120,9 @@
   /* bg-blue-500 */
   /* @apply bg-gray-700 text-primary-content dark:bg-sky-900; */
   /* > :first-child {   */
+  /* > :first-child {   */
   @apply bg-gray-700 text-white dark:bg-sky-900;
+  /* } */
   /* } */
 }
 
@@ -52,7 +130,13 @@
   /* @apply equation-bg dsy-card max-w-fit px-2; */
   /* py-px */
   @apply equation-bg max-w-[98vw] rounded-md md:max-w-full;
+  /* py-px */
+  @apply equation-bg max-w-[98vw] rounded-md md:max-w-full;
   /* @apply hover:overflow-scroll hover:overflow-x-visible md:px-2 w-[100%] */
+
+  /* > :first-child {
+    @apply rounded-t-md;
+  } */
 
   /* > :first-child {
     @apply rounded-t-md;
@@ -83,6 +167,38 @@
 }
 
 .equation-inline {
+  /* @apply equation-bg max-w-fit justify-self-center rounded-md px-2 py-[3px]; */
+  @apply equation-bg max-w-fit justify-self-center whitespace-nowrap rounded-md px-2 py-[3px];
+  /* white-space: nowrap; */
+  /* display: inline-block; */
+
+  > * > * {
+    /* @apply !inline; */
+    @apply whitespace-break-spaces;
+  }
+
+  /* > * {
+    display: unset;
+  } */
+
+  /* > :first-child::before {
+    @apply pl-2;
+  } */
+
+  /* &::before {
+    content: "";
+    display: inline-block;
+    width: 0;
+    padding-right: 0.5rem;
+    white-space: nowrap;
+  }
+
+  &::after {
+    content: "";
+    display: inline-block;
+    width: 0;
+    padding-left: 0.5rem;
+  } */
   /* @apply equation-bg max-w-fit justify-self-center rounded-md px-2 py-[3px]; */
   @apply equation-bg max-w-fit justify-self-center rounded-md px-2 py-[3px] whitespace-nowrap;
   /* white-space: nowrap; */
@@ -148,4 +264,11 @@ div:has(> table) {
   overflow-x: auto;
   position: relative;
   max-width: 100vw;
+}
+
+/* Styling */
+
+article header h1 {
+  /* @apply bg-gradient-to-br from-blue-500 from-20% to-white bg-clip-text !text-transparent inline-block; */
+  @apply inline-block bg-gradient-to-br from-blue-500 from-0% to-fuchsia-500 to-90% bg-clip-text !text-transparent;
 }

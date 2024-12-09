@@ -9,6 +9,7 @@ import Image from '@/components/Image'
 import Tag from '@/components/Tag'
 import siteMetadata from '@/data/siteMetadata'
 import ScrollTopAndComment from '@/components/ScrollTopAndComment'
+// import NavToc from '@/components/NavToc'
 
 const editUrl = (path) => `${siteMetadata.siteRepo}/blob/main/data/${path}`
 const discussUrl = (path) =>
@@ -93,8 +94,9 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
                 </ul>
               </dd>
             </dl>
-            <div className="divide-y divide-gray-200 dark:divide-gray-700 xl:col-span-3 xl:row-span-2 xl:pb-0">
+            <div className="divide-y divide-gray-200 dark:divide-gray-700 xl:col-span-3 xl:row-span-2 xl:pb-0 blog-content-anchor">
               <div className="prose max-w-none pb-8 pt-10 dark:prose-invert">{children}</div>
+              {/* <div className="prose max-w-none pb-8 pt-10 dark:prose-invert js-toc-content">{children}</div> */}
               <div className="pb-6 pt-6 text-sm text-gray-700 dark:text-gray-300">
                 <Link href={discussUrl(path)} rel="nofollow">
                   Discuss on Twitter
@@ -161,8 +163,16 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
               </div>
             </footer>
           </div>
+
+          {/* <NavToc /> */}
+
         </div>
       </article>
+
+      {/* <div className="fixed top-180 right-20 hidden 2xl:block"> */}
+      {/* <div className="fixed top-180 right-20 block"> */}
+      {/* <NavToc /> */}
+      {/* </div> */}
     </SectionContainer>
   )
 }
