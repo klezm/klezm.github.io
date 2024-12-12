@@ -42,3 +42,14 @@ These features would be good to have
 - Responsive design (mobile)
 - Image optimization
 - Math (MathJax / KaTeX)
+
+## Blog inspirations
+
+### With TOC
+
+- https://cybersprout.net/toc-table-of-contents-blog-posts/
+- https://ahrefs.com/blog/de/suchmaschinenmarketing/
+- https://mangools.com/blog/google-rich-snippets-guide/
+- https://www.investopedia.com/articles/mortgages-real-estate/08/flipping-flip-properties.asp
+- https://showcased.webflow.io/projects/CMS-Table-of-Contents
+- https://showcased.webflow.io/projects/blog-outline-cloneable
