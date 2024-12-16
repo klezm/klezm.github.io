@@ -3,7 +3,7 @@ const siteMetadata = {
   title: 'klezm',
   author: 'klezm',
   headerTitle: 'klezm',
-  description: '',
+  description: "Welcome to my personal blog! I'm a computer science student writing about my experience.",
   language: 'en-us',
   theme: 'system', // system, dark or light
   siteUrl: 'https://klezm.github.io',

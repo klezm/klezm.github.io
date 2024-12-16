@@ -2,7 +2,7 @@
 /* @tailwind components; */
 /* @tailwind utilities; */
 
-/* My Styles */
+/* TOC */
 
 .my-toc {
   /* @apply my-box bg-orange-700 bg-opacity-20 */
@@ -12,14 +12,25 @@
   @apply rounded-md border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800;
 }
 
+/* Boxes */
+
 .my-box {
   @apply flex w-fit max-w-[98vw] flex-col rounded-md px-5 md:flex-row md:items-center md:space-x-5;
 }
 .my-center {
-  @apply lg:w-fit justify-self-center;
+  /* @apply lg:w-fit justify-self-center; */
+  @apply lg:w-fit mx-auto;
+  /* > div {} */
+}
+@layer base {
+  .-my-bleed {
+    /* @apply relative ml-[calc(-50vw+50%)] mr-[calc(-50vw+50%)]; */
+    @apply mx-[calc(-49vw+50%)] w-auto md:mx-[inherit] md:w-[inherit] !important;
+  }
 }
 .my-box-center {
   @apply my-box my-center;
+  /* @apply my-box my-center -my-bleed; */
 }
 .comment-box-center {
   /* @apply bg-[#1da1f2]; */
@@ -30,7 +41,7 @@
   /* @apply flex items-center space-x-5 bg-black bg-opacity-20 box-content border-x-8 border-transparent mx-10; */
   /* @apply flex items-center space-x-5 bg-slate-500 bg-opacity-20 mx-10 px-5 rounded-md w-fit; */
   /* @apply mx-10 flex w-fit items-center space-x-5 justify-self-center rounded-md bg-slate-500 bg-opacity-20 px-5; */
-  @apply my-box-center bg-slate-500 bg-opacity-20;
+  @apply my-box-center bg-slate-500 bg-opacity-20 -my-bleed;
   /* mx-10 */
 
   /* & > .relative { */
@@ -51,8 +62,14 @@
 .equation-box {
   /* @apply equation-bg dsy-card max-w-fit px-2; */
   /* py-px */
+  /* @apply equation-bg max-w-[98vw] rounded-md md:max-w-full w-fit; */
   @apply equation-bg max-w-[98vw] rounded-md md:max-w-full;
   /* @apply hover:overflow-scroll hover:overflow-x-visible md:px-2 w-[100%] */
+
+  /* http://howtocenterincss.com/#contentType=div&horizontal=center&vertical=middle&browser.IE=none */
+  /* display:flex;
+  justify-content:center;
+  align-items:center; */
 
   /* > :first-child {
     @apply rounded-t-md;
@@ -74,6 +91,9 @@
 
 .equation-box-center {
   @apply equation-box justify-self-center;
+  /* @apply equation-box mx-auto w-fit -my-bleed; */
+  /* @apply equation-box mx-auto; */
+  /* @apply equation-box; */
 
   /* &::before, &::after { */
   > * {
@@ -85,6 +105,8 @@
 .equation-inline {
   /* @apply equation-bg max-w-fit justify-self-center rounded-md px-2 py-[3px]; */
   @apply equation-bg max-w-fit justify-self-center rounded-md px-2 py-[3px] whitespace-nowrap;
+  /* @apply equation-bg max-w-fit mx-auto rounded-md px-2 py-[3px] whitespace-nowrap; */
+  /* @apply equation-bg max-w-fit rounded-md px-2 py-[3px] whitespace-nowrap; */
   /* white-space: nowrap; */
   /* display: inline-block; */
 
@@ -148,4 +170,24 @@ div:has(> table) {
   overflow-x: auto;
   position: relative;
   max-width: 100vw;
+  @apply -my-bleed;
+}
+
+/* Styling */
+
+@layer {
+  .md-bleed {
+    @apply max-w-[98vw] md:max-w-full;
+  }
+}
+
+article header h1 {
+  /* @apply bg-gradient-to-br from-blue-500 from-20% to-white bg-clip-text !text-transparent inline-block; */
+  @apply inline-block bg-gradient-to-br from-blue-500 from-0% to-fuchsia-500 to-90% bg-clip-text !text-transparent;
+}
+
+div:has(> pre > code) {
+  /* color: red !important; */
+  /* background-color: magenta !important; */
+  /* @apply md-bleed; */
 }
