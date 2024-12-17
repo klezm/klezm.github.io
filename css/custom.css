@@ -103,17 +103,20 @@
 }
 
 .equation-inline {
+  /* Removing mathml from KaTeX rendering solves the issue for Firefox */
+
   /* @apply equation-bg max-w-fit justify-self-center rounded-md px-2 py-[3px]; */
   @apply equation-bg max-w-fit justify-self-center rounded-md px-2 py-[3px] whitespace-nowrap;
+  /* @apply equation-bg max-w-fit justify-self-center rounded-md py-[3px] whitespace-nowrap border-x-[6px] border-transparent; */
   /* @apply equation-bg max-w-fit mx-auto rounded-md px-2 py-[3px] whitespace-nowrap; */
   /* @apply equation-bg max-w-fit rounded-md px-2 py-[3px] whitespace-nowrap; */
   /* white-space: nowrap; */
   /* display: inline-block; */
 
   > * > * {
-    /* @apply !inline; */
     @apply whitespace-break-spaces;
   }
+  /* @apply !inline; */
 
   /* > * {
     display: unset;
@@ -123,18 +126,17 @@
     @apply pl-2;
   } */
 
-  /* &::before {
-    content: "";
+  /* >::before,
+  >::after {
+    content: " ";
     display: inline-block;
     width: 0;
-    padding-right: 0.5rem;
     white-space: nowrap;
   }
-
-  &::after {
-    content: "";
-    display: inline-block;
-    width: 0;
+  >::before {
+    padding-right: 0.5rem;
+  }
+  >::after {
     padding-left: 0.5rem;
   } */
 

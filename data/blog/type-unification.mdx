@@ -13,14 +13,26 @@ bibliography: bib/type-unification.bib
 # authors: ['default', 'klezm']
 ---
 
+<style>
+{`
+/* @-moz-document url-prefix() { */
+@supports (-moz-appearance:none) {
+    /* Prevent linebreak of background-color-div before & after inline equation */
+    .equation-inline .katex-mathml {
+        display: none;
+    }
+}
+`}
+</style>
+
 
 <div className="my-toc">
   {/* <TOCInline toc={props.toc} exclude="Validierung" asDisclosure collapse ulClassName="[&_ul]:list-[revert]" /> */}
   <TOCInline toc={props.toc} asDisclosure collapse />
 </div>
 
-Type unification is a fundamental concept in functional programming.
-During my time tutoring a university course on Haskell I noticed that many students found this concept challenging.
+{/* Type unification is a fundamental concept in functional programming. */}
+During my time tutoring a university course on functional programming languages with Haskell, I noticed that many students found the concept of type unification challenging.
 To help bridge this gap I wrote this summary, complete with visualized examples to make type unification more approachable and easier to grasp.
 
 # Motivation
@@ -390,13 +402,13 @@ In the following we decompose the expression and use expressions that cannot be 
 {/* <Bleed> */}
 {/* <div className="prose-tr:border-b-slate-500 prose-thead:border-b-slate-500 prose-table:table-fixed [&_td:first-child]:equation-cell [&_td:nth-child(2)]:equation-cell"> */}
 <div className="prose-tr:border-b-slate-500 prose-thead:border-b-slate-500 [&_td:first-child]:equation-cell [&_td:nth-child(2)]:equation-cell [&_td:nth-child(3)]:max-w-[15em]">
-G | E | |
+G | E | Explanation |
 --- | --- | --- |
-$\emptyset$ | ${\color{Orange}a \rightarrow a \rightarrow b} \doteq {\color{Cyan}c \rightarrow \text{Int} \rightarrow c}$ |
-$\emptyset$ | ${\color{Orange}a} \doteq {\color{Cyan}c} \\ {\color{Orange}a} \doteq {\color{Cyan}\text{Int}} \\ {\color{Orange}b} \doteq {\color{Cyan}c}$ | **Decomposition**
-${\color{Orange}a} \nobreak \mapsto \nobreak {\color{Cyan}c}$ | ${\color{red}\underline{\color{Orange}c}} \doteq {\color{Cyan}\text{Int}} \\ {\color{Orange}b} \doteq {\color{Cyan}c}$ | **Substitution**: <span className="equation-inline">${\color{Orange}a} \doteq {\color{Cyan}c}$</span> cannot be further decomposed. Therefore, we substitute all occurrences of <span className="equation-inline">$a$</span> with <span className="equation-inline">$\rlap{\raisebox{1pt}{c}}{{\color{red}\bold\_}}$</span>.
-${\color{Orange}a} \nobreak \mapsto \nobreak {\color{red}\underline{\color{Cyan}\text{Int}}} \\ {\color{red}\underline{\color{Orange}c}} \mapsto {\color{Cyan}\text{Int}}$ | ${\color{Orange}b} \doteq {\color{red}\underline{\color{Cyan}\text{Int}}}$ | **Substitution**: Now we substitute all occurrences of <span className="equation-inline">$c$</span> with <span className="equation-inline">$\rlap{\text{Int}}{{\color{red}\underline{\hphantom{\text{Int}}}}}$</span>. Notice that we substitute also on the left side.
-${\color{Orange}a} \nobreak \mapsto \nobreak {\color{red}\underline{\color{Cyan}\text{Int}}} \\ {\color{red}\underline{\color{Orange}c}} \mapsto {\color{Cyan}\text{Int}} \\ {\color{Orange}b} \mapsto {\color{red}\underline{\color{Cyan}\text{Int}}}$ | $\emptyset$ | **Substitution**: Nothing to substitute (no further occurences of <span className="equation-inline">$b$</span> ).
+$\emptyset$ | ${\color{Orange}a \rightarrow a \rightarrow b} \doteq {\color{Cyan}c \rightarrow \text{Int} \rightarrow c}$ | **Decomposition**: First we need to decompose the expression.
+$\emptyset$ | ${\color{Orange}a} \doteq {\color{Cyan}c} \\ {\color{Orange}a} \doteq {\color{Cyan}\text{Int}} \\ {\color{Orange}b} \doteq {\color{Cyan}c}$ | **Substitution**: After the decomposition we see that <span className="equation-inline">${\color{Orange}a} \doteq {\color{Cyan}c}$</span> cannot be further decomposed. Therefore, we substitute all occurrences of <span className="equation-inline">$a$</span> with <span className="equation-inline">$\rlap{\raisebox{1pt}{c}}{{\color{red}\bold\_}}$</span> and move <span className="equation-inline">${\color{Orange}a} \doteq {\color{Cyan}c}$</span> to the left side.
+${\color{Orange}a} \nobreak \mapsto \nobreak {\color{Cyan}c}$ | ${\color{red}\underline{\color{Orange}c}} \doteq {\color{Cyan}\text{Int}} \\ {\color{Orange}b} \doteq {\color{Cyan}c}$ | **Substitution**: Now we substitute all occurrences of <span className="equation-inline">$c$</span> with <span className="equation-inline">$\rlap{\text{Int}}{{\color{red}\underline{\hphantom{\text{Int}}}}}$</span>. Notice that we substitute on the left and the right side.
+${\color{Orange}a} \nobreak \mapsto \nobreak {\color{red}\underline{\color{Cyan}\text{Int}}} \\ {\color{red}\underline{\color{Orange}c}} \mapsto {\color{Cyan}\text{Int}}$ | ${\color{Orange}b} \doteq {\color{red}\underline{\color{Cyan}\text{Int}}}$ | **Substitution**: Finally we need to substitute all occurrences of <span className="equation-inline">$b$</span>. But since there are no further occurences of <span className="equation-inline">$b$</span> there is nothing to substitute.
+${\color{Orange}a} \nobreak \mapsto \nobreak {\color{red}\underline{\color{Cyan}\text{Int}}} \\ {\color{red}\underline{\color{Orange}c}} \mapsto {\color{Cyan}\text{Int}} \\ {\color{Orange}b} \mapsto {\color{red}\underline{\color{Cyan}\text{Int}}}$ | $\emptyset$ | With the empty set on the right side we are done and can create the most general unifier.
 </div>
 {/* </Bleed> */}
 
@@ -539,16 +551,16 @@ $$
 Now that we have the constraints we can calculate the most general unifier
 
 <div className="prose-tr:border-b-slate-500 prose-thead:border-b-slate-500 [&_td:first-child]:equation-cell [&_td:nth-child(2)]:equation-cell [&_td:nth-child(3)]:max-w-[15em]">
-G | E | |
+G | E | Explanation |
 --- | --- | --- |
-$\emptyset$ | ${\color{Orange}a \rightarrow b} \doteq {\color{Cyan}[d] \rightarrow \text{Int}} \\ {\color{Orange}c \rightarrow [a]} \doteq {\color{Cyan}\text{[Char]} \rightarrow [\text{[Char]}]}$
-$\emptyset$ | ${\color{Orange}a} \doteq {\color{Cyan}[d]} \\ {\color{Orange}b} \doteq {\color{Cyan}\text{Int}} \\ {\color{Orange}c \rightarrow [a]} \doteq {\color{Cyan}\text{[Char]} \rightarrow [\text{[Char]}]}$ | **Decomposition**
-${\color{Orange}a} \nobreak \doteq \nobreak {\color{Cyan}[d]}$ | ${\color{Orange}b} \doteq {\color{Cyan}\text{Int}} \\ {\color{Orange}c \rightarrow [{\color{red}\underline{{\color{Orange}[d]}}}]} \doteq {\color{Cyan}\text{[Char]} \rightarrow [\text{[Char]}]}$ | **Substitution**: <span className="equation-inline">${\color{Orange}a} \doteq {\color{Cyan}[d]}$</span> cannot be further decomposed. Therefore, we substitute all occurrences of <span className="equation-inline">$a$</span> with <span className="equation-inline">$\rlap{{\color{red}\underline{\hphantom{[d]}}}}{[d]}$</span>.
-${\color{Orange}a} \nobreak \doteq \nobreak {\color{Cyan}[d]} \\ {\color{Orange}b} \doteq {\color{Cyan}\text{Int}}$ | ${\color{Orange}c \rightarrow [{\color{red}\underline{{\color{Orange}[d]}}}]} \doteq {\color{Cyan}\text{[Char]} \rightarrow [\text{[Char]}]}$ | **Substitution**: Nothing to substitute (no further occurences of <span className="equation-inline">$b$</span> ).
-${\color{Orange}a} \nobreak \doteq \nobreak {\color{Cyan}[d]} \\ {\color{Orange}b} \doteq {\color{Cyan}\text{Int}}$ | ${\color{Orange}c} \doteq {\color{Cyan}\text{[Char]}} \\ {\color{Orange}[{\color{red}\underline{{\color{Orange}[d]}}}]} \doteq {\color{Cyan}[\text{[Char]}]}$ | **Decomposition**
-${\color{Orange}a} \nobreak \doteq \nobreak {\color{Cyan}[d]} \\ {\color{Orange}b} \doteq {\color{Cyan}\text{Int}} \\ {\color{Orange}c} \doteq {\color{Cyan}\text{[Char]}}$ | ${\color{Orange}[{\color{red}\underline{{\color{Orange}[d]}}}]} \doteq {\color{Cyan}[\text{[Char]}]}$ | **Substitution**: Nothing to substitute (no further occurences of <span className="equation-inline">$c$</span> ).
-${\color{Orange}a} \nobreak \doteq \nobreak {\color{Cyan}[d]} \\ {\color{Orange}b} \doteq {\color{Cyan}\text{Int}} \\ {\color{Orange}c} \doteq {\color{Cyan}\text{[Char]}}$ | ${\color{Orange}{\color{red}\underline{{\color{Orange}d}}}} \doteq {\color{Cyan}\text{Char}}$ | We unpack the lists on both sides.
-${\color{Orange}a} \nobreak \doteq \nobreak {\color{Cyan}[{\color{red}\underline{\color{Cyan}\text{Char}}}]} \\ {\color{Orange}b} \doteq {\color{Cyan}\text{Int}} \\ {\color{Orange}c} \doteq {\color{Cyan}\text{[Char]}} \\ {\color{Orange}{\color{red}\underline{{\color{Orange}d}}}} \doteq {\color{Cyan}\text{Char}}$ | $\emptyset$ | **Substitution**: <span className="equation-inline">${\color{Orange}d} \doteq {\color{Cyan}\text{Char}}$</span> cannot be further decomposed. Therefore, we substitute all occurrences of <span className="equation-inline">$d$</span> with <span className="equation-inline">$\rlap{{\color{red}\underline{\hphantom{\text{Char}}}}}{\text{Char}}$</span>.
+$\emptyset$ | ${\color{Orange}a \rightarrow b} \doteq {\color{Cyan}[d] \rightarrow \text{Int}} \\ {\color{Orange}c \rightarrow [a]} \doteq {\color{Cyan}\text{[Char]} \rightarrow [\text{[Char]}]}$ | **Decomposition**: First we decompose the first expression.
+$\emptyset$ | ${\color{Orange}a} \doteq {\color{Cyan}[d]} \\ {\color{Orange}b} \doteq {\color{Cyan}\text{Int}} \\ {\color{Orange}c \rightarrow [a]} \doteq {\color{Cyan}\text{[Char]} \rightarrow [\text{[Char]}]}$ | **Substitution**: <span className="equation-inline">${\color{Orange}a} \doteq {\color{Cyan}[d]}$</span> cannot be further decomposed. Therefore, we substitute all occurrences of <span className="equation-inline">$a$</span> with <span className="equation-inline">$\rlap{{\color{red}\underline{\hphantom{[d]}}}}{[d]}$</span>.
+${\color{Orange}a} \nobreak \mapsto \nobreak {\color{Cyan}[d]}$ | ${\color{Orange}b} \doteq {\color{Cyan}\text{Int}} \\ {\color{Orange}c \rightarrow [{\color{red}\underline{{\color{Orange}[d]}}}]} \doteq {\color{Cyan}\text{[Char]} \rightarrow [\text{[Char]}]}$ | **Substitution** of <span className="equation-inline">$b$</span> (No further <span className="equation-inline">$b$</span>'s to substitute).
+${\color{Orange}a} \nobreak \mapsto \nobreak {\color{Cyan}[d]} \\ {\color{Orange}b} \mapsto {\color{Cyan}\text{Int}}$ | ${\color{Orange}c \rightarrow [{\color{red}\underline{{\color{Orange}[d]}}}]} \doteq {\color{Cyan}\text{[Char]} \rightarrow [\text{[Char]}]}$ | **Decomposition** of the second expression.
+${\color{Orange}a} \nobreak \mapsto \nobreak {\color{Cyan}[d]} \\ {\color{Orange}b} \mapsto {\color{Cyan}\text{Int}}$ | ${\color{Orange}c} \doteq {\color{Cyan}\text{[Char]}} \\ {\color{Orange}[{\color{red}\underline{{\color{Orange}[d]}}}]} \doteq {\color{Cyan}[\text{[Char]}]}$ | **Substitution**: of <span className="equation-inline">$c$</span> (No further <span className="equation-inline">$c$</span>'s to substitute).
+${\color{Orange}a} \nobreak \mapsto \nobreak {\color{Cyan}[d]} \\ {\color{Orange}b} \mapsto {\color{Cyan}\text{Int}} \\ {\color{Orange}c} \mapsto {\color{Cyan}\text{[Char]}}$ | ${\color{Orange}[{\color{red}\underline{{\color{Orange}[d]}}}]} \doteq {\color{Cyan}[\text{[Char]}]}$ | We unpack the lists on both sides.
+${\color{Orange}a} \nobreak \mapsto \nobreak {\color{Cyan}[d]} \\ {\color{Orange}b} \mapsto {\color{Cyan}\text{Int}} \\ {\color{Orange}c} \mapsto {\color{Cyan}\text{[Char]}}$ | ${\color{Orange}{\color{red}\underline{{\color{Orange}d}}}} \doteq {\color{Cyan}\text{Char}}$ | **Substitution**: <span className="equation-inline">${\color{Orange}d} \doteq {\color{Cyan}\text{Char}}$</span> cannot be further decomposed. Therefore, we substitute all occurrences of <span className="equation-inline">$d$</span> with <span className="equation-inline">$\rlap{{\color{red}\underline{\hphantom{\text{Char}}}}}{\text{Char}}$</span>.
+${\color{Orange}a} \nobreak \mapsto \nobreak {\color{Cyan}[{\color{red}\underline{\color{Cyan}\text{Char}}}]} \\ {\color{Orange}b} \mapsto {\color{Cyan}\text{Int}} \\ {\color{Orange}c} \mapsto {\color{Cyan}\text{[Char]}} \\ {\color{Orange}{\color{red}\underline{{\color{Orange}d}}}} \mapsto {\color{Cyan}\text{Char}}$ | $\emptyset$ | 
 </div>
 
 The most general unifier (MGU) is:
@@ -599,6 +611,7 @@ all :: Foldable t => (a -> Bool) -> t a -> Bool -- ≅ (a -> Bool) -> [a] -> Boo
 
 g :: (Ord a, Num a) => a -> [Bool] -- ≅ a -> [Bool]
 g x = [x > 5, x > 50]
+-- Another function with the same type signature would be:
 g = zipWith (>) [5, 50] . replicate 2
 ```
 
@@ -638,11 +651,11 @@ $$
 Now that we have the constraints we can calculate the most general unifier
 
 <div className="prose-tr:border-b-slate-500 prose-thead:border-b-slate-500 [&_td:nth-child(3)]:max-w-[15em]">
-G | E | |
+G | E | Explanation |
 --- | --- | ---
-<span className="eq-cell">$\emptyset$</span> | <span className="eq-cell">${\color{Orange}a \rightarrow Bool} \doteq {\color{Cyan}b \rightarrow [Bool]}$</span>
-<span className="eq-cell">$\emptyset$</span> | <span className="eq-cell">${\color{Orange}a} \doteq {\color{Cyan}b} \\ {\color{Orange}Bool} \doteq {\color{Cyan}[Bool]}$</span>
-<span className="eq-cell">${\color{Orange}a} \nobreak \doteq \nobreak {\color{Cyan}b}$</span> | <span className="eq-cell">${\color{Orange}Bool} \doteq {\color{Cyan}[Bool]}$</span> | **Substitution**. Error, because <span className="equation-inline">${\color{Orange}Bool}$</span> is in the domain of <span className="equation-inline">${\color{Cyan}[Bool]}$</span>.
+<span className="eq-cell">$\emptyset$</span> | <span className="eq-cell">${\color{Orange}a \rightarrow Bool} \doteq {\color{Cyan}b \rightarrow [Bool]}$</span> | **Decomposition**
+<span className="eq-cell">$\emptyset$</span> | <span className="eq-cell">${\color{Orange}a} \doteq {\color{Cyan}b} \\ {\color{Orange}Bool} \doteq {\color{Cyan}[Bool]}$</span> | **Substitution** of <span className="equation-inline">$a$</span> with <span className="equation-inline">$b$</span>.
+<span className="eq-cell">${\color{Orange}a} \nobreak \mapsto \nobreak {\color{Cyan}b}$</span> | <span className="eq-cell">${\color{Orange}Bool} \doteq {\color{Cyan}[Bool]}$</span> | Error, because <span className="equation-inline">${\color{Orange}Bool}$</span> is in the domain of <span className="equation-inline">${\color{Cyan}[Bool]}$</span>.
 </div>
 
 The application `(all g)` is not typable because
