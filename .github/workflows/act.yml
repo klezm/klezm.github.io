@@ -1,0 +1,149 @@
+# Inspired from https://github.com/actions/starter-workflows/blob/main/pages/nextjs.yml
+name: act - GitHub Pages
+
+on:
+  # push:
+  #   branches:
+  #     - $default-branch
+  #     - main
+  #     - main-v2.3.0
+  workflow_dispatch:
+    inputs:
+      cache:
+        description: 'Cache yarn & .next'
+        required: false
+        default: true
+        type: boolean
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+# concurrency:
+#   group: 'pages'
+#   cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: ${{ inputs.cache && 'yarn' || ''}}
+
+      - id: configurepages
+        uses: actions/configure-pages@v5
+        # with:
+        #   # Automatically inject basePath in your Next.js configuration file and disable
+        #   # server side image optimization (https://nextjs.org/docs/api-reference/next/image#unoptimized).
+        #   # You may remove this line if you want to manage the configuration yourself.
+        #   static_site_generator: next
+        #   # generator_config_file: next.config.js
+        #   # enablement: true
+
+      - name: Restore cache
+        uses: actions/cache@v4
+        if: ${{ inputs.cache }}
+        with:
+          path: .next/cache
+          # Generate a new cache whenever packages or source files change.
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json', '**/yarn.lock') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
+          # If source files changed but packages didn't, rebuild from a prior cache.
+          restore-keys: |
+            ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json', '**/yarn.lock') }}-
+
+      # - name: Remove drafts
+      #   run: |
+      #     find . -name "*.mdx" -exec grep -zl -P "^---(.|\n)*?\ndraft: true(.|\n)*?---" {} \; exec -t rm -f {} \;
+
+      - name: Install dependencies
+        run: yarn
+      - name: 🏗️ Build
+        run: yarn build
+        env:
+          EXPORT: 1
+          UNOPTIMIZED: 1
+          # BASE_PATH: ${{ steps.configurepages.outputs.base_path || '/a' }}
+          BASE_PATH: ${{ steps.configurepages.outputs.base_path }}
+
+      # - name: GitHub User Page Fix
+      #   if: ${{ ! steps.configurepages.outputs.base_path }}
+      #   run: |
+      #     mv out a
+      #     mkdir out
+      #     mv a out/
+      #     cp out/a/index.html out/index.html
+
+      # - continue-on-error: true
+      #   run: |
+      #     echo "BASE_PATH:  ${{ steps.configurepages.outputs.base_path }}"
+      #     echo ">>> pwd: $(pwd)"
+      #     echo "::group::ls -lha";        echo ">>> ls -lha";     ls -lha; echo "::endgroup::"
+      #     echo "::group::find";           find . -maxdepth 4 -not -path "./.git*" -not -path "./.yarn*" -not -path "./node_modules*"; echo "::endgroup::"
+      #     echo "::group::tree ./out";     tree ./out -L 4; echo "::endgroup::"
+      #     echo "::group::tree";           echo ">>> tree -L 4"; tree -L 4; echo "::endgroup::"
+      #     echo "----------------------------------------------"
+
+      # - uses: actions/upload-pages-artifact@v3
+      #   with:
+      #     path: ./out
+
+  # Deployment job
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    # needs: build
+    steps:
+      - uses: actions/checkout@v4
+        # with:
+        #   # set-safe-directory: true
+        #   # ref:
+        #   # filter: 'blob:none'
+        #   # sparse-checkout-cone-mode: false
+        #   # sparse-checkout: 'add out'
+        #   sparse-checkout: |
+        #     /out/
+        #     node_modules
+        #   # fetch-depth: 0
+
+      # # - name: Include "out" folder
+      # #   run: |
+      # #     git config --global --add safe.directory /github/workspace
+      # #     # sed -i '/^out$/d' .gitignore
+      # #     rm .gitignore
+      # #     # git checkout $GITHUB_SHA -- out
+      # #     # git restore --source=$GITHUB_SHA --staged --worktree -- out
+      # #     git restore --source=$GITHUB_SHA --staged --worktree
+
+      # - continue-on-error: true
+      #   run: |
+      #     find . -type d -name "out"
+      #     find / -type d -name "out"
+
+      # - run: |
+      #     touch DELETEME.txt
+      #     echo "  ----------------- pwd"
+      #     pwd
+      #     echo "  ----------------- ls -lha | grep out"
+      #     ls -lha | grep out
+      #     echo "  ----------------- ls -lha"
+      #     ls -lha # -d */
+      #     echo "  -----------------"
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./out
+
+      - id: deployment
+        uses: actions/deploy-pages@v4
+        # with:
+        #   token: ${{ secrets.GITHUB_TOKEN }}

@@ -203,7 +203,9 @@ export const TypingRulesSources = [
 ]
 
 There are several typing rules {CiteURLs(TypingRulesSources)}.
-For type unification we are interested in the application rule:
+For type unification we are interested in the application rule.
+
+## Application Rule
 
 {/* <div className="my-center dy-join dy-join-vertical"> */}
 
@@ -231,6 +233,51 @@ $$
 Application Rule
 </div>
 {/* </div> */}
+
+<span className="equation-inline">${\color{OrangeRed}s}$</span>
+and
+<span className="equation-inline">${\color{YellowGreen}t}$</span>
+are two functions where
+<span className="equation-inline">${\color{YellowGreen}t}$</span>
+is passed as the first argument to
+<span className="equation-inline">${\color{OrangeRed}s}$</span>
+and
+<span className="equation-inline">$γ$</span>
+is the most general unifier.
+<span className="equation-inline">${\color{Orange}σ}$</span>
+is the type of the argument passed to the function
+<span className="equation-inline">${\color{OrangeRed}s}$</span>
+which is the function
+<span className="equation-inline">${\color{YellowGreen}t}$</span>
+.
+<span className="equation-inline">${\color{Plum}τ}$</span>
+is the type of the return value of 
+<span className="equation-inline">${\color{OrangeRed}s}$</span>
+and
+<span className="equation-inline">${\color{Cyan}ρ}$</span>
+is the type of the argument passed to 
+<span className="equation-inline">${\color{YellowGreen}t}$</span>
+.
+
+In
+<span className="equation-inline">$γ({\color{Orange}σ}) = γ({\color{Cyan}ρ})$</span>
+we match the type of the argument of
+<span className="equation-inline">${\color{OrangeRed}s}$</span>
+with the type signature of
+<span className="equation-inline">${\color{YellowGreen}t}$</span>
+.
+Lastly, in
+<span className="equation-inline">$({\color{OrangeRed}s} \; {\color{YellowGreen}t}) :: γ({\color{Plum}τ})$</span>
+we define the type of the application
+<span className="equation-inline">$({\color{OrangeRed}s} \; {\color{YellowGreen}t})$</span>
+as
+<span className="equation-inline">$γ({\color{Plum}τ})$</span>
+.
+Notice that
+<span className="equation-inline">$γ({\color{Plum}τ})$</span>
+is exactly what we want to determine with the type unification.
+
+### Multiple Arguments
 
 {/* <div className="my-center"> */}
 <div className="equation-box-center !rounded-b-none">
@@ -280,17 +327,46 @@ Application Rule for multiple arguments
 </div>
 {/* </div> */}
 
+Similar to the application rule for one argument
 <span className="equation-inline">${\color{OrangeRed}s}$</span>
 and
-<span className="equation-inline">${\color{YellowGreen}t}$</span>
-are two functions where
-<span className="equation-inline">${\color{YellowGreen}t}$</span>
-is passed as the first argument to
+<span className="equation-inline">${\color{YellowGreen}t_{1 \ldots n}}$</span>
+are functions where the functions
+<span className="equation-inline">${\color{YellowGreen}t_{1 \ldots n}}$</span>
+are passed to
 <span className="equation-inline">${\color{OrangeRed}s}$</span>
-and
-<span className="equation-inline">$γ$</span>
-is the most general unifier
 .
+<span className="equation-inline">$γ$</span>
+is the most general unifier again
+.
+<span className="equation-inline">${\color{Orange}σ_{1 \ldots n}}$</span>
+are the types of the arguments passed to the function
+<span className="equation-inline">${\color{OrangeRed}s_{1 \ldots n}}$</span>
+.
+<span className="equation-inline">${\color{Plum}τ}$</span>
+is the type of the return value of 
+<span className="equation-inline">${\color{OrangeRed}s}$</span>
+and
+<span className="equation-inline">${\color{Cyan}ρ_{1 \ldots n}}$</span>
+are the types of the arguments passed to
+<span className="equation-inline">${\color{YellowGreen}t_{1 \ldots n}}$</span>
+.
+
+In
+<span className="equation-inline">$γ({\color{Orange}σ_{1 \ldots n}}) = γ({\color{Cyan}ρ_{1 \ldots n}})$</span>
+we match the types of the arguments of
+<span className="equation-inline">${\color{OrangeRed}s}$</span>
+with the type signatures of
+<span className="equation-inline">${\color{YellowGreen}t_{1 \ldots n}}$</span>
+.
+Lastly, in
+<span className="equation-inline">$({\color{OrangeRed}s} \; {\color{#a0d07b}t_1} \ \ldots \ {\color{#75b842}t_n}) :: γ({\color{Plum}τ})$</span>
+we define the type of the application
+<span className="equation-inline">$({\color{OrangeRed}s} \; {\color{#a0d07b}t_1} \ \ldots \ {\color{#75b842}t_n})$</span>
+as
+<span className="equation-inline">$γ({\color{Plum}τ})$</span>
+.
+
 
 {/* - https://inria.hal.science/inria-00076025/file/RR-0529.pdf */}
 {/*  */}
@@ -450,6 +526,8 @@ $$
 $$
 </div>
 
+Therefore, `(f g)` expects an argument of type `Int` and returns an `Int`.
+
 ## Validation
 
 We can validate the type calculation using the Haskell interpreter.
@@ -530,12 +608,12 @@ $$
             {\color{Plum}c \rightarrow [b]}; \
         \begin{array}{c}
             {\color{#a0d07b}length} :: {\color{#7affff}[d] \rightarrow \text{Int}}, \\
-            {\color{#75b842}words} :: {\color{#00c7c7}\text{String} \rightarrow [\text{String}]}
+            {\color{#75b842}words} :: {\color{#00c7c7}\text{[Char]} \rightarrow [\text{[Char]}]}
         \end{array}
         \ \text{and} \
         \begin{array}{c}
             γ({\color{#f9b58b}a \rightarrow b}) = γ({\color{#7affff}[d] \rightarrow \text{Int}}), \\
-            γ({\color{#ff7d2d}c \rightarrow [a]}) = γ({\color{#00c7c7}\text{String} \rightarrow [\text{String}]})
+            γ({\color{#ff7d2d}c \rightarrow [a]}) = γ({\color{#00c7c7}\text{[Char]} \rightarrow [\text{[Char]}]})
         \end{array}
     }{
         (
@@ -592,6 +670,10 @@ $$
 \quad \raisebox{-0.5em}{$\blacksquare$} \;
 $$
 </div>
+
+In other words `(f length words)` takes an argument of type `String` (`String = [Char]`) and returns a list of `Int`'s.
+The returned list shows the length of the words in the passed string.
+{/* The result is a list with the length of the words in the string. */}
 
 Do you want to try to find the type of `(f2 length words)` yourself?
 
