@@ -53,3 +53,10 @@ These features would be good to have
 - https://www.investopedia.com/articles/mortgages-real-estate/08/flipping-flip-properties.asp
 - https://showcased.webflow.io/projects/CMS-Table-of-Contents
 - https://showcased.webflow.io/projects/blog-outline-cloneable
+
+### Astro
+
+[Templates](https://astro.build/themes/?search=&technology%5B%5D=mdx&price%5B%5D=free)
+
+- https://astro.build/themes/details/openblog/ [:octocat:](https://github.com/danielcgilibert/blog-template)
+- https://astro.build/themes/details/astro-micro/ [:octocat:](https://github.com/trevortylerlee/astro-micro)
