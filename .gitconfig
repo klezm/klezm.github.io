@@ -1,0 +1,6 @@
+# Apply this config to the local repository with:
+# git config --local include.path ../.gitconfig
+
+[remote "timlrx"]
+	url = https://github.com/timlrx/tailwind-nextjs-starter-blog
+	fetch = +refs/heads/*:refs/remotes/timlrx/*

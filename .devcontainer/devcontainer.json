@@ -44,5 +44,11 @@
     // "ghcr.io/devcontainers/features/docker-in-docker:2": {},
     // "ghcr.io/devcontainers-extra/features/act-asdf:2": {}
     // // "ghcr.io/devcontainers-extra/features/act:1": {}
-  }
+  },
+
+  // "remoteEnv": {
+  //   "GIT_CONFIG_GLOBAL": "/workspaces/.gitconfig" // GIT_CONFIG_GLOBAL overrides the per-user configuration in $HOME/.gitconfig
+  // },
+
+  "onCreateCommand": "git config --local include.path ../.gitconfig"
 }
