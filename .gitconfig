@@ -4,3 +4,24 @@
 [remote "timlrx"]
 	url = https://github.com/timlrx/tailwind-nextjs-starter-blog
 	fetch = +refs/heads/*:refs/remotes/timlrx/*
+
+# git checkout -b timlrx/main --no-track timlrx/main
+# git reset --keep HEAD@{1}
+# git gc --prune=now
+# git push -u origin heads/timlrx/main --force
+
+# git pull --ff-only --allow-unrelated-histories timlrx main
+
+# git remote add upstream https://github.com/timlrx/tailwind-nextjs-starter-blog
+# git rebase timlrx/main
+
+# git merge --abort
+# git rebase --abort
+
+# git fetch --depth=2000 timlrx
+# git checkout -b timlrx/main e332766d0fc03218baefd805168abb194bcd45f5
+
+# # Check if timlrx/main is up to date:
+# # https://github.com/klezm/klezm.github.io/compare/timlrx/main...timlrx:tailwind-nextjs-starter-blog:main
+# # To update from https://github.com/timlrx/tailwind-nextjs-starter-blog switch to timlrx/main and run:
+# git pull timlrx main

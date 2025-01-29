@@ -55,7 +55,8 @@
   //   "GIT_CONFIG_GLOBAL": "/workspaces/.gitconfig" // GIT_CONFIG_GLOBAL overrides the per-user configuration in $HOME/.gitconfig
   // },
 
-  "onCreateCommand": "git config --local include.path ../.gitconfig && git fetch --tags timlrx main"
+  // "onCreateCommand": "git config --local include.path ../.gitconfig && git fetch --tags timlrx main"
+  "onCreateCommand": "git config --local include.path ../.gitconfig"
   // git fetch --tags timlrx
   // git remote remove timlrx
 
