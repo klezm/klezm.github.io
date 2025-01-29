@@ -23,7 +23,12 @@
         "unifiedjs.vscode-mdx",
         "bradlc.vscode-tailwindcss",
         "GitHub.copilot-chat",
-        "GitHub.copilot"
+        "GitHub.copilot",
+        "mhutchie.git-graph",
+        "donjayamanne.githistory",
+        "eamodio.gitlens",
+        "yzhang.markdown-all-in-one",
+        "alefragnani.project-manager"
       ]
     }
   },

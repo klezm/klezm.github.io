@@ -5,6 +5,9 @@
     "unifiedjs.vscode-mdx",
     "dbaeumer.vscode-eslint",
     "esbenp.prettier-vscode",
-    "bradlc.vscode-tailwindcss"
+    "bradlc.vscode-tailwindcss",
+    "ms-vscode.live-server",
+    "davidanson.vscode-markdownlint",
+    "alefragnani.project-manager"
   ]
 }
