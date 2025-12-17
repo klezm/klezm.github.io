@@ -1,0 +1,28 @@
+{
+  "name": "klezm.github.io",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "update": "pnpx npm-check-updates -u -i"
+  },
+  "dependencies": {
+    "@astrojs/starlight": "^0.37.1",
+    "@astrojs/starlight-tailwind": "^4.0.2",
+    "@tailwindcss/vite": "^4.0.7",
+    "astro": "^5.6.1",
+    "katex": "^0.16.27",
+    "rehype-katex": "^7.0.1",
+    "remark-directive": "^4.0.0",
+    "remark-math": "^6.0.0",
+    "sharp": "^0.34.2",
+    "starlight-blog": "^0.25.2",
+    "starlight-giscus": "^0.8.1",
+    "starlight-github-alerts": "^0.1.1",
+    "tailwindcss": "^4.0.7"
+  }
+}

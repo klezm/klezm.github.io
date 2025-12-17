@@ -1,0 +1,46 @@
+---
+title: klezm's blog
+description: Welcome to my personal blog! I'm a computer science student writing about my experience.
+template: splash
+hero:
+  title: |
+    Welcome to
+    <span
+      class="font-black text-transparent
+        bg-clip-text bg-gradient-to-b
+        from-accent-700 to-accent-400
+        dark:from-accent-500 dark:to-accent-200"
+    >
+      klezm's blog
+    </span>
+  tagline: A personal blog about computer science, programming, and tech experiences.
+  image:
+    file: ../../assets/houston.webp
+  actions:
+    - text: Read the Blog
+      link: /blog/
+      icon: right-arrow
+    - text: GitHub
+      link: https://github.com/klezm
+      icon: external
+      variant: minimal
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+## What You'll Find Here
+
+<CardGrid stagger>
+	<Card title="Programming" icon="seti:python">
+		Tutorials, tips, and insights about various programming languages and frameworks.
+	</Card>
+	<Card title="Computer Science" icon="laptop">
+		Deep dives into algorithms, data structures, and theoretical concepts.
+	</Card>
+	<Card title="Projects" icon="rocket">
+		Showcases of personal projects and learning experiences.
+	</Card>
+	<Card title="Math & Formulas" icon="star">
+		This blog supports beautiful math rendering with KaTeX: $E = mc^2$
+	</Card>
+</CardGrid>
