@@ -6,6 +6,70 @@ tags: ['haskell', 'functional programming', 'type unification']
 bibliography: bib/type-unification.bib
 ---
 
+<style>{`
+:root {
+/* Neutrals */
+--color-eq-white-light:      #0f172a; /* deep slate (readable on white) */
+--color-eq-slategray-light:  #e2e8f0;
+
+/* Standalone accents */
+--color-eq-orangered-light:  #c5104a;
+--color-eq-red-light:        #b91c1c;
+--color-eq-plum-light:       #6d28d9;
+
+/* Oranges (light -> dark) */
+--color-eq-orange-1-light:   #ff8c42; /* from #f9b58b */
+--color-eq-orange-2-light:   #ff6b1a; /* from Orange/#ffa500 */
+--color-eq-orange-3-light:   #d14500; /* from #ff7d2d */
+
+/* YellowGreens (light -> dark) */
+--color-eq-yg-1-light:       #6db33f; /* from #a0d07b */
+--color-eq-yg-2-light:       #4a9b2e; /* from YellowGreen/#9acd32 */
+--color-eq-yg-3-light:       #2d7016; /* from #75b842 */
+
+/* Cyans (light -> dark) */
+--color-eq-cyan-1-light:     #17b6cc; /* from #7affff */
+--color-eq-cyan-2-light:     #0097a7; /* from Cyan/#00ffff */
+--color-eq-cyan-3-light:     #006674; /* from #00c7c7 */
+}
+
+[data-theme='light'] {
+  /* KaTeX & MathJax CHTML */
+  :is(.katex, mjx-container, .MathJax) :is([style*="color:OrangeRed" i], [style*="color: OrangeRed" i]){ color: var(--color-eq-orangered-light) !important; }
+  :is(.katex, mjx-container, .MathJax) :is([style*="color:Orange" i], [style*="color: Orange" i]){ color: var(--color-eq-orange-2-light) !important; }
+  :is(.katex, mjx-container, .MathJax) :is([style*="color:Plum" i], [style*="color: Plum" i]){ color: var(--color-eq-plum-light) !important; }
+  :is(.katex, mjx-container, .MathJax) :is([style*="color:YellowGreen" i], [style*="color: YellowGreen" i]){ color: var(--color-eq-yg-2-light) !important; }
+  :is(.katex, mjx-container, .MathJax) :is([style*="color:Cyan" i], [style*="color: Cyan" i]){ color: var(--color-eq-cyan-2-light) !important; }
+  :is(.katex, mjx-container, .MathJax) :is([style*="color:red" i], [style*="color: red" i]){ color: var(--color-eq-red-light) !important; }
+  :is(.katex, mjx-container, .MathJax) :is([style*="color:white" i], [style*="color: white" i]){ color: var(--color-eq-white-light) !important; }
+
+  :is(.katex, mjx-container, .MathJax) :is([style*="color:#f9b58b" i], [style*="color: #f9b58b" i]){ color: var(--color-eq-orange-1-light) !important; }
+  :is(.katex, mjx-container, .MathJax) :is([style*="color:#ff7d2d" i], [style*="color: #ff7d2d" i]){ color: var(--color-eq-orange-3-light) !important; }
+  :is(.katex, mjx-container, .MathJax) :is([style*="color:#a0d07b" i], [style*="color: #a0d07b" i]){ color: var(--color-eq-yg-1-light) !important; }
+  :is(.katex, mjx-container, .MathJax) :is([style*="color:#75b842" i], [style*="color: #75b842" i]){ color: var(--color-eq-yg-3-light) !important; }
+  :is(.katex, mjx-container, .MathJax) :is([style*="color:#7affff" i], [style*="color: #7affff" i]){ color: var(--color-eq-cyan-1-light) !important; }
+  :is(.katex, mjx-container, .MathJax) :is([style*="color:#00c7c7" i], [style*="color: #00c7c7" i]){ color: var(--color-eq-cyan-3-light) !important; }
+
+  :is(.katex, mjx-container, .MathJax) :is([style*="background-color:slategray" i], [style*="background-color: slategray" i]){ background-color: var(--color-eq-slategray-light) !important; }
+
+  /* MathJax SVG */
+  .MathJax [fill="OrangeRed" i] { fill: var(--color-eq-orangered-light) !important; }
+  .MathJax [fill="Orange" i] { fill: var(--color-eq-orange-2-light) !important; }
+  .MathJax [fill="Plum" i] { fill: var(--color-eq-plum-light) !important; }
+  .MathJax [fill="YellowGreen" i] { fill: var(--color-eq-yg-2-light) !important; }
+  .MathJax [fill="Cyan" i] { fill: var(--color-eq-cyan-2-light) !important; }
+  .MathJax [fill="red" i] { fill: var(--color-eq-red-light) !important; }
+  .MathJax [fill="white" i] { fill: var(--color-eq-white-light) !important; }
+  .MathJax [fill="slategray" i] { fill: var(--color-eq-slategray-light) !important; }
+  .MathJax [fill="#f9b58b" i] { fill: var(--color-eq-orange-1-light) !important; }
+  .MathJax [fill="#ff7d2d" i] { fill: var(--color-eq-orange-3-light) !important; }
+  .MathJax [fill="#a0d07b" i] { fill: var(--color-eq-yg-1-light) !important; }
+  .MathJax [fill="#75b842" i] { fill: var(--color-eq-yg-3-light) !important; }
+  .MathJax [fill="#7affff" i] { fill: var(--color-eq-cyan-1-light) !important; }
+  .MathJax [fill="#00c7c7" i] { fill: var(--color-eq-cyan-3-light) !important; }
+}
+`}</style>
+
 During my time tutoring a university course on functional programming languages with Haskell, I noticed that many students found the concept of type unification challenging.
 To help bridge this gap I wrote this summary, complete with visualized examples to make type unification more approachable and easier to grasp.
 
@@ -142,11 +206,11 @@ which is the function
 <span className="equation-inline">${\color{YellowGreen}t}$</span>
 .
 <span className="equation-inline">${\color{Plum}τ}$</span>
-is the type of the return value of 
+is the type of the return value of
 <span className="equation-inline">${\color{OrangeRed}s}$</span>
 and
 <span className="equation-inline">${\color{Cyan}ρ}$</span>
-is the type of the argument passed to 
+is the type of the argument passed to
 <span className="equation-inline">${\color{YellowGreen}t}$</span>
 .
 
@@ -228,7 +292,7 @@ are the types of the arguments passed to the function
 <span className="equation-inline">${\color{OrangeRed}s_{1 \ldots n}}$</span>
 .
 <span className="equation-inline">${\color{Plum}τ}$</span>
-is the type of the return value of 
+is the type of the return value of
 <span className="equation-inline">${\color{OrangeRed}s}$</span>
 and
 <span className="equation-inline">${\color{Cyan}ρ_{1 \ldots n}}$</span>
@@ -475,7 +539,7 @@ ${\color{Orange}a} \nobreak \mapsto \nobreak {\color{Cyan}[d]} \\ {\color{Orange
 ${\color{Orange}a} \nobreak \mapsto \nobreak {\color{Cyan}[d]} \\ {\color{Orange}b} \mapsto {\color{Cyan}\text{Int}}$ | ${\color{Orange}c} \doteq {\color{Cyan}\text{[Char]}} \\ {\color{Orange}[{\color{red}\underline{{\color{Orange}[d]}}}]} \doteq {\color{Cyan}[\text{[Char]}]}$ | **Substitution**: of <span className="equation-inline">$c$</span> (No further <span className="equation-inline">$c$</span>'s to substitute).
 ${\color{Orange}a} \nobreak \mapsto \nobreak {\color{Cyan}[d]} \\ {\color{Orange}b} \mapsto {\color{Cyan}\text{Int}} \\ {\color{Orange}c} \mapsto {\color{Cyan}\text{[Char]}}$ | ${\color{Orange}[{\color{red}\underline{{\color{Orange}[d]}}}]} \doteq {\color{Cyan}[\text{[Char]}]}$ | We unpack the lists on both sides.
 ${\color{Orange}a} \nobreak \mapsto \nobreak {\color{Cyan}[d]} \\ {\color{Orange}b} \mapsto {\color{Cyan}\text{Int}} \\ {\color{Orange}c} \mapsto {\color{Cyan}\text{[Char]}}$ | ${\color{Orange}{\color{red}\underline{{\color{Orange}d}}}} \doteq {\color{Cyan}\text{Char}}$ | **Substitution**: <span className="equation-inline">${\color{Orange}d} \doteq {\color{Cyan}\text{Char}}$</span> cannot be further decomposed. Therefore, we substitute all occurrences of <span className="equation-inline">$d$</span> with <span className="equation-inline">$\rlap{{\color{red}\underline{\hphantom{\text{Char}}}}}{\text{Char}}$</span>.
-${\color{Orange}a} \nobreak \mapsto \nobreak {\color{Cyan}[{\color{red}\underline{\color{Cyan}\text{Char}}}]} \\ {\color{Orange}b} \mapsto {\color{Cyan}\text{Int}} \\ {\color{Orange}c} \mapsto {\color{Cyan}\text{[Char]}} \\ {\color{Orange}{\color{red}\underline{{\color{Orange}d}}}} \mapsto {\color{Cyan}\text{Char}}$ | $\emptyset$ | 
+${\color{Orange}a} \nobreak \mapsto \nobreak {\color{Cyan}[{\color{red}\underline{\color{Cyan}\text{Char}}}]} \\ {\color{Orange}b} \mapsto {\color{Cyan}\text{Int}} \\ {\color{Orange}c} \mapsto {\color{Cyan}\text{[Char]}} \\ {\color{Orange}{\color{red}\underline{{\color{Orange}d}}}} \mapsto {\color{Cyan}\text{Char}}$ | $\emptyset$ |
 </div>
 
 The most general unifier (MGU) is:
