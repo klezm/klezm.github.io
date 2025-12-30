@@ -16,6 +16,15 @@ export default defineConfig({
 		starlight({
 			title: "klezm's blog",
 			description: "Welcome to my personal blog! I'm a computer science student writing about my experience.",
+			head: [
+				{
+					tag: 'meta',
+					attrs: {
+						name: 'theme-color',
+						content: '#5b6d7f',
+					},
+				},
+			],
 			plugins: [
 				starlightBlog({
 					title: "klezm's blog",
@@ -53,6 +62,7 @@ export default defineConfig({
 			],
 			customCss: [
 				'./src/styles/global.css',
+				'./src/styles/components.css',
 				'./src/styles/katex.css',
 			],
 		}),

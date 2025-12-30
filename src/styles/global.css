@@ -4,20 +4,409 @@
 @import 'tailwindcss/theme.css' layer(theme);
 @import 'tailwindcss/utilities.css' layer(utilities);
 
-@theme {
-	/*
-	Configure your Tailwind theme that will be used by Starlight.
-	https://starlight.astro.build/guides/css-and-tailwind/#styling-starlight-with-tailwind
-	*/
+/* ============================================
+   DESIGN SYSTEM - Modern, Timeless, Premium
+   ============================================ */
+
+:root {
+	/* ==================== COLOR PALETTE ==================== */
+	/* Sophisticated, muted tones - Premium & Professional */
+	
+	/* Light Mode - Refined neutrals with warm undertones */
+	--sl-color-white: #fefefe;
+	--sl-color-gray-1: #f8f9fa;
+	--sl-color-gray-2: #eef0f2;
+	--sl-color-gray-3: #dde0e4;
+	--sl-color-gray-4: #b8bcc4;
+	--sl-color-gray-5: #7e8594;
+	--sl-color-gray-6: #4a5160;
+	--sl-color-black: #1a1d24;
+	
+	/* Primary - Muted, sophisticated blue-gray */
+	--sl-color-accent-low: #e8ecf1;
+	--sl-color-accent: #5b6d7f;
+	--sl-color-accent-high: #3d4d5d;
+	
+	/* Semantic colors - Refined and subtle */
+	--sl-color-text: #2d3440;
+	--sl-color-text-accent: #3d4d5d;
+	--sl-color-bg: #fefefe;
+	--sl-color-bg-nav: rgba(255, 255, 255, 0.95);
+	--sl-color-bg-sidebar: #f8f9fa;
+	--sl-color-bg-inline-code: #f3f4f6;
+	
+	/* Interactive states */
+	--sl-color-hover: #eef0f2;
+	--sl-color-border: #e2e5e9;
+	
+	/* ==================== TYPOGRAPHY ==================== */
+	/* Clean, readable fonts with proper hierarchy */
+	
+	/* Font Families */
+	--sl-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+	--sl-font-headings: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+	--sl-font-mono: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+	
+	/* Type Scale - Harmonious progression */
+	--sl-text-xs: 0.8125rem;    /* 13px */
+	--sl-text-sm: 0.875rem;     /* 14px */
+	--sl-text-base: 1rem;       /* 16px */
+	--sl-text-lg: 1.125rem;     /* 18px */
+	--sl-text-xl: 1.25rem;      /* 20px */
+	--sl-text-2xl: 1.5rem;      /* 24px */
+	--sl-text-3xl: 1.875rem;    /* 30px */
+	--sl-text-4xl: 2.25rem;     /* 36px */
+	--sl-text-5xl: 3rem;        /* 48px */
+	
+	/* Line Heights - Optimized for readability */
+	--sl-line-height-headings: 1.3;
+	--sl-line-height-body: 1.7;
+	
+	/* Font Weights */
+	--sl-font-weight-normal: 400;
+	--sl-font-weight-medium: 500;
+	--sl-font-weight-semibold: 600;
+	--sl-font-weight-bold: 700;
+	
+	/* ==================== SPACING SYSTEM ==================== */
+	/* Generous, intentional spacing */
+	--sl-spacing-2xs: 0.25rem;   /* 4px */
+	--sl-spacing-xs: 0.5rem;     /* 8px */
+	--sl-spacing-sm: 0.75rem;    /* 12px */
+	--sl-spacing-md: 1rem;       /* 16px */
+	--sl-spacing-lg: 1.5rem;     /* 24px */
+	--sl-spacing-xl: 2rem;       /* 32px */
+	--sl-spacing-2xl: 3rem;      /* 48px */
+	--sl-spacing-3xl: 4rem;      /* 64px */
+	--sl-spacing-4xl: 6rem;      /* 96px */
+	
+	/* Content width - Optimal reading experience */
+	--sl-content-width: 45rem;
+	--sl-content-pad-x: var(--sl-spacing-lg);
+	
+	/* ==================== BORDERS & RADIUS ==================== */
+	--sl-border-thin: 1px;
+	--sl-border-thick: 2px;
+	--sl-border-radius-sm: 0.375rem;
+	--sl-border-radius-md: 0.5rem;
+	--sl-border-radius-lg: 0.75rem;
+	
+	/* ==================== SHADOWS ==================== */
+	/* Subtle depth for premium feel */
+	--sl-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+	--sl-shadow-md: 0 2px 8px 0 rgba(0, 0, 0, 0.06);
+	--sl-shadow-lg: 0 4px 16px 0 rgba(0, 0, 0, 0.08);
+	
+	/* ==================== TRANSITIONS ==================== */
+	/* Smooth, purposeful animations */
+	--sl-transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+	--sl-transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+	--sl-transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/*
-Add additional Tailwind styles to this file:
-https://tailwindcss.com/docs/adding-custom-styles#using-custom-css
-*/
+/* Dark Mode - Sophisticated and easy on the eyes */
+:root[data-theme='dark'] {
+	--sl-color-white: #1a1d24;
+	--sl-color-gray-1: #21252d;
+	--sl-color-gray-2: #2a2f38;
+	--sl-color-gray-3: #363c48;
+	--sl-color-gray-4: #4a5160;
+	--sl-color-gray-5: #7e8594;
+	--sl-color-gray-6: #b8bcc4;
+	--sl-color-black: #fefefe;
+	
+	--sl-color-accent-low: #2a3340;
+	--sl-color-accent: #7a8a9e;
+	--sl-color-accent-high: #9daabb;
+	
+	--sl-color-text: #e8ecf1;
+	--sl-color-text-accent: #9daabb;
+	--sl-color-bg: #1a1d24;
+	--sl-color-bg-nav: rgba(26, 29, 36, 0.95);
+	--sl-color-bg-sidebar: #21252d;
+	--sl-color-bg-inline-code: #2a2f38;
+	
+	--sl-color-hover: #2a2f38;
+	--sl-color-border: #363c48;
+	
+	--sl-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+	--sl-shadow-md: 0 2px 8px 0 rgba(0, 0, 0, 0.4);
+	--sl-shadow-lg: 0 4px 16px 0 rgba(0, 0, 0, 0.5);
+}
+
+/* ============================================
+   BASE TYPOGRAPHY STYLES
+   ============================================ */
+
+body {
+	font-family: var(--sl-font);
+	font-size: var(--sl-text-base);
+	line-height: var(--sl-line-height-body);
+	font-weight: var(--sl-font-weight-normal);
+	color: var(--sl-color-text);
+	background-color: var(--sl-color-bg);
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+/* Headings - Clear hierarchy */
+h1, h2, h3, h4, h5, h6 {
+	font-family: var(--sl-font-headings);
+	font-weight: var(--sl-font-weight-semibold);
+	line-height: var(--sl-line-height-headings);
+	letter-spacing: -0.02em;
+	color: var(--sl-color-black);
+	margin-top: var(--sl-spacing-2xl);
+	margin-bottom: var(--sl-spacing-lg);
+}
+
+h1 {
+	font-size: var(--sl-text-4xl);
+	font-weight: var(--sl-font-weight-bold);
+	margin-top: 0;
+}
+
+h2 {
+	font-size: var(--sl-text-3xl);
+	margin-top: var(--sl-spacing-3xl);
+}
+
+h3 {
+	font-size: var(--sl-text-2xl);
+}
+
+h4 {
+	font-size: var(--sl-text-xl);
+}
+
+/* Paragraphs - Optimal readability */
+p {
+	margin-bottom: var(--sl-spacing-lg);
+	max-width: 70ch;
+}
+
+/* Links - Subtle and refined */
+a {
+	color: var(--sl-color-text-accent);
+	text-decoration: none;
+	transition: color var(--sl-transition-fast);
+}
+
+a:hover {
+	color: var(--sl-color-accent-high);
+}
+
+/* Code - Clean and readable */
+code {
+	font-family: var(--sl-font-mono);
+	font-size: 0.9em;
+	background-color: var(--sl-color-bg-inline-code);
+	padding: 0.2em 0.4em;
+	border-radius: var(--sl-border-radius-sm);
+	border: 1px solid var(--sl-color-border);
+}
+
+pre code {
+	background: transparent;
+	padding: 0;
+	border: none;
+}
+
+/* ============================================
+   COMPONENT OVERRIDES
+   ============================================ */
+
+/* Navigation - Clean and elevated */
+.header {
+	background: var(--sl-color-bg-nav);
+	backdrop-filter: blur(12px);
+	-webkit-backdrop-filter: blur(12px);
+	border-bottom: 1px solid var(--sl-color-border);
+	box-shadow: var(--sl-shadow-sm);
+	transition: box-shadow var(--sl-transition-base);
+}
+
+.header:hover {
+	box-shadow: var(--sl-shadow-md);
+}
+
+/* Site title - More prominent */
+.site-title {
+	font-weight: var(--sl-font-weight-semibold);
+	font-size: var(--sl-text-lg);
+	letter-spacing: -0.01em;
+}
+
+/* Sidebar - Refined spacing */
+.sidebar {
+	background: var(--sl-color-bg-sidebar);
+	border-right: 1px solid var(--sl-color-border);
+	padding: var(--sl-spacing-xl) var(--sl-spacing-lg);
+}
+
+/* Main content - Generous spacing */
+.main-frame {
+	padding: var(--sl-spacing-2xl) var(--sl-spacing-xl);
+}
+
+/* Cards - Subtle elevation */
+.sl-card,
+.card {
+	background: var(--sl-color-bg);
+	border: 1px solid var(--sl-color-border);
+	border-radius: var(--sl-border-radius-lg);
+	padding: var(--sl-spacing-xl);
+	transition: all var(--sl-transition-base);
+	box-shadow: var(--sl-shadow-sm);
+}
+
+.sl-card:hover,
+.card:hover {
+	box-shadow: var(--sl-shadow-md);
+	border-color: var(--sl-color-accent);
+	transform: translateY(-2px);
+}
+
+/* Buttons - Modern and clean */
+.sl-link-button,
+button,
+.button {
+	font-weight: var(--sl-font-weight-medium);
+	padding: var(--sl-spacing-sm) var(--sl-spacing-lg);
+	border-radius: var(--sl-border-radius-md);
+	background: var(--sl-color-accent);
+	color: var(--sl-color-white);
+	border: none;
+	transition: all var(--sl-transition-fast);
+	cursor: pointer;
+	box-shadow: var(--sl-shadow-sm);
+}
+
+.sl-link-button:hover,
+button:hover,
+.button:hover {
+	background: var(--sl-color-accent-high);
+	box-shadow: var(--sl-shadow-md);
+	transform: translateY(-1px);
+}
+
+/* Code blocks - Premium styling */
+pre {
+	border-radius: var(--sl-border-radius-lg);
+	border: 1px solid var(--sl-color-border);
+	box-shadow: var(--sl-shadow-sm);
+	padding: var(--sl-spacing-lg);
+	margin: var(--sl-spacing-xl) 0;
+	overflow-x: auto;
+}
+
+/* Blog post cards - Enhanced presentation */
+article {
+	transition: transform var(--sl-transition-base);
+}
+
+article:hover {
+	transform: translateX(4px);
+}
+
+/* Search - Refined styling */
+.search-input {
+	border: 1px solid var(--sl-color-border);
+	border-radius: var(--sl-border-radius-md);
+	padding: var(--sl-spacing-sm) var(--sl-spacing-md);
+	background: var(--sl-color-bg);
+	transition: all var(--sl-transition-fast);
+}
+
+.search-input:focus {
+	outline: none;
+	border-color: var(--sl-color-accent);
+	box-shadow: 0 0 0 3px var(--sl-color-accent-low);
+}
+
+/* Table of Contents - Clean hierarchy */
+.right-sidebar {
+	padding: var(--sl-spacing-xl);
+}
+
+.right-sidebar nav a {
+	padding: var(--sl-spacing-xs) 0;
+	display: block;
+	transition: color var(--sl-transition-fast);
+}
+
+/* Micro-interactions - Subtle feedback */
+.sl-nav-link:hover,
+.sidebar-content a:hover {
+	color: var(--sl-color-accent-high);
+	padding-left: var(--sl-spacing-xs);
+	transition: all var(--sl-transition-fast);
+}
+
+/* Hero section - Elegant presentation */
+.hero {
+	padding: var(--sl-spacing-4xl) 0;
+}
+
+.hero h1 {
+	font-size: var(--sl-text-5xl);
+	margin-bottom: var(--sl-spacing-lg);
+}
+
+.hero .tagline {
+	font-size: var(--sl-text-xl);
+	color: var(--sl-color-gray-5);
+	line-height: var(--sl-line-height-body);
+	max-width: 60ch;
+}
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+
+@media (max-width: 72rem) {
+	:root {
+		--sl-text-5xl: 2.5rem;
+		--sl-text-4xl: 2rem;
+		--sl-text-3xl: 1.75rem;
+	}
+	
+	.main-frame {
+		padding: var(--sl-spacing-xl) var(--sl-spacing-md);
+	}
+}
+
+@media (max-width: 50rem) {
+	:root {
+		--sl-text-5xl: 2rem;
+		--sl-text-4xl: 1.75rem;
+		--sl-text-3xl: 1.5rem;
+		--sl-spacing-4xl: 3rem;
+		--sl-spacing-3xl: 2rem;
+	}
+	
+	.hero {
+		padding: var(--sl-spacing-2xl) 0;
+	}
+	
+	h1 {
+		font-size: var(--sl-text-3xl);
+	}
+}
+
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
 
 .comment-box-center {}
 .equation-inline {}
 .equation-box-center {}
 .equation-cell {}
 .eq-cell {}
+
+@theme {
+	/*
+	Configure your Tailwind theme that will be used by Starlight.
+	https://starlight.astro.build/guides/css-and-tailwind/#styling-starlight-with-tailwind
+	*/
+}
