@@ -17,7 +17,17 @@ https://tailwindcss.com/docs/adding-custom-styles#using-custom-css
 */
 
 .comment-box-center {}
+
 .equation-inline {}
-.equation-box-center {}
+
+/* Prevent equations from overlapping with sidebar by enabling horizontal scroll */
+.equation-box-center {
+	max-width: 100%;
+	overflow-x: auto;
+	overflow-y: hidden;
+	/* Add some padding for better scroll experience */
+	padding: 0.5rem 0;
+}
+
 .equation-cell {}
 .eq-cell {}
