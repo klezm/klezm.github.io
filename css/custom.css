@@ -1,0 +1,72 @@
+@tailwind base;
+/* @tailwind components; */
+/* @tailwind utilities; */
+
+/* My Styles */
+
+.my-toc {
+  /* @apply my-box bg-orange-700 bg-opacity-20 */
+  /* @apply rounded-md bg-sky-800 bg-opacity-20 border-2 border-slate-800 */
+  /* https://flowbite.com/docs/components/card */
+  /* @apply max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 */
+  @apply rounded-md border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800;
+}
+
+.my-box {
+  @apply flex w-fit items-center space-x-5 rounded-md px-5;
+}
+.my-center {
+  @apply w-fit justify-self-center;
+}
+.my-box-center {
+  @apply my-box my-center;
+}
+.comment-box-center {
+  /* @apply bg-[#1da1f2]; */
+  /* @apply box-decoration-clone bg-gray-300 sm:container sm:mx-auto mx-10; */
+  /* @apply box-border h-32 w-32 p-4 border-4 flex; */
+  /* @apply flex self-center items-center justify-evenly; */
+  /* @apply flex items-center space-x-5 bg-black bg-opacity-20 border-spacing-10 box-border h-32 w-32 p-10 border-10; */
+  /* @apply flex items-center space-x-5 bg-black bg-opacity-20 box-content border-x-8 border-transparent mx-10; */
+  /* @apply flex items-center space-x-5 bg-slate-500 bg-opacity-20 mx-10 px-5 rounded-md w-fit; */
+  /* @apply mx-10 flex w-fit items-center space-x-5 justify-self-center rounded-md bg-slate-500 bg-opacity-20 px-5; */
+  @apply my-box-center mx-10 bg-slate-500 bg-opacity-20;
+}
+
+.equation-bg {
+  /* bg-blue-500 */
+  @apply bg-gray-700 text-primary-content dark:bg-sky-900;
+}
+
+.equation-box {
+  @apply equation-bg card max-w-fit px-2;
+}
+
+.equation-box-center {
+  @apply equation-box justify-self-center;
+}
+
+.equation-inline {
+  @apply equation-bg max-w-fit justify-self-center rounded-md px-2 py-[3px];
+}
+
+@layer base {
+  .equation-cell {
+    @apply equation-bg min-w-fit px-2;
+  }
+}
+
+td:has(> .eq-cell) {
+  @apply equation-cell;
+}
+
+/* Code Highlighting */
+
+/* https://github.com/saadeghi/daisyui/blob/3cc4a18e7ec55d1fda2a722aadb9966afb9a9da9/src/components/styled/typography.css#L19-L42 */
+.prose :where(code):not(:where([class~='not-prose'] *, pre *)) {
+  @apply mx-[2px] rounded-md px-[5px] py-[3px] dark:bg-gray-500 dark:bg-opacity-50;
+}
+
+.table .th .tr {
+  @apply border bg-gray-200 dark:bg-gray-700;
+}

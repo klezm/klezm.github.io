@@ -1,0 +1,48 @@
+// deno.json
+{
+  "compilerOptions": {
+    // "target": "ES6",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "strict": true
+    // "esModuleInterop": true,
+    // "module": "esnext",
+    // "moduleResolution": "node",
+    // "resolveJsonModule": true,
+    // "isolatedModules": true,
+    // "baseUrl": ".",
+    // "paths": {
+    //   "@/components/*": ["components/*"],
+    //   "@/data/*": ["data/*"],
+    //   "@/layouts/*": ["layouts/*"],
+    //   "@/css/*": ["css/*"],
+    //   "contentlayer/generated": ["./.contentlayer/generated"]
+    // },
+    // "allowJs": true,
+    // "checkJs": true,
+    // "jsx": "preserve"
+  },
+  //   "exclude": ["node_modules"],
+  // "exports": {}
+  "imports": {
+    "@/components/": "./components/",
+    "@/data/": "./data/",
+    "@/layouts/": "./layouts/",
+    "@/css/": "./css/",
+    "contentlayer/generated": "./.contentlayer/generated"
+  }
+  // "scopes": {},
+  // "tasks": {
+  //   "fmt": "deno fmt",
+  //   "lint": "deno lint",
+  //   "dev": "",
+  // }
+  // "workspace": [
+  //     "pages",
+  //     "components",
+  //     "layouts",
+  //     "css",
+  //     "data",
+  //     ".contentlayer"
+  // ],
+  // "importMap": "./import_map.json"
+}
