@@ -16,6 +16,98 @@ Add additional Tailwind styles to this file:
 https://tailwindcss.com/docs/adding-custom-styles#using-custom-css
 */
 
+/* Color palette for type unification equations */
+/* Light mode colors - optimized for light backgrounds */
+:root {
+	/* Primary colors for main variables */
+	--color-orangered: #C91048; /* Darker OrangeRed for light mode */
+	--color-orange: #D35A00; /* Darker Orange for light mode */
+	--color-yellowgreen: #4A8A1F; /* Darker YellowGreen for light mode */
+	--color-cyan: #007A7A; /* Darker Cyan for light mode */
+	--color-plum: #8B3A8B; /* Darker Plum for light mode */
+	
+	/* Orange shades - darker for light mode */
+	--color-orange-light: #E67A33; /* Light orange shade for light mode */
+	--color-orange-dark: #B84F00; /* Dark orange shade for light mode */
+	
+	/* YellowGreen shades - darker for light mode */
+	--color-yellowgreen-light: #65A835; /* Light yellowgreen shade for light mode */
+	--color-yellowgreen-dark: #3D7018; /* Dark yellowgreen shade for light mode */
+	
+	/* Cyan shades - darker for light mode */
+	--color-cyan-light: #009999; /* Light cyan shade for light mode */
+	--color-cyan-dark: #006666; /* Dark cyan shade for light mode */
+}
+
+/* Dark mode colors - optimized for dark backgrounds */
+:root[data-theme='dark'] {
+	/* Primary colors for main variables */
+	--color-orangered: #ED135A;
+	--color-orange: #FF7D2D;
+	--color-yellowgreen: #75B842;
+	--color-cyan: #00C7C7;
+	--color-plum: #DDA0DD;
+	
+	/* Orange shades */
+	--color-orange-light: #F9B58B;
+	--color-orange-dark: #FF7D2D;
+	
+	/* YellowGreen shades */
+	--color-yellowgreen-light: #A0D07B;
+	--color-yellowgreen-dark: #75B842;
+	
+	/* Cyan shades */
+	--color-cyan-light: #7AFFFF;
+	--color-cyan-dark: #00C7C7;
+}
+
+/* Override KaTeX inline color styles for light mode */
+/* KaTeX renders colors using inline styles, so we need to use !important */
+.katex [style*="color:OrangeRed"] {
+	color: var(--color-orangered) !important;
+}
+
+.katex [style*="color:Orange"] {
+	color: var(--color-orange) !important;
+}
+
+.katex [style*="color:YellowGreen"] {
+	color: var(--color-yellowgreen) !important;
+}
+
+.katex [style*="color:Cyan"] {
+	color: var(--color-cyan) !important;
+}
+
+.katex [style*="color:Plum"] {
+	color: var(--color-plum) !important;
+}
+
+/* Override hex color shades used in equations */
+.katex [style*="color:#f9b58b"] {
+	color: var(--color-orange-light) !important;
+}
+
+.katex [style*="color:#ff7d2d"] {
+	color: var(--color-orange-dark) !important;
+}
+
+.katex [style*="color:#a0d07b"] {
+	color: var(--color-yellowgreen-light) !important;
+}
+
+.katex [style*="color:#75b842"] {
+	color: var(--color-yellowgreen-dark) !important;
+}
+
+.katex [style*="color:#7affff"] {
+	color: var(--color-cyan-light) !important;
+}
+
+.katex [style*="color:#00c7c7"] {
+	color: var(--color-cyan-dark) !important;
+}
+
 .comment-box-center {}
 .equation-inline {}
 .equation-box-center {}
