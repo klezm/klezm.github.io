@@ -39,7 +39,39 @@
 }
 
 .equation-box {
-  @apply equation-bg card max-w-fit px-2;
+  @apply equation-bg card px-2;
+  /* Enable horizontal scrolling with smooth behavior */
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-width: 100%;
+  scroll-behavior: smooth;
+  
+  /* CSS-only scroll indicators using background gradients */
+  /* Creates shadows that appear/disappear based on scroll position */
+  background:
+    /* Left shadow */
+    linear-gradient(to right, rgb(55, 65, 81) 30%, rgba(55, 65, 81, 0)) 0 0,
+    /* Right shadow */
+    linear-gradient(to left, rgb(55, 65, 81) 30%, rgba(55, 65, 81, 0)) 100% 0,
+    /* Main background color */
+    rgb(55, 65, 81);
+  background-repeat: no-repeat;
+  background-size: 40px 100%, 40px 100%, 100% 100%;
+  background-attachment: local, local, scroll;
+}
+
+/* Dark mode adjustments for equation-box */
+:is(.dark .equation-box) {
+  background:
+    /* Left shadow */
+    linear-gradient(to right, rgb(12, 74, 110) 30%, rgba(12, 74, 110, 0)) 0 0,
+    /* Right shadow */
+    linear-gradient(to left, rgb(12, 74, 110) 30%, rgba(12, 74, 110, 0)) 100% 0,
+    /* Main background color */
+    rgb(12, 74, 110);
+  background-repeat: no-repeat;
+  background-size: 40px 100%, 40px 100%, 100% 100%;
+  background-attachment: local, local, scroll;
 }
 
 .equation-box-center {
@@ -48,11 +80,21 @@
 
 .equation-inline {
   @apply equation-bg max-w-fit justify-self-center rounded-md px-2 py-[3px];
+  /* Make inline equations scrollable if they overflow */
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  display: inline-block;
+  max-width: 100%;
 }
 
 @layer base {
   .equation-cell {
     @apply equation-bg min-w-fit px-2;
+    /* Enable horizontal scrolling for equation cells in tables */
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-behavior: smooth;
   }
 }
 

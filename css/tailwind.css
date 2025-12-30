@@ -40,7 +40,37 @@ input:-webkit-autofill:focus {
 }
 
 .katex-display {
-  overflow: auto hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  max-width: 100%;
+  
+  /* CSS-only scroll indicators using background gradients */
+  /* The shadows appear at edges when content is scrollable */
+  background:
+    /* Shadow on left when scrolled right */
+    linear-gradient(to right, white 30%, rgba(255, 255, 255, 0)) 0 0,
+    /* Shadow on right when scrollable to the right */
+    linear-gradient(to left, white 30%, rgba(255, 255, 255, 0)) 100% 0,
+    /* Fallback white background */
+    white;
+  background-repeat: no-repeat;
+  background-size: 40px 100%, 40px 100%, 100% 100%;
+  background-attachment: local, local, scroll;
+}
+
+/* Dark mode adjustments for katex-display */
+:is(.dark .katex-display) {
+  background:
+    /* Shadow on left when scrolled right */
+    linear-gradient(to right, rgb(31, 41, 55) 30%, rgba(31, 41, 55, 0)) 0 0,
+    /* Shadow on right when scrollable to the right */
+    linear-gradient(to left, rgb(31, 41, 55) 30%, rgba(31, 41, 55, 0)) 100% 0,
+    /* Fallback dark background */
+    rgb(31, 41, 55);
+  background-repeat: no-repeat;
+  background-size: 40px 100%, 40px 100%, 100% 100%;
+  background-attachment: local, local, scroll;
 }
 
 .content-header-link {
