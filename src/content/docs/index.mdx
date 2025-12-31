@@ -3,20 +3,145 @@ title: klezm's blog
 description: Welcome to my personal blog! I'm a computer science student writing about my experience.
 template: splash
 hero: {}
+hide_title: true
 ---
 
-import { Card, LinkCard } from '@astrojs/starlight/components';
 import { getCollection } from 'astro:content';
+import BlogCard from '../../components/BlogCard.astro';
 
 export const blogPosts = (await getCollection('docs', ({ id }) => id.startsWith('blog/')))
   .sort((a, b) => new Date(b.data.date).valueOf() - new Date(a.data.date).valueOf());
 
-## Posts
+<div class="min-h-[60vh] flex flex-col justify-center items-center text-center px-4 py-16 -mt-8">
+	{/* Decorative elements */}
+	<div class="absolute inset-0 overflow-hidden pointer-events-none">
+		<div class="absolute top-20 left-10 w-72 h-72 bg-[var(--sl-color-accent)] rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-float"></div>
+		<div class="absolute top-40 right-10 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-float" style="animation-delay: 1s;"></div>
+		<div class="absolute bottom-20 left-1/3 w-72 h-72 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-float" style="animation-delay: 2s;"></div>
+	</div>
 
-{blogPosts.map((post) => (
-    <Card title={post.data.title}>
-        {post.data.excerpt ?? ''}
-        <br/>
-        <a href={`/${post.id}/`} class="no-underline">Read more →</a>
-    </Card>
-))}
+	{/* Hero content */}
+	<div class="relative z-10 max-w-4xl mx-auto">
+		{/* Avatar/Icon */}
+		<div class="mb-8 animate-fade-in-up">
+			<div class="w-24 h-24 mx-auto rounded-full bg-gradient-to-br from-[var(--sl-color-accent)] via-purple-500 to-pink-500 p-1 animate-pulse-glow">
+				<div class="w-full h-full rounded-full bg-[var(--sl-color-bg)] flex items-center justify-center">
+					<span class="text-4xl">👨‍💻</span>
+				</div>
+			</div>
+		</div>
+
+		{/* Title */}
+		<h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-6 animate-fade-in-up stagger-1 bg-gradient-to-r from-[var(--sl-color-white)] via-[var(--sl-color-accent-high)] to-[var(--sl-color-white)] bg-clip-text text-transparent animate-gradient">
+			Welcome to klezm's blog
+		</h1>
+
+		{/* Subtitle */}
+		<p class="text-lg sm:text-xl text-[var(--sl-color-gray-2)] mb-8 max-w-2xl mx-auto animate-fade-in-up stagger-2 leading-relaxed">
+			A personal space where I share my journey through computer science, programming insights, and tech experiences.
+		</p>
+
+		{/* CTA Buttons */}
+		<div class="flex flex-wrap gap-4 justify-center animate-fade-in-up stagger-3">
+			<a
+				href="/blog/"
+				class="inline-flex items-center px-6 py-3 rounded-full bg-[var(--sl-color-accent)] text-white font-semibold hover:opacity-90 transition-all hover:scale-105 shadow-lg hover:shadow-xl no-underline"
+			>
+				<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+				</svg>
+				Browse All Posts
+			</a>
+			<a
+				href="https://github.com/klezm"
+				target="_blank"
+				rel="noopener noreferrer"
+				class="inline-flex items-center px-6 py-3 rounded-full border-2 border-[var(--sl-color-gray-4)] text-[var(--sl-color-white)] font-semibold hover:border-[var(--sl-color-accent)] hover:text-[var(--sl-color-accent)] transition-all hover:scale-105 no-underline"
+			>
+				<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
+					<path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+				</svg>
+				GitHub Profile
+			</a>
+		</div>
+	</div>
+</div>
+
+{/* Stats section */}
+<div class="max-w-4xl mx-auto px-4 py-8">
+	<div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+		<div class="glass rounded-xl p-4 animate-fade-in-up stagger-1">
+			<div class="text-3xl font-bold text-[var(--sl-color-accent)]">{blogPosts.length}</div>
+			<div class="text-sm text-[var(--sl-color-gray-2)]">Blog Posts</div>
+		</div>
+		<div class="glass rounded-xl p-4 animate-fade-in-up stagger-2">
+			<div class="text-3xl font-bold text-[var(--sl-color-accent)]">∞</div>
+			<div class="text-sm text-[var(--sl-color-gray-2)]">Ideas</div>
+		</div>
+		<div class="glass rounded-xl p-4 animate-fade-in-up stagger-3">
+			<div class="text-3xl font-bold text-[var(--sl-color-accent)]">🎓</div>
+			<div class="text-sm text-[var(--sl-color-gray-2)]">CS Student</div>
+		</div>
+		<div class="glass rounded-xl p-4 animate-fade-in-up stagger-4">
+			<div class="text-3xl font-bold text-[var(--sl-color-accent)]">💻</div>
+			<div class="text-sm text-[var(--sl-color-gray-2)]">Developer</div>
+		</div>
+	</div>
+</div>
+
+{/* Recent posts section */}
+<section class="max-w-6xl mx-auto px-4 py-12">
+	<div class="text-center mb-12">
+		<h2 class="text-3xl sm:text-4xl font-bold mb-4 text-[var(--sl-color-white)]">
+			Latest Articles
+		</h2>
+		<p class="text-[var(--sl-color-gray-2)] max-w-2xl mx-auto">
+			Dive into my latest thoughts on programming, computer science, and technology.
+		</p>
+	</div>
+
+	<div class="grid gap-6 md:grid-cols-2">
+		{blogPosts.map((post, index) => (
+			<BlogCard
+				title={post.data.title}
+				excerpt={post.data.excerpt}
+				date={new Date(post.data.date)}
+				href={`/${post.id}/`}
+				tags={post.data.tags}
+				index={index}
+			/>
+		))}
+	</div>
+
+	{blogPosts.length > 4 && (
+		<div class="text-center mt-12">
+			<a
+				href="/blog/"
+				class="inline-flex items-center px-8 py-4 rounded-full bg-[var(--sl-color-bg-nav)] border border-[var(--sl-color-gray-5)] text-[var(--sl-color-white)] font-semibold hover:border-[var(--sl-color-accent)] hover:text-[var(--sl-color-accent)] transition-all hover:scale-105 no-underline"
+			>
+				View All Posts
+				<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+				</svg>
+			</a>
+		</div>
+	)}
+</section>
+
+{/* Topics section */}
+<section class="max-w-4xl mx-auto px-4 py-12 mb-8">
+	<div class="text-center mb-8">
+		<h2 class="text-2xl sm:text-3xl font-bold mb-4 text-[var(--sl-color-white)]">
+			Topics I Write About
+		</h2>
+	</div>
+
+	<div class="flex flex-wrap justify-center gap-3">
+		<span class="tag-badge text-base px-4 py-2">🔧 Programming</span>
+		<span class="tag-badge text-base px-4 py-2">📚 Computer Science</span>
+		<span class="tag-badge text-base px-4 py-2">λ Functional Programming</span>
+		<span class="tag-badge text-base px-4 py-2">🦀 Rust</span>
+		<span class="tag-badge text-base px-4 py-2">🎓 Tutorials</span>
+		<span class="tag-badge text-base px-4 py-2">💡 Tips & Tricks</span>
+	</div>
+</section>
