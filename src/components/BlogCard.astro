@@ -1,0 +1,80 @@
+---
+interface Props {
+	title: string;
+	excerpt?: string;
+	date: Date;
+	href: string;
+	tags?: string[];
+	index?: number;
+}
+
+const { title, excerpt, date, href, tags, index = 0 } = Astro.props;
+
+const formattedDate = date.toLocaleDateString('en-US', {
+	year: 'numeric',
+	month: 'long',
+	day: 'numeric',
+});
+---
+
+<article
+	class:list={[
+		'blog-card group relative overflow-hidden rounded-2xl',
+		'bg-[var(--sl-color-bg-nav)] border border-[var(--sl-color-gray-5)]',
+		'opacity-0 animate-fade-in-up',
+		`stagger-${(index % 4) + 1}`
+	]}
+>
+	<!-- Gradient accent line -->
+	<div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[var(--sl-color-accent)] via-purple-500 to-pink-500 opacity-75 group-hover:opacity-100 transition-opacity"></div>
+
+	<div class="p-6 sm:p-8">
+		<!-- Date -->
+		<time
+			datetime={date.toISOString()}
+			class="text-sm text-[var(--sl-color-gray-2)] font-medium mb-3 block"
+		>
+			{formattedDate}
+		</time>
+
+		<!-- Title -->
+		<h3 class="text-xl sm:text-2xl font-bold mb-3 text-[var(--sl-color-white)] group-hover:text-[var(--sl-color-accent-high)] transition-colors leading-tight">
+			<a href={href} class="no-underline hover:no-underline after:absolute after:inset-0">
+				{title}
+			</a>
+		</h3>
+
+		<!-- Excerpt -->
+		{excerpt && (
+			<p class="text-[var(--sl-color-gray-2)] mb-4 line-clamp-3 leading-relaxed">
+				{excerpt}
+			</p>
+		)}
+
+		<!-- Tags -->
+		{tags && tags.length > 0 && (
+			<div class="flex flex-wrap gap-2 mb-4">
+				{tags.map((tag) => (
+					<span class="tag-badge">{tag}</span>
+				))}
+			</div>
+		)}
+
+		<!-- Read more link -->
+		<div class="flex items-center text-[var(--sl-color-accent)] font-medium group-hover:translate-x-1 transition-transform">
+			<span>Read article</span>
+			<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+			</svg>
+		</div>
+	</div>
+</article>
+
+<style>
+	.line-clamp-3 {
+		display: -webkit-box;
+		-webkit-line-clamp: 3;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
+</style>
