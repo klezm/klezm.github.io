@@ -71,6 +71,11 @@
 	--sl-color-accent: #6b46c1;
 	--sl-color-accent-high: #581c87;
 
+	/* Custom theme colors */
+	--sl-color-link-underline: rgba(107, 70, 193, 0.3);
+	--sl-color-tag-bg-dark: rgba(147, 51, 234, 0.2);
+	--sl-color-shadow: rgba(0, 0, 0, 0.08);
+
 	/* Typography */
 	--sl-font: 'Georgia', 'Cambria', 'Times New Roman', serif;
 	--sl-font-system: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -108,6 +113,11 @@
 	--sl-color-accent-low: #3b0764;
 	--sl-color-accent: #c084fc;
 	--sl-color-accent-high: #e9d5ff;
+
+	/* Custom theme colors - dark mode overrides */
+	--sl-color-link-underline: rgba(192, 132, 252, 0.3);
+	--sl-color-tag-bg-dark: rgba(147, 51, 234, 0.2);
+	--sl-color-shadow: rgba(0, 0, 0, 0.25);
 }
 
 /* ================================================================
@@ -219,7 +229,7 @@ nav a:hover {
 .sl-markdown-content a {
 	color: var(--sl-color-text-accent);
 	text-decoration: underline;
-	text-decoration-color: rgba(107, 70, 193, 0.3);
+	text-decoration-color: var(--sl-color-link-underline);
 	text-underline-offset: 3px;
 	transition: text-decoration-color 0.2s ease;
 }
@@ -288,7 +298,7 @@ a[href*="/tags/"]:hover,
 :root[data-theme='dark'] a[href*="/tags/"],
 :root[data-theme='dark'] .tag,
 :root[data-theme='dark'] [class*="tag"] a {
-	background: rgba(147, 51, 234, 0.2);
+	background: var(--sl-color-tag-bg-dark);
 	color: var(--sl-color-accent) !important;
 }
 
@@ -403,8 +413,8 @@ article {
    DARK MODE TRANSITIONS
    ================================================================ */
 
-/* Smooth theme switching */
-* {
+/* Smooth theme switching - apply to specific elements for better performance */
+:where(html, body, header, nav, main, aside, footer, article, section, .sl-markdown-content, starlight-toc) {
 	transition: background-color 0.3s ease, color 0.2s ease, border-color 0.3s ease;
 }
 
@@ -500,7 +510,7 @@ article {
 
 [class*="blog"] article:hover,
 .blog-post-preview:hover {
-	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+	box-shadow: 0 4px 20px var(--sl-color-shadow);
 	transform: translateY(-2px);
 }
 
