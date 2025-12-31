@@ -21,3 +21,107 @@ https://tailwindcss.com/docs/adding-custom-styles#using-custom-css
 .equation-box-center {}
 .equation-cell {}
 .eq-cell {}
+
+/* Footnote Popover Styles */
+.footnote-ref-wrapper {
+	position: relative;
+	display: inline-block;
+}
+
+.footnote-popover {
+	/* Positioning */
+	position: absolute;
+	bottom: calc(100% + 8px);
+	left: 50%;
+	transform: translateX(-50%);
+	z-index: 100;
+
+	/* Content box styling */
+	max-width: min(400px, 90vw);
+	width: max-content;
+	padding: 0.75rem 1rem;
+	background-color: var(--sl-color-bg-nav);
+	border: 1px solid var(--sl-color-hairline);
+	border-radius: 0.5rem;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+	font-size: 0.875rem;
+	line-height: 1.5;
+	text-align: left;
+
+	/* Hidden by default with delay on hide */
+	opacity: 0;
+	visibility: hidden;
+	pointer-events: none;
+	transition: opacity 0.15s ease-in-out 0.1s, visibility 0.15s ease-in-out 0.1s;
+}
+
+/* Arrow/pointer for the popover */
+.footnote-popover::after {
+	content: '';
+	position: absolute;
+	top: 100%;
+	left: 50%;
+	transform: translateX(-50%);
+	border: 8px solid transparent;
+	border-top-color: var(--sl-color-hairline);
+}
+
+.footnote-popover::before {
+	content: '';
+	position: absolute;
+	top: 100%;
+	left: 50%;
+	transform: translateX(-50%);
+	border: 7px solid transparent;
+	border-top-color: var(--sl-color-bg-nav);
+	z-index: 1;
+}
+
+/* Invisible bridge between footnote and popover to prevent closing when moving mouse */
+.footnote-ref-wrapper::after {
+	content: '';
+	position: absolute;
+	bottom: 100%;
+	left: -10px;
+	right: -10px;
+	height: 16px;
+	/* This creates a hover bridge between the trigger and popover */
+}
+
+/* Show popover on hover of wrapper (includes both trigger and popover) */
+.footnote-ref-wrapper:hover .footnote-popover,
+.footnote-ref-wrapper:focus-within .footnote-popover {
+	opacity: 1;
+	visibility: visible;
+	pointer-events: auto;
+	transition-delay: 0s;
+}
+
+/* Style links inside popover */
+.footnote-popover a {
+	color: var(--sl-color-text-accent);
+	text-decoration: underline;
+}
+
+.footnote-popover a:hover {
+	color: var(--sl-color-white);
+}
+
+/* Style paragraphs and lists in popover */
+.footnote-popover p {
+	margin: 0 0 0.5rem 0;
+}
+
+.footnote-popover p:last-child {
+	margin-bottom: 0;
+}
+
+.footnote-popover ul,
+.footnote-popover ol {
+	margin: 0.25rem 0;
+	padding-left: 1.25rem;
+}
+
+.footnote-popover li {
+	margin: 0.125rem 0;
+}
