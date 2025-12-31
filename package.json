@@ -23,6 +23,7 @@
     "starlight-blog": "^0.25.2",
     "starlight-giscus": "^0.8.1",
     "starlight-github-alerts": "^0.1.1",
-    "tailwindcss": "^4.0.7"
+    "tailwindcss": "^4.0.7",
+    "unist-util-visit": "^5.0.0"
   }
 }
