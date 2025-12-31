@@ -3,20 +3,52 @@ title: klezm's blog
 description: Welcome to my personal blog! I'm a computer science student writing about my experience.
 template: splash
 hero: {}
+hide_title: true
 ---
 
-import { Card, LinkCard } from '@astrojs/starlight/components';
 import { getCollection } from 'astro:content';
 
 export const blogPosts = (await getCollection('docs', ({ id }) => id.startsWith('blog/')))
   .sort((a, b) => new Date(b.data.date).valueOf() - new Date(a.data.date).valueOf());
 
-## Posts
+<div class="hero-section">
+  <h1 class="hero-title">klezm's blog</h1>
+  <p class="hero-subtitle">
+    A personal blog about computer science, programming, and tech experiences.
+    Exploring functional programming, type systems, and software development.
+  </p>
+</div>
 
-{blogPosts.map((post) => (
-    <Card title={post.data.title}>
-        {post.data.excerpt ?? ''}
-        <br/>
-        <a href={`/${post.id}/`} class="no-underline">Read more →</a>
-    </Card>
-))}
+<div class="section-header">
+  <h2 class="section-title">Latest Posts</h2>
+  <div class="section-line"></div>
+</div>
+
+<div class="blog-grid">
+  {blogPosts.map((post) => {
+    const date = post.data.date ? new Date(post.data.date).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    }) : '';
+    const tags = post.data.tags || [];
+    return (
+      <article class="blog-card">
+        <div class="blog-card-meta">
+          {date && <span>📅 {date}</span>}
+          {post.data.authors?.length > 0 && <span>👤 {post.data.authors.join(', ')}</span>}
+        </div>
+        <h3 class="blog-card-title">{post.data.title}</h3>
+        {post.data.excerpt && <p class="blog-card-excerpt">{post.data.excerpt}</p>}
+        {tags.length > 0 && (
+          <div class="blog-card-tags">
+            {tags.map((tag) => <span class="blog-card-tag">{tag}</span>)}
+          </div>
+        )}
+        <a href={`/${post.id}/`} class="blog-card-link">
+          Read article <span aria-hidden="true">→</span>
+        </a>
+      </article>
+    );
+  })}
+</div>
