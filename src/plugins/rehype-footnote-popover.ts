@@ -1,9 +1,9 @@
 /**
  * Rehype plugin to add popover functionality to footnote references.
  *
- * This plugin finds footnote references and adds popover elements containing
- * the footnote content. It uses the HTML Popover API for displaying the
- * footnotes on hover/focus.
+ * This plugin finds footnote references and wraps them with popover elements
+ * containing the footnote content. The popovers are shown/hidden using pure
+ * CSS :hover effects (no JavaScript required).
  */
 import type { Root, Element, ElementContent } from 'hast';
 import { visit } from 'unist-util-visit';
