@@ -16,6 +16,9 @@ export default defineConfig({
 		starlight({
 			title: "klezm's blog",
 			description: "Welcome to my personal blog! I'm a computer science student writing about my experience.",
+			components: {
+				ThemeSelect: './src/components/override/ThemeSelect.astro',
+			},
 			plugins: [
 				starlightBlog({
 					title: "klezm's blog",
