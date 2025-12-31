@@ -9,12 +9,165 @@
 	Configure your Tailwind theme that will be used by Starlight.
 	https://starlight.astro.build/guides/css-and-tailwind/#styling-starlight-with-tailwind
 	*/
+	--color-accent-50: #f0f9ff;
+	--color-accent-100: #e0f2fe;
+	--color-accent-200: #bae6fd;
+	--color-accent-300: #7dd3fc;
+	--color-accent-400: #38bdf8;
+	--color-accent-500: #0ea5e9;
+	--color-accent-600: #0284c7;
+	--color-accent-700: #0369a1;
+	--color-accent-800: #075985;
+	--color-accent-900: #0c4a6e;
+	--color-accent-950: #082f49;
 }
 
 /*
 Add additional Tailwind styles to this file:
 https://tailwindcss.com/docs/adding-custom-styles#using-custom-css
 */
+
+/* Modern Blog Card Styles */
+.blog-card {
+	position: relative;
+	padding: 1.5rem;
+	background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+	border: 1px solid rgba(148, 163, 184, 0.2);
+	border-radius: 1rem;
+	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+	overflow: hidden;
+}
+
+.blog-card::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 4px;
+	background: linear-gradient(90deg, var(--sl-color-accent), var(--sl-color-accent-high));
+	opacity: 0;
+	transition: opacity 0.3s ease;
+}
+
+.blog-card:hover {
+	transform: translateY(-4px);
+	box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+	border-color: var(--sl-color-accent);
+}
+
+.blog-card:hover::before {
+	opacity: 1;
+}
+
+[data-theme='light'] .blog-card {
+	background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 250, 252, 0.9) 100%);
+	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme='dark'] .blog-card {
+	background: linear-gradient(135deg, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.6) 100%);
+	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Hero Section */
+.hero-section {
+	text-align: center;
+	padding: 3rem 1rem 2rem;
+	margin-bottom: 2rem;
+}
+
+.hero-title {
+	font-size: 2.5rem;
+	font-weight: 800;
+	background: linear-gradient(135deg, var(--sl-color-accent) 0%, var(--sl-color-accent-high) 100%);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	background-clip: text;
+	margin-bottom: 0.75rem;
+}
+
+.hero-description {
+	font-size: 1.125rem;
+	color: var(--sl-color-gray-2);
+	max-width: 36rem;
+	margin: 0 auto;
+	line-height: 1.75;
+}
+
+/* Blog Meta Styles */
+.blog-meta {
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+	font-size: 0.875rem;
+	color: var(--sl-color-gray-3);
+	margin-top: 0.75rem;
+}
+
+.blog-meta-item {
+	display: flex;
+	align-items: center;
+	gap: 0.375rem;
+}
+
+/* Tag Styles */
+.blog-tag {
+	display: inline-flex;
+	padding: 0.25rem 0.75rem;
+	border-radius: 9999px;
+	font-size: 0.75rem;
+	font-weight: 500;
+	background: rgba(var(--sl-color-accent-raw), 0.1);
+	color: var(--sl-color-accent);
+	transition: all 0.2s ease;
+}
+
+.blog-tag:hover {
+	background: rgba(var(--sl-color-accent-raw), 0.2);
+}
+
+/* Read More Link */
+.read-more-link {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+	font-weight: 600;
+	color: var(--sl-color-accent);
+	transition: gap 0.2s ease;
+}
+
+.read-more-link:hover {
+	gap: 0.75rem;
+}
+
+/* Blog Post Grid */
+.blog-grid {
+	display: grid;
+	gap: 1.5rem;
+}
+
+@media (min-width: 640px) {
+	.blog-grid {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+
+/* Animation keyframes */
+@keyframes fadeInUp {
+	from {
+		opacity: 0;
+		transform: translateY(20px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.animate-fade-in-up {
+	animation: fadeInUp 0.6s ease-out forwards;
+}
 
 .comment-box-center {}
 .equation-inline {}
