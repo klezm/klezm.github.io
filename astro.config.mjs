@@ -55,6 +55,13 @@ export default defineConfig({
 				'./src/styles/global.css',
 				'./src/styles/katex.css',
 			],
+			// Disable default table of contents to allow custom styling
+			tableOfContents: {
+				minHeadingLevel: 2,
+				maxHeadingLevel: 3,
+			},
+			// Simplified pagination
+			pagination: true,
 		}),
 	],
 	markdown: {
