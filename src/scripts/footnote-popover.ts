@@ -4,7 +4,7 @@
 interface PopoverState {
   popover: HTMLDivElement | null;
   currentRef: HTMLAnchorElement | null;
-  hideTimer: NodeJS.Timeout | null;
+  hideTimer: number | null;
   isMouseOverPopover: boolean;
   isMouseOverRef: boolean;
 }
@@ -163,8 +163,8 @@ function initializeFootnotePopovers(): void {
     
     // Prevent default navigation on click - let the popover handle it
     ref.addEventListener('click', (e) => {
-      // Allow default behavior (scroll to footnote)
-      // but keep popover visible
+      // Prevent default link behavior to avoid page jump
+      // Instead, manually scroll to the footnote while keeping popover visible
       e.preventDefault();
       const href = ref.getAttribute('href');
       if (href) {
