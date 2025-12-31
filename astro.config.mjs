@@ -15,9 +15,13 @@ export default defineConfig({
 	integrations: [
 		starlight({
 			title: "klezm's blog",
-			description: "Welcome to my personal blog! I'm a computer science student writing about my experience.",
+			// description: "Welcome to my personal blog! I'm a computer science student writing about my experience.",
+			description: "A personal blog about computer science, programming, and tech experiences.",
 			components: {
 				ThemeSelect: './src/components/override/ThemeSelect.astro',
+				PageTitle: './src/components/override/PageTitle.astro',
+				ContentPanel: './src/components/override/ContentPanel.astro',
+				Hero: './src/components/override/Hero.astro',
 			},
 			plugins: [
 				starlightBlog({
@@ -29,7 +33,8 @@ export default defineConfig({
 					},
 					metrics: {
 						readingTime: true,
-					}
+					},
+					navigation: 'none',
 				}),
 				starlightGiscus({
 					repo: 'klezm/klezm.github.io',

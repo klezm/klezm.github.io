@@ -1,0 +1,34 @@
+---
+import type { Props } from '@astrojs/starlight/props';
+import Default from '@astrojs/starlight/components/ContentPanel.astro';
+
+const { starlightRoute } = Astro.locals;
+const { hide_title, hero } = starlightRoute.entry.data;
+
+// Initialize a counter in Astro.locals to track which ContentPanel we are in.
+// In Starlight's Page.astro, the first ContentPanel contains PageTitle (if no hero).
+if (Astro.locals._cpCount === undefined) {
+	Astro.locals._cpCount = 0;
+}
+const count = Astro.locals._cpCount++;
+
+let shouldHide = false;
+let html = '';
+if (hide_title && !hero && count === 0) {
+	// We are in the first ContentPanel and hide_title is true.
+	// We render the slot to check if it actually contains the PageTitle.
+	html = await Astro.slots.render('default');
+	if (html.includes('id="_top"') || html.includes('hide-page-title')) {
+		shouldHide = true;
+	}
+}
+---
+
+{
+    // Do not render the ContentPanel if hide_title is true and the ContentPanel contains the PageTitle.
+	shouldHide ? null : (
+		<Default {...Astro.props}>
+			{html ? <Fragment set:html={html} /> : <slot />}
+		</Default>
+	)
+}
