@@ -5,16 +5,112 @@
 @import 'tailwindcss/utilities.css' layer(utilities);
 
 @theme {
-	/*
-	Configure your Tailwind theme that will be used by Starlight.
-	https://starlight.astro.build/guides/css-and-tailwind/#styling-starlight-with-tailwind
-	*/
+	/* Modern color palette */
+	--color-accent: #6366f1;
+	--color-accent-dark: #4f46e5;
+	--color-accent-light: #818cf8;
+	
+	/* Gradient colors */
+	--gradient-start: #6366f1;
+	--gradient-end: #8b5cf6;
+	
+	/* Custom spacing */
+	--spacing-card: 2rem;
 }
 
 /*
 Add additional Tailwind styles to this file:
 https://tailwindcss.com/docs/adding-custom-styles#using-custom-css
 */
+
+@layer base {
+	/* Smooth scrolling */
+	html {
+		scroll-behavior: smooth;
+	}
+	
+	/* Better text rendering */
+	body {
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
+	}
+}
+
+@layer components {
+	/* Modern card styling */
+	.modern-card {
+		@apply relative overflow-hidden rounded-xl border border-gray-200 dark:border-gray-800 
+		       bg-white dark:bg-gray-900 shadow-sm hover:shadow-xl 
+		       transition-all duration-300 hover:-translate-y-1;
+	}
+	
+	.modern-card::before {
+		content: '';
+		@apply absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 to-purple-500;
+	}
+	
+	/* Gradient text */
+	.gradient-text {
+		@apply bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent;
+	}
+	
+	/* Modern button */
+	.modern-btn {
+		@apply inline-flex items-center gap-2 px-6 py-3 rounded-lg 
+		       bg-gradient-to-r from-indigo-600 to-purple-600 
+		       text-white font-medium shadow-lg shadow-indigo-500/50 
+		       hover:shadow-xl hover:shadow-indigo-500/60 
+		       transition-all duration-300 hover:scale-105;
+	}
+	
+	/* Blog post metadata */
+	.post-meta {
+		@apply flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400;
+	}
+	
+	/* Enhanced prose styling */
+	.prose-modern {
+		@apply max-w-3xl mx-auto;
+	}
+	
+	.prose-modern h1, .prose-modern h2, .prose-modern h3 {
+		@apply font-bold tracking-tight;
+	}
+	
+	.prose-modern h1 {
+		@apply text-4xl sm:text-5xl mb-6;
+	}
+	
+	.prose-modern h2 {
+		@apply text-3xl sm:text-4xl mt-12 mb-4;
+	}
+	
+	.prose-modern h3 {
+		@apply text-2xl sm:text-3xl mt-8 mb-3;
+	}
+	
+	.prose-modern p {
+		@apply text-lg leading-relaxed mb-6;
+	}
+	
+	.prose-modern a {
+		@apply text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 
+		       dark:hover:text-indigo-300 underline decoration-2 
+		       underline-offset-4 transition-colors;
+	}
+	
+	/* Hero section */
+	.hero-section {
+		@apply relative py-20 px-4 overflow-hidden;
+		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	}
+	
+	.hero-section::before {
+		content: '';
+		@apply absolute inset-0 opacity-10;
+		background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+	}
+}
 
 .comment-box-center {}
 .equation-inline {}
