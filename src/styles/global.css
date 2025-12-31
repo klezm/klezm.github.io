@@ -9,15 +9,566 @@
 	Configure your Tailwind theme that will be used by Starlight.
 	https://starlight.astro.build/guides/css-and-tailwind/#styling-starlight-with-tailwind
 	*/
+
+	/* ================================================================
+	   ELEGANT MINIMALIST THEME
+	   ================================================================ */
+
+	/* Purple/Violet Accent Colors */
+	--color-accent-50: #faf5ff;
+	--color-accent-100: #f3e8ff;
+	--color-accent-200: #e9d5ff;
+	--color-accent-300: #d8b4fe;
+	--color-accent-400: #c084fc;
+	--color-accent-500: #a855f7;
+	--color-accent-600: #9333ea;
+	--color-accent-700: #7c3aed;
+	--color-accent-800: #6b46c1;
+	--color-accent-900: #581c87;
+	--color-accent-950: #3b0764;
+
+	/* Gray scale - warm tones for elegant feel */
+	--color-gray-50: #faf9f7;
+	--color-gray-100: #f5f1e8;
+	--color-gray-200: #e8e4db;
+	--color-gray-300: #d4cfc3;
+	--color-gray-400: #a8a295;
+	--color-gray-500: #7a756a;
+	--color-gray-600: #5c574e;
+	--color-gray-700: #3d3935;
+	--color-gray-800: #262421;
+	--color-gray-900: #1a1816;
+	--color-gray-950: #0f0e0d;
+
+	/* Fonts */
+	--font-sans: 'Georgia', 'Cambria', 'Times New Roman', serif;
+	--font-mono: 'SF Mono', 'Consolas', 'Monaco', monospace;
 }
 
-/*
-Add additional Tailwind styles to this file:
-https://tailwindcss.com/docs/adding-custom-styles#using-custom-css
-*/
+/* ================================================================
+   CUSTOM STARLIGHT OVERRIDES
+   ================================================================ */
 
-.comment-box-center {}
+/* Light Mode - Cream/Beige Background */
+:root {
+	--sl-color-bg: #f5f1e8;
+	--sl-color-bg-nav: #f5f1e8;
+	--sl-color-bg-sidebar: #f5f1e8;
+	--sl-color-bg-inline-code: rgba(107, 70, 193, 0.08);
+	--sl-color-hairline: #d4cfc3;
+	--sl-color-hairline-light: #e8e4db;
+	--sl-color-text: #3d3935;
+	--sl-color-text-accent: #6b46c1;
+	--sl-color-white: #faf9f7;
+	--sl-color-gray-1: #f5f1e8;
+	--sl-color-gray-2: #e8e4db;
+	--sl-color-gray-3: #d4cfc3;
+	--sl-color-gray-4: #a8a295;
+	--sl-color-gray-5: #7a756a;
+	--sl-color-gray-6: #3d3935;
+	--sl-color-black: #1a1816;
+	--sl-color-accent-low: #f3e8ff;
+	--sl-color-accent: #6b46c1;
+	--sl-color-accent-high: #581c87;
+
+	/* Custom theme colors */
+	--sl-color-link-underline: rgba(107, 70, 193, 0.3);
+	--sl-color-tag-bg-dark: rgba(147, 51, 234, 0.2);
+	--sl-color-shadow: rgba(0, 0, 0, 0.08);
+
+	/* Typography */
+	--sl-font: 'Georgia', 'Cambria', 'Times New Roman', serif;
+	--sl-font-system: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+	--sl-font-system-mono: 'SF Mono', 'Consolas', 'Monaco', monospace;
+	--sl-text-h1: 2.5rem;
+	--sl-text-h2: 1.75rem;
+	--sl-text-h3: 1.35rem;
+	--sl-line-height: 1.7;
+	--sl-line-height-headings: 1.2;
+
+	/* Layout */
+	--sl-content-width: 45rem;
+	--sl-sidebar-width: 16rem;
+	--sl-content-pad-x: 2rem;
+}
+
+/* Dark Mode */
+:root[data-theme='dark'] {
+	--sl-color-bg: #1a1816;
+	--sl-color-bg-nav: #1a1816;
+	--sl-color-bg-sidebar: #1a1816;
+	--sl-color-bg-inline-code: rgba(167, 139, 250, 0.15);
+	--sl-color-hairline: #3d3935;
+	--sl-color-hairline-light: #262421;
+	--sl-color-text: #e8e4db;
+	--sl-color-text-accent: #c084fc;
+	--sl-color-white: #faf9f7;
+	--sl-color-gray-1: #262421;
+	--sl-color-gray-2: #3d3935;
+	--sl-color-gray-3: #5c574e;
+	--sl-color-gray-4: #7a756a;
+	--sl-color-gray-5: #a8a295;
+	--sl-color-gray-6: #e8e4db;
+	--sl-color-black: #0f0e0d;
+	--sl-color-accent-low: #3b0764;
+	--sl-color-accent: #c084fc;
+	--sl-color-accent-high: #e9d5ff;
+
+	/* Custom theme colors - dark mode overrides */
+	--sl-color-link-underline: rgba(192, 132, 252, 0.3);
+	--sl-color-tag-bg-dark: rgba(147, 51, 234, 0.2);
+	--sl-color-shadow: rgba(0, 0, 0, 0.25);
+}
+
+/* ================================================================
+   HEADER / NAVIGATION
+   ================================================================ */
+
+/* Clean, minimal header */
+header.header {
+	border-bottom: 1px solid var(--sl-color-hairline-light);
+	background: var(--sl-color-bg);
+}
+
+.site-title {
+	font-family: var(--sl-font);
+	font-weight: 600;
+	font-size: 1.25rem;
+	letter-spacing: -0.02em;
+}
+
+/* Navigation links styling */
+nav a {
+	font-family: var(--sl-font-system);
+	font-size: 0.875rem;
+	font-weight: 500;
+	letter-spacing: 0.02em;
+	text-transform: uppercase;
+	color: var(--sl-color-gray-5);
+	transition: color 0.2s ease;
+}
+
+nav a:hover {
+	color: var(--sl-color-text-accent);
+}
+
+/* ================================================================
+   TYPOGRAPHY & CONTENT
+   ================================================================ */
+
+/* Main content area */
+.sl-markdown-content {
+	font-family: var(--sl-font-system);
+	font-size: 1.05rem;
+	line-height: var(--sl-line-height);
+	color: var(--sl-color-text);
+}
+
+/* Headings */
+.sl-markdown-content h1,
+.sl-markdown-content h2,
+.sl-markdown-content h3,
+.sl-markdown-content h4,
+.sl-markdown-content h5,
+.sl-markdown-content h6 {
+	font-family: var(--sl-font);
+	font-weight: 600;
+	line-height: var(--sl-line-height-headings);
+	color: var(--sl-color-black);
+	margin-top: 2em;
+	margin-bottom: 0.75em;
+}
+
+:root[data-theme='dark'] .sl-markdown-content h1,
+:root[data-theme='dark'] .sl-markdown-content h2,
+:root[data-theme='dark'] .sl-markdown-content h3,
+:root[data-theme='dark'] .sl-markdown-content h4,
+:root[data-theme='dark'] .sl-markdown-content h5,
+:root[data-theme='dark'] .sl-markdown-content h6 {
+	color: var(--sl-color-white);
+}
+
+/* Blog post title (h1) - Large serif */
+.sl-markdown-content h1 {
+	font-size: var(--sl-text-h1);
+	letter-spacing: -0.025em;
+	margin-top: 0;
+	margin-bottom: 1rem;
+}
+
+.sl-markdown-content h2 {
+	font-size: var(--sl-text-h2);
+	letter-spacing: -0.02em;
+	border-bottom: 1px solid var(--sl-color-hairline-light);
+	padding-bottom: 0.5em;
+}
+
+.sl-markdown-content h3 {
+	font-size: var(--sl-text-h3);
+	letter-spacing: -0.015em;
+}
+
+/* Drop cap for first paragraph */
+.sl-markdown-content > p:first-of-type::first-letter {
+	float: left;
+	font-family: var(--sl-font);
+	font-size: 3.5em;
+	line-height: 0.8;
+	padding-right: 0.1em;
+	padding-top: 0.05em;
+	color: var(--sl-color-text-accent);
+	font-weight: 600;
+}
+
+/* Paragraphs */
+.sl-markdown-content p {
+	margin-bottom: 1.25em;
+}
+
+/* Links */
+.sl-markdown-content a {
+	color: var(--sl-color-text-accent);
+	text-decoration: underline;
+	text-decoration-color: var(--sl-color-link-underline);
+	text-underline-offset: 3px;
+	transition: text-decoration-color 0.2s ease;
+}
+
+.sl-markdown-content a:hover {
+	text-decoration-color: var(--sl-color-text-accent);
+}
+
+/* Blockquotes */
+.sl-markdown-content blockquote {
+	border-left: 3px solid var(--sl-color-text-accent);
+	padding-left: 1.5em;
+	margin: 1.5em 0;
+	font-style: italic;
+	color: var(--sl-color-gray-5);
+}
+
+/* Code blocks */
+.sl-markdown-content pre {
+	border-radius: 0.5rem;
+	border: 1px solid var(--sl-color-hairline-light);
+	margin: 1.5em 0;
+}
+
+.sl-markdown-content code:not(pre code) {
+	background: var(--sl-color-bg-inline-code);
+	padding: 0.15em 0.4em;
+	border-radius: 0.25rem;
+	font-size: 0.9em;
+}
+
+/* ================================================================
+   TAG PILLS
+   ================================================================ */
+
+/* Blog tags with purple pill style */
+.sl-markdown-content a[href*="/tags/"],
+a[href*="/tags/"],
+.tag,
+[class*="tag"] a {
+	display: inline-flex;
+	align-items: center;
+	background: var(--sl-color-accent-low);
+	color: var(--sl-color-text-accent) !important;
+	padding: 0.25em 0.75em;
+	border-radius: 9999px;
+	font-family: var(--sl-font-system);
+	font-size: 0.7rem;
+	font-weight: 600;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	text-decoration: none !important;
+	transition: all 0.2s ease;
+	margin: 0.15em;
+}
+
+.sl-markdown-content a[href*="/tags/"]:hover,
+a[href*="/tags/"]:hover,
+.tag:hover,
+[class*="tag"] a:hover {
+	background: var(--sl-color-text-accent);
+	color: var(--sl-color-white) !important;
+}
+
+:root[data-theme='dark'] .sl-markdown-content a[href*="/tags/"],
+:root[data-theme='dark'] a[href*="/tags/"],
+:root[data-theme='dark'] .tag,
+:root[data-theme='dark'] [class*="tag"] a {
+	background: var(--sl-color-tag-bg-dark);
+	color: var(--sl-color-accent) !important;
+}
+
+:root[data-theme='dark'] .sl-markdown-content a[href*="/tags/"]:hover,
+:root[data-theme='dark'] a[href*="/tags/"]:hover,
+:root[data-theme='dark'] .tag:hover,
+:root[data-theme='dark'] [class*="tag"] a:hover {
+	background: var(--sl-color-accent);
+	color: var(--sl-color-black) !important;
+}
+
+/* ================================================================
+   SIDEBAR - "ON THIS PAGE" / TABLE OF CONTENTS
+   ================================================================ */
+
+/* Right sidebar (table of contents) */
+starlight-toc {
+	font-family: var(--sl-font-system);
+}
+
+starlight-toc h2,
+.right-sidebar-panel h2 {
+	font-family: var(--sl-font-system);
+	font-size: 0.7rem;
+	font-weight: 700;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+	color: var(--sl-color-gray-4);
+	margin-bottom: 1rem;
+}
+
+starlight-toc a,
+.right-sidebar-panel a {
+	font-family: var(--sl-font-system);
+	font-size: 0.85rem;
+	color: var(--sl-color-gray-5);
+	text-decoration: none;
+	transition: color 0.2s ease;
+	display: block;
+	padding: 0.35em 0;
+	line-height: 1.4;
+}
+
+starlight-toc a:hover,
+.right-sidebar-panel a:hover {
+	color: var(--sl-color-text-accent);
+}
+
+starlight-toc a[aria-current="true"],
+.right-sidebar-panel a[aria-current="true"] {
+	color: var(--sl-color-text-accent);
+	font-weight: 600;
+}
+
+/* Left sidebar */
+.sidebar-content {
+	font-family: var(--sl-font-system);
+}
+
+.sidebar-content a {
+	font-size: 0.9rem;
+	transition: color 0.2s ease;
+}
+
+.sidebar-content a:hover {
+	color: var(--sl-color-text-accent);
+}
+
+/* ================================================================
+   POST METADATA
+   ================================================================ */
+
+/* Date, reading time, author info */
+.sl-markdown-content time,
+[class*="date"],
+[class*="reading-time"],
+.meta,
+.post-meta {
+	font-family: var(--sl-font-system);
+	font-size: 0.85rem;
+	color: var(--sl-color-gray-4);
+	font-weight: 400;
+}
+
+/* ================================================================
+   LAYOUT & SPACING
+   ================================================================ */
+
+/* Main content wrapper */
+main {
+	padding-top: 2rem;
+	padding-bottom: 4rem;
+}
+
+/* Content area max-width and centering */
+.content-panel {
+	max-width: var(--sl-content-width);
+}
+
+/* Generous spacing around content */
+article {
+	padding: 0 1rem;
+}
+
+@media (min-width: 50rem) {
+	article {
+		padding: 0;
+	}
+}
+
+/* ================================================================
+   DARK MODE TRANSITIONS
+   ================================================================ */
+
+/* Smooth theme switching - apply to specific elements for better performance */
+:where(html, body, header, nav, main, aside, footer, article, section, .sl-markdown-content, starlight-toc) {
+	transition: background-color 0.3s ease, color 0.2s ease, border-color 0.3s ease;
+}
+
+/* ================================================================
+   TABLES
+   ================================================================ */
+
+.sl-markdown-content table {
+	width: 100%;
+	border-collapse: collapse;
+	margin: 1.5em 0;
+	font-family: var(--sl-font-system);
+	font-size: 0.9rem;
+}
+
+.sl-markdown-content th,
+.sl-markdown-content td {
+	padding: 0.75em 1em;
+	text-align: left;
+	border-bottom: 1px solid var(--sl-color-hairline-light);
+}
+
+.sl-markdown-content th {
+	font-weight: 600;
+	color: var(--sl-color-gray-5);
+	text-transform: uppercase;
+	font-size: 0.75rem;
+	letter-spacing: 0.05em;
+}
+
+.sl-markdown-content tbody tr:hover {
+	background: var(--sl-color-accent-low);
+}
+
+/* ================================================================
+   LISTS
+   ================================================================ */
+
+.sl-markdown-content ul,
+.sl-markdown-content ol {
+	margin: 1em 0;
+	padding-left: 1.5em;
+}
+
+.sl-markdown-content li {
+	margin-bottom: 0.5em;
+}
+
+.sl-markdown-content li::marker {
+	color: var(--sl-color-text-accent);
+}
+
+/* ================================================================
+   UTILITY CLASSES (existing)
+   ================================================================ */
+
+.comment-box-center {
+	background: var(--sl-color-gray-1);
+	border: 1px solid var(--sl-color-hairline-light);
+	border-radius: 0.5rem;
+	padding: 1rem 1.25rem;
+	margin: 1.5em 0;
+}
+
 .equation-inline {}
-.equation-box-center {}
+
+.equation-box-center {
+	background: var(--sl-color-gray-1);
+	border: 1px solid var(--sl-color-hairline-light);
+	border-radius: 0.5rem;
+	padding: 1rem 1.25rem;
+	margin: 1em 0;
+	overflow-x: auto;
+}
+
 .equation-cell {}
 .eq-cell {}
+
+/* ================================================================
+   STARLIGHT-BLOG PLUGIN SPECIFIC STYLES
+   ================================================================ */
+
+/* Blog post list cards */
+[class*="blog"] article,
+.blog-post-preview {
+	background: var(--sl-color-white);
+	border: 1px solid var(--sl-color-hairline-light);
+	border-radius: 0.75rem;
+	padding: 1.5rem;
+	margin-bottom: 1.5rem;
+	transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+[class*="blog"] article:hover,
+.blog-post-preview:hover {
+	box-shadow: 0 4px 20px var(--sl-color-shadow);
+	transform: translateY(-2px);
+}
+
+:root[data-theme='dark'] [class*="blog"] article,
+:root[data-theme='dark'] .blog-post-preview {
+	background: var(--sl-color-gray-1);
+}
+
+/* Blog post titles in lists */
+[class*="blog"] article h2 a,
+.blog-post-preview h2 a {
+	font-family: var(--sl-font);
+	color: var(--sl-color-black);
+	text-decoration: none;
+}
+
+[class*="blog"] article h2 a:hover,
+.blog-post-preview h2 a:hover {
+	color: var(--sl-color-text-accent);
+}
+
+:root[data-theme='dark'] [class*="blog"] article h2 a,
+:root[data-theme='dark'] .blog-post-preview h2 a {
+	color: var(--sl-color-white);
+}
+
+/* ================================================================
+   GITHUB ALERTS STYLING
+   ================================================================ */
+
+/* Style GitHub-style alerts to match theme */
+.markdown-alert {
+	border-radius: 0.5rem;
+	margin: 1.5em 0;
+}
+
+/* ================================================================
+   FOOTER
+   ================================================================ */
+
+footer {
+	border-top: 1px solid var(--sl-color-hairline-light);
+	padding-top: 2rem;
+	margin-top: 3rem;
+}
+
+/* ================================================================
+   RESPONSIVE TYPOGRAPHY
+   ================================================================ */
+
+@media (max-width: 50rem) {
+	:root {
+		--sl-text-h1: 2rem;
+		--sl-text-h2: 1.5rem;
+		--sl-text-h3: 1.2rem;
+	}
+
+	.sl-markdown-content > p:first-of-type::first-letter {
+		font-size: 3em;
+	}
+}
