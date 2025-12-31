@@ -1,0 +1,83 @@
+---
+interface Props {
+	title: string;
+	href: string;
+	excerpt?: string;
+	date?: Date;
+	tags?: string[];
+	featured?: boolean;
+}
+
+const { title, href, excerpt, date, tags, featured = false } = Astro.props;
+
+const formattedDate = date ? new Intl.DateTimeFormat('en-US', {
+	year: 'numeric',
+	month: 'short',
+	day: 'numeric'
+}).format(date) : null;
+---
+
+<article class:list={[
+	"group relative overflow-hidden rounded-2xl border bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1",
+	featured 
+		? "border-accent-300 dark:border-accent-600 p-8 col-span-full lg:col-span-2" 
+		: "border-gray-200 dark:border-gray-700 p-6",
+	"hover:border-accent-400 dark:hover:border-accent-500 hover:shadow-xl hover:shadow-accent-500/10"
+]}>
+	<!-- Gradient overlay on hover -->
+	<div class="pointer-events-none absolute inset-0 bg-gradient-to-br from-accent-500/5 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+	
+	<!-- Content -->
+	<div class="relative z-10">
+		<!-- Meta information -->
+		<div class="mb-3 flex flex-wrap items-center gap-3">
+			{formattedDate && (
+				<time class="text-sm text-gray-500 dark:text-gray-400" datetime={date?.toISOString()}>
+					{formattedDate}
+				</time>
+			)}
+			{tags && tags.length > 0 && (
+				<div class="flex flex-wrap gap-2">
+					{tags.slice(0, 3).map((tag) => (
+						<span class="inline-flex items-center rounded-full bg-accent-100 dark:bg-accent-900/50 px-2.5 py-0.5 text-xs font-medium text-accent-700 dark:text-accent-300">
+							{tag}
+						</span>
+					))}
+				</div>
+			)}
+		</div>
+
+		<!-- Title -->
+		<h3 class:list={[
+			"font-semibold text-gray-900 dark:text-white transition-colors group-hover:text-accent-600 dark:group-hover:text-accent-400",
+			featured ? "text-2xl md:text-3xl mb-4" : "text-xl mb-3"
+		]}>
+			<a href={href} class="after:absolute after:inset-0">
+				{title}
+			</a>
+		</h3>
+
+		<!-- Excerpt -->
+		{excerpt && (
+			<p class:list={[
+				"text-gray-600 dark:text-gray-300 leading-relaxed",
+				featured ? "text-base md:text-lg" : "text-sm line-clamp-2"
+			]}>
+				{excerpt}
+			</p>
+		)}
+
+		<!-- Read more link -->
+		<div class="mt-4 flex items-center gap-2 text-accent-600 dark:text-accent-400 font-medium text-sm">
+			<span class="transition-transform group-hover:translate-x-1">Read article</span>
+			<svg class="h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+			</svg>
+		</div>
+	</div>
+
+	<!-- Decorative corner element for featured cards -->
+	{featured && (
+		<div class="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-gradient-to-br from-accent-400/20 to-accent-600/20 blur-2xl"></div>
+	)}
+</article>
