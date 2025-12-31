@@ -3,6 +3,7 @@ title: klezm's blog
 description: Welcome to my personal blog! I'm a computer science student writing about my experience.
 template: splash
 hero: {}
+hide_title: true
 ---
 
 import { Card, LinkCard } from '@astrojs/starlight/components';
@@ -11,12 +12,92 @@ import { getCollection } from 'astro:content';
 export const blogPosts = (await getCollection('docs', ({ id }) => id.startsWith('blog/')))
   .sort((a, b) => new Date(b.data.date).valueOf() - new Date(a.data.date).valueOf());
 
-## Posts
+<div class="hero-section text-white text-center">
+  <div class="max-w-4xl mx-auto">
+    <h1 class="text-5xl sm:text-6xl lg:text-7xl font-bold mb-6 tracking-tight">
+      Welcome to <span class="text-indigo-200">klezm's</span> Blog
+    </h1>
+    <p class="text-xl sm:text-2xl mb-8 text-indigo-100 max-w-2xl mx-auto">
+      A personal blog about computer science, programming, and tech experiences
+    </p>
+    <div class="flex gap-4 justify-center flex-wrap">
+      <a href="/blog/" class="modern-btn">
+        Explore Posts
+      </a>
+      <a href="https://github.com/klezm" target="_blank" rel="noopener noreferrer" 
+         class="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-white/10 backdrop-blur-sm text-white font-medium border-2 border-white/20 hover:bg-white/20 transition-all duration-300">
+        GitHub Profile
+      </a>
+    </div>
+  </div>
+</div>
 
-{blogPosts.map((post) => (
-    <Card title={post.data.title}>
-        {post.data.excerpt ?? ''}
-        <br/>
-        <a href={`/${post.id}/`} class="no-underline">Read more →</a>
-    </Card>
-))}
+<div class="max-w-6xl mx-auto px-4 py-16">
+  <div class="text-center mb-12">
+    <h2 class="text-4xl font-bold mb-4 gradient-text">Latest Posts</h2>
+    <p class="text-lg text-gray-600 dark:text-gray-400">
+      Dive into my latest thoughts and tutorials
+    </p>
+  </div>
+  
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    {blogPosts.map((post) => {
+      const date = new Date(post.data.date);
+      const formattedDate = date.toLocaleDateString('en-US', { 
+        year: 'numeric', 
+        month: 'short', 
+        day: 'numeric' 
+      });
+      
+      return (
+        <article class="modern-card group">
+          <a href={`/${post.id}/`} class="block p-8 no-underline">
+            <div class="mb-4">
+              <h3 class="text-2xl font-bold mb-3 text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                {post.data.title}
+              </h3>
+              <div class="post-meta">
+                <time datetime={post.data.date} class="flex items-center gap-1">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  {formattedDate}
+                </time>
+                {post.data.tags && post.data.tags.length > 0 && (
+                  <span class="flex items-center gap-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                    </svg>
+                    {post.data.tags[0]}
+                  </span>
+                )}
+              </div>
+            </div>
+            
+            {post.data.excerpt && (
+              <p class="text-gray-600 dark:text-gray-400 mb-4 leading-relaxed">
+                {post.data.excerpt}
+              </p>
+            )}
+            
+            <div class="flex items-center text-indigo-600 dark:text-indigo-400 font-medium group-hover:gap-3 gap-2 transition-all">
+              Read more
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </div>
+          </a>
+        </article>
+      );
+    })}
+  </div>
+  
+  <div class="text-center mt-12">
+    <a href="/blog/" class="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-950 dark:to-purple-950 border-2 border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 font-semibold hover:border-indigo-300 dark:hover:border-indigo-700 transition-all duration-300 hover:scale-105">
+      View All Posts
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+      </svg>
+    </a>
+  </div>
+</div>
