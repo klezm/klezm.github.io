@@ -42,7 +42,7 @@ export const blogPosts = (await getCollection('docs', ({ id }) => id.startsWith(
         {post.data.excerpt && <p class="blog-card-excerpt">{post.data.excerpt}</p>}
         {tags.length > 0 && (
           <div class="blog-card-tags">
-            {tags.map((tag) => <span class="blog-card-tag">{tag}</span>)}
+            {tags.map((tag, index) => <span key={index} class="blog-card-tag">{tag}</span>)}
           </div>
         )}
         <a href={`/${post.id}/`} class="blog-card-link">

@@ -244,8 +244,8 @@ pre {
 	color: var(--sl-color-accent);
 }
 
-/* Link hover effects */
-a:not(.blog-card-link):not([class*="sl-"]) {
+/* Link hover effects - content links */
+.sl-markdown-content a {
 	transition: color 0.2s ease;
 }
 
@@ -260,8 +260,32 @@ html {
 	color: var(--sl-color-white);
 }
 
-.comment-box-center {}
-.equation-inline {}
-.equation-box-center {}
-.equation-cell {}
-.eq-cell {}
+/* Equation and comment box styles for blog posts */
+.comment-box-center {
+	background: var(--sl-color-gray-7);
+	border-left: 4px solid var(--sl-color-accent);
+	padding: 1rem 1.5rem;
+	margin: 1.5rem 0;
+	border-radius: 0 0.5rem 0.5rem 0;
+}
+
+.equation-inline {
+	display: inline;
+	white-space: nowrap;
+}
+
+.equation-box-center {
+	display: flex;
+	justify-content: center;
+	margin: 1.5rem 0;
+	padding: 1rem;
+	background: var(--sl-color-gray-7);
+	border-radius: 0.5rem;
+	overflow-x: auto;
+}
+
+.equation-cell,
+.eq-cell {
+	vertical-align: middle;
+	padding: 0.25rem 0.5rem;
+}
