@@ -22,6 +22,7 @@ export default defineConfig({
 				PageTitle: './src/components/override/PageTitle.astro',
 				ContentPanel: './src/components/override/ContentPanel.astro',
 				Hero: './src/components/override/Hero.astro',
+				Head: './src/components/override/Head.astro',
 			},
 			plugins: [
 				starlightBlog({

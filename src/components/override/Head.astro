@@ -1,0 +1,21 @@
+---
+import type { Props } from '@astrojs/starlight/props';
+import StarlightHead from '@astrojs/starlight/components/Head.astro';
+
+import '../../styles/footnote-popover.css';
+
+// Check if we're on a blog post page (not the blog index or tags pages)
+const isBlogPost = Astro.url.pathname.startsWith('/blog/') && 
+	!Astro.url.pathname.match(/^\/blog\/(tags|page)?\/?$/);
+---
+
+<StarlightHead {...Astro.props}><slot /></StarlightHead>
+
+<!-- Footnote popover functionality -->
+<script src="../../scripts/footnote-popover.ts"></script>
+
+{isBlogPost && (
+	<script is:inline>
+		document.documentElement.setAttribute('data-blog-post', '');
+	</script>
+)}

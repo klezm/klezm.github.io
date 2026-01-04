@@ -1,0 +1,113 @@
+---
+import { getCollection } from 'astro:content';
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+import BlogPreview from '../components/BlogPreview.astro';
+
+// Site info from config
+const siteTitle = "klezm's blog";
+const siteDescription = "Welcome to my personal blog! I'm a computer science student writing about my experience.";
+
+// Fetch all blog posts
+const allPosts = await getCollection('docs', ({ id }) => {
+	return id.startsWith('blog/') && !id.endsWith('/index.mdx');
+});
+
+// Sort posts by date (newest first)
+const sortedPosts = allPosts.sort((a, b) => {
+	const dateA = a.data.date ? new Date(a.data.date) : new Date(0);
+	const dateB = b.data.date ? new Date(b.data.date) : new Date(0);
+	return dateB.getTime() - dateA.getTime();
+});
+---
+
+<StarlightPage
+	frontmatter={{
+		title: siteTitle,
+		description: siteDescription,
+		template: 'splash',
+        hero: {}, // An empty object suppresses the default hero
+        // hide_title: true,
+	}}
+	hasSidebar={false}
+>
+	<div class="landing-container">
+		<header class="hero-section">
+			<p class="hero-greeting">Welcome to</p>
+			<h1 class="hero-title">{siteTitle}</h1>
+			<p class="hero-tagline">{siteDescription}</p>
+		</header>
+
+		<section class="posts-section">
+			<div class="posts-list">
+				{sortedPosts.map((post) => (
+					<BlogPreview post={post} />
+				))}
+			</div>
+		</section>
+	</div>
+
+	<style>
+		.landing-container {
+			max-width: 900px;
+			margin: 0 auto;
+			padding: 0 1.5rem;
+		}
+
+		.hero-section {
+			text-align: center;
+			padding: 5rem 0 4rem;
+			margin-bottom: 4rem;
+            grid-template-columns: 1fr;
+            * {
+                text-align: center;
+                align-items: center;
+            }
+		}
+
+		.hero-greeting {
+			font-size: clamp(1rem, 2.5vw, 1.7rem);
+			font-weight: 300;
+            text-transform: uppercase;
+			color: var(--sl-color-gray-3);
+			letter-spacing: 0.15em;
+			margin-bottom: 0.5rem;
+		}
+
+		.hero-title {
+			font-size: clamp(2.5rem, 6vw, 4rem);
+			font-weight: 700;
+			margin: 0 0 1.5rem;
+			line-height: 1.1;
+			letter-spacing: -0.02em;
+            color: var(--sl-color-accent);
+		}
+
+		.hero-tagline {
+			font-size: clamp(1.125rem, 2.5vw, 1.375rem);
+			color: var(--sl-color-gray-2);
+			font-weight: 400;
+			max-width: 600px;
+			margin: 0 auto;
+			line-height: 1.6;
+		}
+
+		.posts-section {
+			padding: 2rem 0 4rem;
+		}
+
+		.posts-list {
+			max-width: 100%;
+		}
+
+		@media (max-width: 768px) {
+			.hero-section {
+				padding: 3rem 0 2rem;
+				margin-bottom: 3rem;
+			}
+
+			.landing-container {
+				padding: 0 1rem;
+			}
+		}
+	</style>
+</StarlightPage>

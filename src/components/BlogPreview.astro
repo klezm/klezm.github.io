@@ -1,0 +1,227 @@
+---
+import { Image, type ImageMetadata } from 'astro:assets';
+import { Badge } from '@astrojs/starlight/components';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+	post: CollectionEntry<'docs'>;
+}
+
+const { post } = Astro.props;
+
+const excerpt = post.data.excerpt || post.data.description || '';
+const postDate = post.data.date;
+// Handle different image formats - hero.image or starlight-blog cover field
+let coverImage: ImageMetadata | string | null = null;
+let coverAlt = post.data.title;
+
+if (post.data.hero && typeof post.data.hero === 'object' && 'image' in post.data.hero) {
+	const heroImage = post.data.hero.image;
+	if (heroImage && typeof heroImage === 'object' && 'src' in heroImage) {
+		coverImage = heroImage.src as string;
+	}
+} else if (post.data.cover && typeof post.data.cover === 'object') {
+	// starlight-blog cover format: { alt: string, image: ImageMetadata | string }
+	const cover = post.data.cover as { alt?: string; image?: ImageMetadata | string };
+	if (cover.image) {
+		coverImage = cover.image;
+		coverAlt = cover.alt || post.data.title;
+	}
+}
+const postUrl = `/${post.id.replace(/\.mdx?$/, '')}/`;
+
+// Format date helper
+function formatDate(date: Date): string {
+	return new Intl.DateTimeFormat('en-US', {
+		year: 'numeric',
+		month: 'long',
+		day: 'numeric',
+	}).format(date);
+}
+---
+
+<article class="blog-preview">
+	<a href={postUrl} class="preview-link">
+		{coverImage && (
+			<div class="preview-image-wrapper">
+				<Image
+					src={coverImage}
+					alt={coverAlt}
+					class="preview-image"
+					width={1200}
+					height={600}
+					loading="lazy"
+				/>
+			</div>
+		)}
+
+		<div class="preview-content">
+			<div class="preview-meta">
+				{postDate && (
+					<time class="preview-date" datetime={new Date(postDate).toISOString()}>
+						{formatDate(new Date(postDate))}
+					</time>
+				)}
+				{post.data.tags && post.data.tags.length > 0 && (
+					<div class="preview-tags">
+						{post.data.tags.slice(0, 3).map((tag) => (
+							<Badge text={tag} variant="default" size="small" />
+						))}
+					</div>
+				)}
+			</div>
+
+			<h2 class="preview-title">{post.data.title}</h2>
+
+			{excerpt && (
+				<p class="preview-excerpt">{excerpt}</p>
+			)}
+
+			<span class="preview-cta">
+				Read article
+				<svg class="preview-arrow" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<path d="M7.5 5L12.5 10L7.5 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+				</svg>
+			</span>
+		</div>
+	</a>
+</article>
+
+<style>
+	.blog-preview {
+		position: relative;
+		margin-bottom: 4rem;
+		border-bottom: 1px solid var(--sl-color-gray-5);
+		padding-bottom: 4rem;
+	}
+
+	.blog-preview:last-child {
+		border-bottom: none;
+		padding-bottom: 0;
+		margin-bottom: 0;
+	}
+
+	.preview-link {
+		display: block;
+		text-decoration: none;
+		color: inherit;
+		transition: opacity 0.2s ease;
+	}
+
+	.preview-link:hover {
+		opacity: 0.95;
+	}
+
+	.preview-image-wrapper {
+		position: relative;
+		width: 100%;
+		margin-bottom: 2rem;
+		border-radius: 12px;
+		overflow: hidden;
+		aspect-ratio: 2 / 1;
+		background: var(--sl-color-gray-6);
+	}
+
+	.preview-image {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+	}
+
+	.preview-link:hover .preview-image {
+		transform: scale(1.02);
+	}
+
+	.preview-content {
+		display: flex;
+		flex-direction: column;
+		gap: 1.25rem;
+	}
+
+	.preview-meta {
+		display: flex;
+		align-items: center;
+		gap: 1.5rem;
+		flex-wrap: wrap;
+	}
+
+	.preview-date {
+		font-size: 0.9375rem;
+		color: var(--sl-color-gray-3);
+		font-weight: 500;
+		letter-spacing: 0.01em;
+	}
+
+	.preview-tags {
+		display: flex;
+		gap: 0.5rem;
+		flex-wrap: wrap;
+	}
+
+	.preview-title {
+		font-size: clamp(1.75rem, 4vw, 2.5rem);
+		font-weight: 700;
+		margin: 0;
+		line-height: 1.2;
+		letter-spacing: -0.02em;
+		color: var(--sl-color-white);
+		transition: color 0.2s ease;
+	}
+
+	.preview-link:hover .preview-title {
+		color: var(--sl-color-accent);
+	}
+
+	.preview-excerpt {
+		font-size: 1.125rem;
+		line-height: 1.7;
+		color: var(--sl-color-gray-2);
+		margin: 0;
+		max-width: 70ch;
+	}
+
+	.preview-cta {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		color: var(--sl-color-accent);
+		font-weight: 600;
+		font-size: 1rem;
+		transition: all 0.2s ease;
+		letter-spacing: 0.01em;
+	}
+
+	.preview-link:hover .preview-cta {
+		gap: 0.75rem;
+		color: var(--sl-color-accent-high);
+	}
+
+	.preview-arrow {
+		transition: transform 0.2s ease;
+	}
+
+	.preview-link:hover .preview-arrow {
+		transform: translateX(3px);
+	}
+
+	@media (max-width: 768px) {
+		.blog-preview {
+			margin-bottom: 3rem;
+			padding-bottom: 3rem;
+		}
+
+		.preview-image-wrapper {
+			margin-bottom: 1.5rem;
+			aspect-ratio: 16 / 9;
+		}
+
+		.preview-content {
+			gap: 1rem;
+		}
+
+		.preview-excerpt {
+			font-size: 1rem;
+		}
+	}
+</style>
