@@ -16,8 +16,19 @@ Add additional Tailwind styles to this file:
 https://tailwindcss.com/docs/adding-custom-styles#using-custom-css
 */
 
-.comment-box-center {}
-.equation-inline {}
-.equation-box-center {}
-.equation-cell {}
-.eq-cell {}
+/* Prevent content from overlapping with the table of contents sidebar */
+.main-pane {
+	overflow-x: auto;
+}
+
+/* Ensure math blocks with overflow are scrollable */
+.sl-markdown-content .katex-display {
+	overflow-x: auto;
+	overflow-y: hidden;
+}
+
+/* Ensure tables don't overflow into sidebar */
+.sl-markdown-content table {
+	display: block;
+	overflow-x: auto;
+}
