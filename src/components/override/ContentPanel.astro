@@ -28,7 +28,7 @@ if (hide_title && !hero && count === 0) {
     // Do not render the ContentPanel if hide_title is true and the ContentPanel contains the PageTitle.
 	shouldHide ? null : (
 		<Default {...Astro.props}>
-            {starlightRoute.slug.startsWith('blog/') ? (
+            {starlightRoute.slug === 'blog' || starlightRoute.slug.startsWith('blog/') ? (
                 <div class="blog-content-wrapper">
                      {html ? <Fragment set:html={html} /> : <slot />}
                 </div>

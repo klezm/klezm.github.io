@@ -66,6 +66,7 @@ https://tailwindcss.com/docs/adding-custom-styles#using-custom-css
   & > figure,
   & > .comment-box-center,
   & > .equation-box-center,
+  & > .content-card-bleed,
   & > div:has(> table) {
     /* Tables often wrapped in styled divs */
     /* Allow wrapper to span full width */

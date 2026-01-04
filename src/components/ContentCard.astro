@@ -1,0 +1,146 @@
+---
+const {
+  align = 'center',
+  width = 'fit-content',
+  stack = 'vertical',
+  bgColor = 'var(--sl-color-gray-6)',
+  bleed = true,
+  // If stack is horizontal, default prose width to '50ch' (like tables)
+  // Otherwise default to 'none' (let it fill container)
+  proseWidth = stack === 'horizontal' ? '40ch' : 'none',
+  class: className,
+  ...props
+} = Astro.props;
+
+const html = await Astro.slots.render('default');
+
+// Simple robust string extraction for trailing <sub>
+let content = html;
+let caption = '';
+
+const trimmedParams = html.trim();
+if (trimmedParams.endsWith('</sub>')) {
+    // Find the last opening sub tag
+    // We are looking for the last <sub> that pairs with the final </sub>
+    // This is a naive check: finding the last index of "<sub" before the end
+    const lastSubIndex = trimmedParams.lastIndexOf('<sub');
+
+    if (lastSubIndex !== -1) {
+        // Basic check to see if this constitutes the "end" of the string
+        // We compare the length of the string from that point to the end vs the content
+        // But since we know it ends with </sub>, we just need to be careful not to cut off nested subs incorrectly.
+        // For this specific feature (caption at the end), we assume the user puts the sub tag *after* the main content.
+
+        // Let's verify no other content follows it (we already trimmed)
+        // Extract
+        const potentialCaption = trimmedParams.substring(lastSubIndex);
+
+        // Remove the sub tags to get the inner HTML
+        // This regex handles attributes in sub if any, though usually none for simple markdown
+        const match = potentialCaption.match(/^<sub[^>]*>(.*)<\/sub>$/s);
+
+        if (match) {
+            caption = match[1];
+            // The content is everything before the lastSubIndex
+            // We use the original html string but slice based on finding that same substring
+            // to preserve whitespace in the main content if needed, though trimming usually safer for layout.
+            // Let's rely on the trimmed version's index logic but apply to the original if possible,
+            // or just use trimmedParams.
+            content = trimmedParams.substring(0, lastSubIndex);
+        }
+    }
+}
+---
+
+<div
+    class:list={[
+        'content-card-wrapper',
+        { 'content-card-bleed': bleed },
+        className
+    ]}
+    style={`
+        --cc-align: ${align};
+        --cc-width: ${width};
+        --cc-prose-width: ${proseWidth};
+    `}
+    {...props}
+>
+    <div
+        class:list={['content-card', { 'has-caption': !!caption }]}
+        style={`
+            background-color: ${bgColor};
+        `}
+    >
+        <div
+            class="card-content"
+            data-stack={stack}
+        >
+            <Fragment set:html={content} />
+        </div>
+
+        {caption && (
+            <div class="card-caption dark:text-gray-100">
+                <Fragment set:html={caption} />
+            </div>
+        )}
+    </div>
+</div>
+
+<style>
+    .content-card-wrapper {
+        width: 100%;
+        display: flex;
+        justify-content: var(--cc-align, center);
+    }
+
+    .content-card {
+        display: flex;
+        flex-direction: column;
+        width: var(--cc-width, fit-content);
+        max-width: 100%;
+        box-sizing: border-box;
+        border-radius: 0.5rem;
+        border: 1px solid var(--sl-color-gray-5);
+        overflow: hidden; /* Ensures caption bg doesn't overflow corners */
+    }
+
+    .card-content {
+        display: flex;
+        flex-direction: column; /* Mobile first: always vertical */
+        gap: 1rem;
+        padding: 1rem;
+        width: 100%;
+        align-items: center; /* Centers items vertically in horizontal mode */
+    }
+
+    /* Target direct children to ensure they play nice with flex */
+    .card-content :global(> *) {
+        max-width: 100%;
+    }
+
+    /* Desktop styles: apply horizontal stack and prose width constraints if needed */
+    @media (min-width: 40rem) {
+        .card-content[data-stack='horizontal'] {
+            flex-direction: row;
+        }
+
+        /* Constrain prose width ONLY when stacked horizontally on larger screens */
+        .card-content[data-stack='horizontal'] :global(> p),
+        .card-content[data-stack='horizontal'] :global(> ul > li),
+        .card-content[data-stack='horizontal'] :global(> ol > li) {
+            max-width: var(--cc-prose-width, none);
+            width: 100%;
+        }
+    }
+
+    .card-caption {
+        font-size: var(--sl-text-sm);
+        background-color: var(--sl-color-gray-5); /* Distinct background */
+        text-align: center;
+        padding: 0.5rem 1rem;
+        margin-top: 0px;
+        width: 100%;
+    }
+
+    /* Bleed logic handled by global CSS targeting .content-card-bleed */
+</style>
