@@ -11,65 +11,62 @@ import remarkDirective from 'remark-directive';
 
 // https://astro.build/config
 export default defineConfig({
-	site: 'https://klezm.github.io',
-	integrations: [
-		starlight({
-			title: "klezm's blog",
-			// description: "Welcome to my personal blog! I'm a computer science student writing about my experience.",
-			description: "A personal blog about computer science, programming, and tech experiences.",
-			components: {
-				ThemeSelect: './src/components/override/ThemeSelect.astro',
-				PageTitle: './src/components/override/PageTitle.astro',
-				ContentPanel: './src/components/override/ContentPanel.astro',
-				Hero: './src/components/override/Hero.astro',
-			},
-			plugins: [
-				starlightBlog({
-					title: "klezm's blog",
-					authors: {
-						klezm: {
-							name: 'klezm',
-						},
-					},
-					metrics: {
-						readingTime: true,
-					},
-					navigation: 'none',
-				}),
-				starlightGiscus({
-					repo: 'klezm/klezm.github.io',
-					repoId: 'MDEwOlJlcG9zaXRvcnkyOTQwMjgyNDI=',
-					category: 'Blog Comment',
-					categoryId: 'DIC_kwDOEYaD0s4Ck5JR',
-				}),
-				starlightGitHubAlerts(),
-			],
-			social: [
-				{ icon: 'github', label: 'GitHub', href: 'https://github.com/klezm' },
-			],
-			sidebar: [
-				{
-					label: 'Guides',
-					items: [
-						{ label: 'Example Guide', slug: 'guides/example' },
-					],
-				},
-				{
-					label: 'Reference',
-					autogenerate: { directory: 'reference' },
-				},
-			],
-			customCss: [
-				'./src/styles/global.css',
-				'./src/styles/katex.css',
-			],
-		}),
-	],
-	markdown: {
-		remarkPlugins: [remarkMath, remarkDirective],
-		rehypePlugins: [rehypeKatex],
-	},
-	vite: {
-		plugins: [tailwindcss()],
-	},
+  site: 'https://klezm.github.io',
+  integrations: [
+    starlight({
+      title: "klezm's blog",
+      // description: "Welcome to my personal blog! I'm a computer science student writing about my experience.",
+      description:
+        'A personal blog about computer science, programming, and tech experiences.',
+      components: {
+        ThemeSelect: './src/components/override/ThemeSelect.astro',
+        PageTitle: './src/components/override/PageTitle.astro',
+        ContentPanel: './src/components/override/ContentPanel.astro',
+        Hero: './src/components/override/Hero.astro',
+      },
+      plugins: [
+        starlightBlog({
+          title: "klezm's blog",
+          authors: {
+            klezm: {
+              name: 'klezm',
+            },
+          },
+          metrics: {
+            readingTime: true,
+          },
+          navigation: 'none',
+        }),
+        starlightGiscus({
+          repo: 'klezm/klezm.github.io',
+          repoId: 'MDEwOlJlcG9zaXRvcnkyOTQwMjgyNDI=',
+          category: 'Blog Comment',
+          categoryId: 'DIC_kwDOEYaD0s4Ck5JR',
+        }),
+        starlightGitHubAlerts(),
+      ],
+      routeMiddleware: ['./src/middleware/starlight-sidebar.ts'],
+      social: [
+        { icon: 'github', label: 'GitHub', href: 'https://github.com/klezm' },
+      ],
+      sidebar: [
+        {
+          label: 'Guides',
+          items: [{ label: 'Example Guide', slug: 'guides/example' }],
+        },
+        {
+          label: 'Reference',
+          autogenerate: { directory: 'reference' },
+        },
+      ],
+      customCss: ['./src/styles/global.css', './src/styles/katex.css'],
+    }),
+  ],
+  markdown: {
+    remarkPlugins: [remarkMath, remarkDirective],
+    rehypePlugins: [rehypeKatex],
+  },
+  vite: {
+    plugins: [tailwindcss()],
+  },
 });
