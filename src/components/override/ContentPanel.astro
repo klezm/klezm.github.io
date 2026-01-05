@@ -1,5 +1,5 @@
 ---
-import type { Props } from '@astrojs/starlight/props';
+import type { StarlightRouteData as Props } from '@astrojs/starlight/route-data';
 import Default from '@astrojs/starlight/components/ContentPanel.astro';
 
 const { starlightRoute } = Astro.locals;
@@ -28,7 +28,7 @@ if (hide_title && !hero && count === 0) {
     // Do not render the ContentPanel if hide_title is true and the ContentPanel contains the PageTitle.
 	shouldHide ? null : (
 		<Default {...Astro.props}>
-            {starlightRoute.slug === 'blog' || starlightRoute.slug.startsWith('blog/') ? (
+            {starlightRoute.id === 'blog' || starlightRoute.id.startsWith('blog/') ? (
                 <div class="blog-content-wrapper">
                      {html ? <Fragment set:html={html} /> : <slot />}
                 </div>

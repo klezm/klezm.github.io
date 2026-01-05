@@ -39,3 +39,9 @@ description: Key memories
 - **Responsiveness**:
   - **Mobile First**: Default to vertical stacks on mobile; switch to horizontal on larger screens (e.g., via `@media (min-width: 40rem)`).
   - **Prose Width**: Constrain text width in horizontal layouts (e.g., `50ch`) to match common table/prose constraints, but allow full width on mobile/vertical stacks.
+
+## Maintenance & Deprecations
+
+- **Astro/Starlight Deprecations**:
+  - **Props**: `import type { Props } from '@astrojs/starlight/props'` is deprecated. Use `import type { StarlightRouteData as Props } from '@astrojs/starlight/route-data'` instead.
+  - **Slug**: `starlightRoute.slug` is deprecated. Use `starlightRoute.id` instead.
