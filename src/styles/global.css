@@ -4,6 +4,8 @@
 @import 'tailwindcss/theme.css' layer(theme);
 @import 'tailwindcss/utilities.css' layer(utilities);
 
+@plugin "daisyui";
+
 @theme {
   /*
 	Configure your Tailwind theme that will be used by Starlight.
@@ -18,35 +20,30 @@ https://tailwindcss.com/docs/adding-custom-styles#using-custom-css
 
 /* Prevent content from overlapping with the table of contents sidebar */
 .main-pane {
-  overflow-x: auto;
+  @apply overflow-x-auto;
 }
 
 /* Ensure math blocks with overflow are scrollable */
 .sl-markdown-content .katex-display {
-  overflow-x: auto;
-  overflow-y: hidden;
+  @apply overflow-x-auto overflow-y-hidden;
 }
 
 /* Ensure tables don't overflow into sidebar */
 .sl-markdown-content table {
-  display: block;
-  overflow-x: auto;
+  @apply block overflow-x-auto;
 }
 
 /*
   Blog Post Full-Bleed Layout
   Constrains text to readable width while allowing code, tables, and media to span full width.
 */
-/*
-  Blog Post Full-Bleed Layout
-*/
 .blog-content-wrapper .sl-markdown-content {
-  display: grid;
+  @apply grid w-full;
   grid-template-columns: 1fr min(65ch, 100%) 1fr;
 
   /* Default all children to center column */
   & > * {
-    grid-column: 2;
+    @apply col-start-2;
   }
 
   /*
@@ -76,10 +73,7 @@ https://tailwindcss.com/docs/adding-custom-styles#using-custom-css
     justify-self: center; /* Center content if smaller than viewport */
   }
 
-  /*
-       Specific overrides for elements that should "hug" content
-       but are allowed to grow to full width.
-    */
+  /* Elements that hug content but can grow */
   & > .expressive-code,
   & > pre,
   & > .comment-box-center,
@@ -91,10 +85,7 @@ https://tailwindcss.com/docs/adding-custom-styles#using-custom-css
   /* Tables should be a bit wider by default but not full screen width */
   /* Wrapper handles positioning and scroll */
   & > div:has(> table) {
-    width: 100%;
-    max-width: 100%;
-    overflow-x: auto;
-    grid-column: 1 / -1;
+    @apply w-full max-w-full overflow-x-auto col-span-full;
   }
 
   /* Table itself handles sizing and centering */
@@ -105,6 +96,7 @@ https://tailwindcss.com/docs/adding-custom-styles#using-custom-css
     min-width: min(65ch, 100%);
     max-width: 100%;
     margin-inline: auto;
+    /* @apply table w-fit min-w-[min(65ch,100%)] max-w-full mx-auto; */
   }
 
   /*
@@ -114,19 +106,16 @@ https://tailwindcss.com/docs/adding-custom-styles#using-custom-css
     */
   & > .comment-box-center,
   & > .equation-box-center {
-    display: grid;
+    @apply grid;
     grid-template-columns: 1fr min(65ch, 100%) 1fr;
     width: 100%; /* The container itself MUST be full width to hold the grid */
 
     /* Children of the box go back to center */
     & > * {
-      grid-column: 2;
+      @apply col-start-2;
     }
 
-    /*
-           Allow nested code/tables/math in the box to breakout again
-           (Recursive logic)
-        */
+    /* Recursive full-width children */
     & > .expressive-code,
     & > pre,
     & > table,
@@ -137,6 +126,7 @@ https://tailwindcss.com/docs/adding-custom-styles#using-custom-css
       width: auto;
       max-width: 100%;
       justify-self: center; /* Center if smaller than full width */
+      /* @apply col-span-full w-auto max-w-full justify-self-center; */
     }
   }
 }
@@ -146,5 +136,5 @@ https://tailwindcss.com/docs/adding-custom-styles#using-custom-css
    instead of stretching the table indefinitely.
 */
 .blog-content-wrapper .sl-markdown-content table td {
-  max-width: 50ch;
+  @apply max-w-[50ch];
 }

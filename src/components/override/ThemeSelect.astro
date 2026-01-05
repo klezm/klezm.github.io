@@ -7,10 +7,10 @@ import { Icon } from '@astrojs/starlight/components';
 		type="button"
 		aria-label={Astro.locals.t('themeSelect.accessibleLabel')}
 		title={Astro.locals.t('themeSelect.accessibleLabel')}
-		class="theme-toggle"
+		class="theme-toggle group"
 	>
-		<Icon name="sun" class="sun" />
-		<Icon name="moon" class="moon" />
+		<Icon name="sun" class="block dark:group-hover:block dark:hidden group-hover:hidden" />
+		<Icon name="moon" class="hidden dark:group-hover:hidden dark:block group-hover:block" />
 	</button>
 </starlight-theme-select>
 
@@ -20,32 +20,12 @@ import { Icon } from '@astrojs/starlight/components';
 </script>
 
 <style>
-	.theme-toggle {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		border: 0;
-		background: transparent;
-		color: var(--sl-color-gray-2);
-		cursor: pointer;
-		padding: 0.5rem;
-		border-radius: 0.5rem;
-		transition: color 0.2s ease, background-color 0.2s ease;
+	@reference "../../styles/global.css";
+
+    .theme-toggle {
+        @apply btn btn-link btn-md border-none;
+        color: var(--sl-color-gray-2);
 	}
-
-	.theme-toggle:hover {
-		color: var(--sl-color-white);
-		background-color: var(--sl-color-gray-6);
-	}
-
-	.sun { display: none; }
-	.moon { display: block; }
-
-	:global([data-theme='light']) .sun { display: block; }
-	:global([data-theme='light']) .moon { display: none; }
-
-	:global([data-theme='dark']) .sun { display: none; }
-	:global([data-theme='dark']) .moon { display: block; }
 </style>
 
 <script>

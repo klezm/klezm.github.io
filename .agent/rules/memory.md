@@ -54,3 +54,14 @@ description: Key memories
     - Check if `context.locals.starlightRoute.id` starts with `blog/`.
     - Modify `context.locals.starlightRoute.entry.data.giscus` directly.
   - **Configuration**: Ensure the middleware is registered in `astro.config.mjs` *after* any other middleware that might depend on it, or simply in the execution order.
+
+## Tailwind CSS v4 & daisyUI v5
+
+- **Scoped Styles in Frameworks (Astro/Vue/Svelte)**:
+  - When using component-scoped `<style>` blocks with Tailwind v4, you **MUST** include `@reference "/src/styles/global.css";` (adjusted for relative path) at the top of the style block.
+  - This is required for `@apply` to access global theme variables, custom utilities, and plugins (like daisyUI). Without it, the build will fail with "unknown utility class" errors.
+- **daisyUI Integration**:
+  - Register in the global CSS file using `@plugin "daisyui";`.
+- **Styling Strategy**:
+  - **Mix Semantic & Utility**: Use semantic class names (e.g., `.card`) in HTML for readability. apply Tailwind utilities in the CSS block using `@apply`.
+  - **CSS Variables**: Use standard CSS syntax for setting/using CSS variables (e.g., `color: var(--sl-color-gray-2);`) rather than trying to force everything into `@apply`, especially for Starlight theme variables.
