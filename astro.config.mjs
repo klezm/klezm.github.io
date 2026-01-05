@@ -45,7 +45,10 @@ export default defineConfig({
         }),
         starlightGitHubAlerts(),
       ],
-      routeMiddleware: ['./src/middleware/starlight-sidebar.ts'],
+      routeMiddleware: [
+        './src/middleware/starlight-sidebar.ts',
+        './src/middleware/giscus.ts',
+      ],
       social: [
         { icon: 'github', label: 'GitHub', href: 'https://github.com/klezm' },
       ],

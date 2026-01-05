@@ -45,3 +45,12 @@ description: Key memories
 - **Astro/Starlight Deprecations**:
   - **Props**: `import type { Props } from '@astrojs/starlight/props'` is deprecated. Use `import type { StarlightRouteData as Props } from '@astrojs/starlight/route-data'` instead.
   - **Slug**: `starlightRoute.slug` is deprecated. Use `starlightRoute.id` instead.
+
+## Giscus
+
+- **Giscus Integration**:
+  - **Restrict to Blog Posts**: Use Starlight Middleware (`routeMiddleware`) to conditionally enable Giscus.
+  - **Implementation**:
+    - Check if `context.locals.starlightRoute.id` starts with `blog/`.
+    - Modify `context.locals.starlightRoute.entry.data.giscus` directly.
+  - **Configuration**: Ensure the middleware is registered in `astro.config.mjs` *after* any other middleware that might depend on it, or simply in the execution order.

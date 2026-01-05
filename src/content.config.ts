@@ -11,6 +11,7 @@ export const collections = {
         blogSchema(context).extend({
           hide_title: z.boolean().optional(),
           show_sidebar: z.boolean().optional(),
+          giscus: z.boolean().optional(),
         }),
     }),
   }),
