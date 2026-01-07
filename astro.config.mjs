@@ -63,6 +63,10 @@ export default defineConfig({
         },
       ],
       customCss: ['./src/styles/global.css', './src/styles/katex.css'],
+      lastUpdated: true,
+      tableOfContents: {
+        maxHeadingLevel: 6,
+      },
     }),
   ],
   markdown: {

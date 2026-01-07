@@ -138,3 +138,54 @@ https://tailwindcss.com/docs/adding-custom-styles#using-custom-css
 .blog-content-wrapper .sl-markdown-content table td {
   @apply max-w-[50ch];
 }
+
+/* =============================================================================
+   Header Mobile View Overrides
+   ============================================================================= */
+
+/*
+ * Force the right group to be visible on mobile to show the theme toggle
+ * The default Header.astro hides this group with 'sl-hidden md:sl-flex'
+ */
+@media (max-width: 50rem) {
+  .header .right-group {
+    display: flex !important;
+  }
+
+  /* Keep SocialIcons and LanguageSelect hidden on mobile as intended */
+  .header .right-group > .social-icons,
+  .header .right-group > starlight-language-select {
+    display: none !important;
+  }
+}
+
+/* =============================================================================
+   Mobile TOC Bar Fixes
+   ============================================================================= */
+
+/* Fix the broken toggle button design */
+mobile-starlight-toc .toggle {
+  display: flex !important; /* Restore flex layout */
+  align-items: center;
+  gap: 0.5rem;
+  width: auto !important; /* Prevent squashing */
+  height: auto !important;
+}
+
+mobile-starlight-toc nav:has(details:not([open])) {
+  background-color: transparent !important;
+  border: 0px !important;
+}
+
+mobile-starlight-toc summary {
+  border: 0px !important;
+
+  &::before {
+    content: '';
+    @apply flex-grow;
+  }
+}
+
+mobile-starlight-toc .display-current {
+  display: none;
+}
