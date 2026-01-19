@@ -76,7 +76,7 @@ if (trimmedParams.endsWith('</sub>')) {
         <div
             class:list={[
                 'card-content',
-                stack === 'horizontal' && 'sm:flex-row' // Horizontal stack on larger screens
+                stack === 'horizontal' && 'horizontal-stack'
             ]}
             data-stack={stack}
         >
@@ -106,6 +106,17 @@ if (trimmedParams.endsWith('</sub>')) {
     .card-content {
         @apply flex flex-col w-full gap-4 p-4 items-center max-w-full [&>*]:max-w-full;
         --cc-prose-width: v-bind(proseWidth);
+    }
+
+    /* Horizontal stack: text on left, code on right */
+    .card-content.horizontal-stack {
+        @apply flex flex-col items-start;
+    }
+
+    @media (min-width: 40rem) {
+        .card-content.horizontal-stack {
+            @apply flex-row items-center justify-between gap-8;
+        }
     }
 
     .card-caption {

@@ -42,6 +42,9 @@ description: Key memories
 
 ## Maintenance & Deprecations
 
+- **Page Metadata**:
+  - **Last Updated**: To remove the "Last updated" footer timestamp from specific pages (e.g., homepage), set `lastUpdated: false` in the page frontmatter.
+
 - **Astro/Starlight Deprecations**:
   - **Props**: `import type { Props } from '@astrojs/starlight/props'` is deprecated. Use `import type { StarlightRouteData as Props } from '@astrojs/starlight/route-data'` instead.
   - **Slug**: `starlightRoute.slug` is deprecated. Use `starlightRoute.id` instead.
@@ -65,3 +68,12 @@ description: Key memories
 - **Styling Strategy**:
   - **Mix Semantic & Utility**: Use semantic class names (e.g., `.card`) in HTML for readability. apply Tailwind utilities in the CSS block using `@apply`.
   - **CSS Variables**: Use standard CSS syntax for setting/using CSS variables (e.g., `color: var(--sl-color-gray-2);`) rather than trying to force everything into `@apply`, especially for Starlight theme variables.
+
+## Mobile & Responsive Overrides
+
+- **Component Overrides vs. CSS**:
+  - **Theme Toggle on Mobile**: Instead of shadowing the entire `Header` component (which is fragile), use CSS overrides in `global.css` to force visibility of hidden elements.
+    - Example: `@media (max-width: 50rem) { .header .right-group { display: flex !important; } }`
+- **Tables of Contents (Mobile)**:
+  - **Design Issues**: Be aware that global CSS resets (e.g., from Tailwind/daisyUI) can break Starlight's mobile TOC bar layout (e.g., squashed buttons, transparent backgrounds).
+  - **Fix**: Explicitly restore flex behaviors (`display: flex !important`, `align-items: center`) and constrain icon sizes (`width: 1rem`) in `global.css` targeting `mobile-starlight-toc` elements.
