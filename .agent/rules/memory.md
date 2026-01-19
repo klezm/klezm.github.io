@@ -69,6 +69,40 @@ description: Key memories
   - **Mix Semantic & Utility**: Use semantic class names (e.g., `.card`) in HTML for readability. apply Tailwind utilities in the CSS block using `@apply`.
   - **CSS Variables**: Use standard CSS syntax for setting/using CSS variables (e.g., `color: var(--sl-color-gray-2);`) rather than trying to force everything into `@apply`, especially for Starlight theme variables.
 
+## Design System & UI Improvements
+
+- **Design System Implementation**:
+  - **Theme**: Implemented custom daisyUI themes (light/dark) using `oklch` colors in `global.css`.
+  - **Typography**: Enhanced typography with `text-wrap: balance` for headings and `pretty` for paragraphs.
+  - **Link Styling**: Use `var(--sl-color-text-accent)` for links in dark mode to ensure readability. Explicitly remove underlines from tags (`.tag`) to keep the UI clean.
+- **Component Refinements**:
+  - **ContentCard**:
+    - **Horizontal Stack**: Use `flex-direction: row` with `flex: 1` on children for robust horizontal layouts on desktop, defaulting to column on mobile.
+    - **Dark Mode Background**: Use a distinct background color (e.g., `oklch(34% ...)` in dark mode) to differentiate cards from code blocks.
+    - **Math Interactions**: Disable hover transitions (`pointer-events` or `transition: none`) on cards containing interactive or complex elements like KaTeX/MathJax to prevent jitter.
+  - **BlogPostCard**:
+    - **Icons**: Prefer unicode characters (e.g., `→`) over SVGs for simple indicators to simplify maintenance and color inheritance.
+    - **Readability**: Ensure "Read more" links have sufficient contrast in all themes.
+- **Hero Section**:
+  - **Overlap Prevention**: Be mindful of absolute positioning or z-index stacking in hero elements that might overlap with standard flow content like titles.
+
+## Component Patterns & Interaction
+
+- **Stretched Link Pattern**:
+  - To make an entire card clickable while allowing nested interactive elements (like tags):
+    - **Container**: Set `position: relative` on the card container.
+    - **Main Link**: Use a pseudo-element (`::after`) on the primary link (e.g., title) with `absolute`, `inset-0`, and `z-10` to cover the card.
+    - **Nested Links**: Position nested links (tags, buttons) with `relative` and a higher z-index (`z-20`) to sit above the stretched overlay.
+  - This avoids illegal nested `<a>` tags in HTML while providing a unified click area.
+
+## Tailwind CSS v4 Syntax
+
+- **Arbitrary Values with CSS Variables**:
+  - **Syntax Change**: Prefer the shorthand syntax for using CSS variables in arbitrary values.
+  - **Deprecated**: `border-[var(--my-var)]`
+  - **Recommended**: `border-(--my-var)`
+  - This applies to all utilities (`text-`, `bg-`, etc.) and aligns with Tailwind v4's evolved syntax.
+
 ## Mobile & Responsive Overrides
 
 - **Component Overrides vs. CSS**:

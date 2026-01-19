@@ -3,21 +3,67 @@ title: klezm's blog
 description: Welcome to my personal blog! I'm a computer science student writing about my experience.
 template: splash
 lastUpdated: false
-hero: {}
+hero:
+  title: "Hi, I'm klezm 👋"
+  tagline: A personal blog about computer science, programming, and tech experiences.
 ---
 
-import { Card, LinkCard } from '@astrojs/starlight/components';
 import { getCollection } from 'astro:content';
+import BlogPostCard from '../../components/BlogPostCard.astro';
 
 export const blogPosts = (await getCollection('docs', ({ id }) => id.startsWith('blog/')))
+  .filter((post) => post.data.date) // only include posts with dates
   .sort((a, b) => new Date(b.data.date).valueOf() - new Date(a.data.date).valueOf());
 
-## Posts
+<section class="posts-section">
+  <h2 class="section-title">Recent Posts</h2>
+  <div class="posts-list">
+    {blogPosts.map((post) => (
+      <BlogPostCard
+        title={post.data.title}
+        excerpt={post.data.excerpt}
+        date={post.data.date}
+        href={`/${post.id}/`}
+        cover={post.data.cover?.image}
+        coverAlt={post.data.cover?.alt}
+        tags={post.data.tags}
+      />
+    ))}
+  </div>
+</section>
 
-{blogPosts.map((post) => (
-    <Card title={post.data.title}>
-        {post.data.excerpt ?? ''}
-        <br/>
-        <a href={`/${post.id}/`} class="no-underline">Read more →</a>
-    </Card>
-))}
+<style>{`
+  .posts-section {
+    max-width: 65ch;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+  }
+
+  .section-title {
+    font-size: 1.75rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: var(--sl-color-white);
+  }
+
+  .posts-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  @media (min-width: 40rem) {
+    .posts-section {
+      padding: 3rem 2rem;
+    }
+
+    .section-title {
+      font-size: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .posts-list {
+      gap: 2rem;
+    }
+  }
+`}</style>

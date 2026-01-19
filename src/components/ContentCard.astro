@@ -3,7 +3,7 @@ const {
   align = 'center',
   width = 'fit-content',
   stack = 'vertical',
-  bgColor = 'var(--sl-color-gray-6)',
+  bgColor, // Now optional - will use CSS variable defaults
   bleed = true,
   // If stack is horizontal, default prose width to '50ch' (like tables)
   // Otherwise default to '65ch' (standard readable line length)
@@ -13,6 +13,9 @@ const {
 } = Astro.props;
 
 const html = await Astro.slots.render('default');
+
+// Check if this card contains math/equations
+const containsMath = html.includes('katex') || html.includes('mjx-container') || html.includes('MathJax');
 
 // Simple robust string extraction for trailing <sub>
 let content = html;
@@ -50,6 +53,12 @@ if (trimmedParams.endsWith('</sub>')) {
         }
     }
 }
+
+// Build inline style
+const inlineStyle = [
+    bgColor ? `background-color: ${bgColor};` : '',
+    `width: ${width};`,
+].filter(Boolean).join(' ');
 ---
 
 <div
@@ -66,12 +75,10 @@ if (trimmedParams.endsWith('</sub>')) {
     <div
         class:list={[
             'content-card',
-            caption && 'has-caption'
+            caption && 'has-caption',
+            // containsMath && 'no-hover'
         ]}
-        style={`
-            background-color: ${bgColor};
-            width: ${width};
-        `}
+        style={inlineStyle}
     >
         <div
             class:list={[
@@ -99,8 +106,28 @@ if (trimmedParams.endsWith('</sub>')) {
     }
 
     .content-card {
-        @apply flex flex-col max-w-full overflow-hidden rounded-lg box-border;
+        @apply flex flex-col max-w-full overflow-hidden box-border;
         border: 1px solid var(--sl-color-gray-5);
+        border-radius: var(--radius-box, 0.75rem);
+        transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        /* Default background - distinct from code blocks */
+        background-color: var(--sl-color-gray-6);
+    }
+
+    /* Dark mode: use a distinct shade from code blocks */
+    [data-theme='dark'] .content-card {
+        background-color: oklch(34% 0.02 260);
+    }
+
+    .content-card:hover:not(.no-hover) {
+        /* transform: translateY(-2px); */
+        /* border-color: var(--sl-color-accent); */
+        /* box-shadow: 0 8px 24px -6px oklch(0% 0 0 / 0.1); */
+    }
+
+    /* No hover effects for math/equation cards */
+    .content-card.no-hover {
+        /* transition: none; */
     }
 
     .card-content {
@@ -117,12 +144,28 @@ if (trimmedParams.endsWith('</sub>')) {
         .card-content.horizontal-stack {
             @apply flex-row items-center justify-between gap-8;
         }
+
+        /* Text content on the left */
+        /* .card-content.horizontal-stack :global(> *:not(.expressive-code):not(pre)) {
+            flex: 1;
+            min-width: 0;
+            text-align: left;
+        } */
+
+        /* Code blocks on the right */
+        /* .card-content.horizontal-stack :global(> .expressive-code),
+        .card-content.horizontal-stack :global(> pre) {
+            flex: 1;
+            min-width: 0;
+            max-width: 50%;
+        } */
     }
 
     .card-caption {
-        @apply text-center py-2 px-4 mt-0 w-full dark:text-gray-100;
+        @apply text-center py-2 px-4 mt-0 w-full;
         font-size: var(--sl-text-sm);
         background-color: var(--sl-color-gray-5);
+        color: var(--sl-color-gray-2);
     }
 
     /* Constrain prose width for direct children */
@@ -132,4 +175,13 @@ if (trimmedParams.endsWith('</sub>')) {
         max-width: var(--cc-prose-width, none);
         width: 100%;
     }
+
+    /* Responsive padding */
+    @media (min-width: 40rem) {
+        .card-content {
+            @apply p-6;
+        }
+    }
 </style>
+
+

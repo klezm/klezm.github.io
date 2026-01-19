@@ -4,39 +4,277 @@
 @import 'tailwindcss/theme.css' layer(theme);
 @import 'tailwindcss/utilities.css' layer(utilities);
 
-@plugin "daisyui";
+/* =============================================================================
+   daisyUI Theme Configuration
+   ============================================================================= */
 
-@theme {
-  /*
-	Configure your Tailwind theme that will be used by Starlight.
-	https://starlight.astro.build/guides/css-and-tailwind/#styling-starlight-with-tailwind
-	*/
+@plugin "daisyui" {
+  themes:
+    light --default,
+    dark --prefersdark;
 }
 
-/*
-Add additional Tailwind styles to this file:
-https://tailwindcss.com/docs/adding-custom-styles#using-custom-css
-*/
+/* Custom Light Theme - Modern, vibrant, accessible */
+@plugin "daisyui/theme" {
+  name: 'light';
+  default: true;
+  color-scheme: light;
+
+  /* Base colors - clean white/gray palette */
+  --color-base-100: oklch(99% 0.005 260);
+  --color-base-200: oklch(96% 0.008 260);
+  --color-base-300: oklch(92% 0.012 260);
+  --color-base-content: oklch(25% 0.02 260);
+
+  /* Primary - Deep violet/purple */
+  --color-primary: oklch(50% 0.25 280);
+  --color-primary-content: oklch(98% 0.005 280);
+
+  /* Secondary - Vibrant teal */
+  --color-secondary: oklch(55% 0.18 195);
+  --color-secondary-content: oklch(98% 0.005 195);
+
+  /* Accent - Warm coral/orange */
+  --color-accent: oklch(65% 0.2 35);
+  --color-accent-content: oklch(15% 0.02 35);
+
+  /* Neutral - Slate gray */
+  --color-neutral: oklch(35% 0.02 260);
+  --color-neutral-content: oklch(95% 0.005 260);
+
+  /* Semantic colors */
+  --color-info: oklch(65% 0.18 240);
+  --color-info-content: oklch(98% 0.005 240);
+  --color-success: oklch(60% 0.18 145);
+  --color-success-content: oklch(98% 0.005 145);
+  --color-warning: oklch(80% 0.16 75);
+  --color-warning-content: oklch(20% 0.03 75);
+  --color-error: oklch(60% 0.22 25);
+  --color-error-content: oklch(98% 0.005 25);
+
+  /* Border radius */
+  --radius-selector: 0.5rem;
+  --radius-field: 0.5rem;
+  --radius-box: 0.75rem;
+
+  /* Sizing */
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+
+  /* Effects */
+  --border: 1px;
+  --depth: 1;
+  --noise: 0;
+}
+
+/* Custom Dark Theme - Rich, comfortable for reading */
+@plugin "daisyui/theme" {
+  name: 'dark';
+  prefersdark: true;
+  color-scheme: dark;
+
+  /* Base colors - deep blue-gray */
+  --color-base-100: oklch(20% 0.02 260);
+  --color-base-200: oklch(24% 0.022 260);
+  --color-base-300: oklch(28% 0.025 260);
+  --color-base-content: oklch(92% 0.01 260);
+
+  /* Primary - Lighter violet for dark mode */
+  --color-primary: oklch(70% 0.22 280);
+  --color-primary-content: oklch(15% 0.02 280);
+
+  /* Secondary - Bright teal */
+  --color-secondary: oklch(70% 0.16 195);
+  --color-secondary-content: oklch(15% 0.02 195);
+
+  /* Accent - Warm orange */
+  --color-accent: oklch(75% 0.18 35);
+  --color-accent-content: oklch(15% 0.02 35);
+
+  /* Starlight overrides for better contrast */
+  --sl-color-accent: oklch(70% 0.2 280);
+  --sl-color-text-accent: oklch(75% 0.15 280);
+  --sl-color-accent-low: oklch(35% 0.1 280);
+  --sl-color-accent-high: oklch(85% 0.1 280);
+
+  /* Neutral - Lighter gray for dark mode */
+  --color-neutral: oklch(55% 0.015 260);
+  --color-neutral-content: oklch(95% 0.005 260);
+
+  /* Semantic colors - slightly brighter for dark mode */
+  --color-info: oklch(72% 0.16 240);
+  --color-info-content: oklch(15% 0.02 240);
+  --color-success: oklch(68% 0.16 145);
+  --color-success-content: oklch(15% 0.02 145);
+  --color-warning: oklch(82% 0.14 75);
+  --color-warning-content: oklch(15% 0.02 75);
+  --color-error: oklch(68% 0.2 25);
+  --color-error-content: oklch(98% 0.005 25);
+
+  /* Border radius */
+  --radius-selector: 0.5rem;
+  --radius-field: 0.5rem;
+  --radius-box: 0.75rem;
+
+  /* Sizing */
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+
+  /* Effects */
+  --border: 1px;
+  --depth: 1;
+  --noise: 0;
+}
+
+/* =============================================================================
+   Tailwind Theme Extensions
+   ============================================================================= */
+
+@theme {
+  /* Custom font stack for better readability */
+  --font-sans:
+    'Inter', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
+    'Segoe UI Emoji';
+
+  /* Custom spacing for content */
+  --spacing-content: clamp(1rem, 5vw, 3rem);
+}
+
+/* =============================================================================
+   Global Base Styles
+   ============================================================================= */
+
+/* Smooth theme transitions */
+html {
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+/* Better focus styles */
+:focus-visible {
+  outline: 2px solid oklch(var(--color-primary) / 0.8);
+  outline-offset: 2px;
+}
+
+/* =============================================================================
+   Layout Utilities
+   ============================================================================= */
 
 /* Prevent content from overlapping with the table of contents sidebar */
 .main-pane {
   @apply overflow-x-auto;
 }
 
+/* =============================================================================
+   Typography Enhancements
+   ============================================================================= */
+
+/* Improved heading styles */
+.sl-markdown-content h1,
+.sl-markdown-content h2,
+.sl-markdown-content h3,
+.sl-markdown-content h4,
+.sl-markdown-content h5,
+.sl-markdown-content h6 {
+  @apply font-semibold tracking-tight;
+  text-wrap: balance;
+}
+
+/* Improved paragraph readability */
+.sl-markdown-content p {
+  @apply leading-relaxed;
+  text-wrap: pretty;
+}
+
+/* Enhanced link styling */
+.sl-markdown-content a:not(.card):not([class*='btn']):not(.tag) {
+  color: var(--sl-color-text-accent);
+  text-decoration: underline;
+  text-decoration-color: var(--sl-color-accent-low);
+  text-underline-offset: 0.2em;
+  transition: text-decoration-color 0.2s ease;
+}
+
+.sl-markdown-content a:not(.card):not([class*='btn']):not(.tag):hover {
+  text-decoration-color: var(--sl-color-accent);
+}
+
+/* Tags should not be underlined */
+.sl-markdown-content a.tag,
+.sl-markdown-content .tags a,
+.sl-markdown-content .sl-flex.tags a,
+.sl-markdown-content footer a[href^='/blog/tags/'] {
+  text-decoration: none !important;
+}
+
+/* =============================================================================
+   Math & Code Block Styling
+   ============================================================================= */
+
 /* Ensure math blocks with overflow are scrollable */
 .sl-markdown-content .katex-display {
-  @apply overflow-x-auto overflow-y-hidden;
+  @apply overflow-x-auto overflow-y-hidden py-4;
 }
+
+/* Equation/comment boxes should NOT have hover transitions */
+.content-card-bleed:has(.katex-display),
+.content-card-bleed:has(mjx-container),
+.equation-box-center,
+.comment-box-center {
+  & .content-card {
+    transition: none;
+  }
+  & .content-card:hover {
+    transform: none;
+    box-shadow: none;
+  }
+}
+
+/* Enhanced blockquote styling */
+.sl-markdown-content blockquote {
+  @apply border-l-4 pl-4 my-6 italic;
+  border-color: var(--sl-color-accent);
+  background: oklch(var(--color-base-200) / 0.5);
+  border-radius: 0 var(--radius-box) var(--radius-box) 0;
+  padding: 1rem 1rem 1rem 1.5rem;
+}
+
+/* =============================================================================
+   Table Styling
+   ============================================================================= */
 
 /* Ensure tables don't overflow into sidebar */
 .sl-markdown-content table {
   @apply block overflow-x-auto;
 }
 
-/*
-  Blog Post Full-Bleed Layout
-  Constrains text to readable width while allowing code, tables, and media to span full width.
-*/
+/* Enhanced table styling */
+.sl-markdown-content table {
+  @apply border-collapse rounded-lg overflow-hidden;
+  border: 1px solid var(--sl-color-gray-5);
+}
+
+.sl-markdown-content table th {
+  @apply font-semibold text-left;
+  background: var(--sl-color-gray-6);
+  padding: 0.75rem 1rem;
+}
+
+.sl-markdown-content table td {
+  padding: 0.75rem 1rem;
+  border-top: 1px solid var(--sl-color-gray-6);
+}
+
+.sl-markdown-content table tbody tr:hover {
+  background: oklch(var(--color-base-200) / 0.5);
+}
+
+/* =============================================================================
+   Blog Post Full-Bleed Layout
+   Constrains text to readable width while allowing code, tables, and media to span full width.
+   ============================================================================= */
+
 .blog-content-wrapper .sl-markdown-content {
   @apply grid w-full;
   grid-template-columns: 1fr min(65ch, 100%) 1fr;
@@ -47,10 +285,10 @@ https://tailwindcss.com/docs/adding-custom-styles#using-custom-css
   }
 
   /*
-       Full-width elements
-       These span the entire grid. We center them and let them size intrinsically
-       so they don't force 100% width unless necessary.
-    */
+   * Full-width elements
+   * These span the entire grid. We center them and let them size intrinsically
+   * so they don't force 100% width unless necessary.
+   */
   & > .expressive-code,
   & > pre,
   & > table,
@@ -82,8 +320,7 @@ https://tailwindcss.com/docs/adding-custom-styles#using-custom-css
     min-width: min(65ch, 100%); /* But don't be smaller than text column */
   }
 
-  /* Tables should be a bit wider by default but not full screen width */
-  /* Wrapper handles positioning and scroll */
+  /* Table wrapper handles positioning and scroll */
   & > div:has(> table) {
     @apply w-full max-w-full overflow-x-auto col-span-full;
   }
@@ -100,10 +337,9 @@ https://tailwindcss.com/docs/adding-custom-styles#using-custom-css
   }
 
   /*
-       Handle nested content in .comment-box-center & .equation-box-center
-       We make it a grid so its children can be constrained again.
-       This effectively "passes through" the layout logic.
-    */
+   * Handle nested content in .comment-box-center & .equation-box-center
+   * We make it a grid so its children can be constrained again.
+   */
   & > .comment-box-center,
   & > .equation-box-center {
     @apply grid;
@@ -131,12 +367,84 @@ https://tailwindcss.com/docs/adding-custom-styles#using-custom-css
   }
 }
 
-/*
-   Constrain table cells to ensure prose wraps comfortably
-   instead of stretching the table indefinitely.
-*/
+/* Constrain table cells for comfortable prose */
 .blog-content-wrapper .sl-markdown-content table td {
   @apply max-w-[50ch];
+}
+
+/* =============================================================================
+   Card & Component Enhancements
+   ============================================================================= */
+
+/* Enhanced card hover effects */
+.card {
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 8px 25px -5px oklch(0% 0 0 / 0.1),
+    0 4px 10px -6px oklch(0% 0 0 / 0.1);
+}
+
+/* =============================================================================
+   Homepage Specific Styles
+   ============================================================================= */
+
+/* Blog post card on homepage */
+/* .blog-post-card {
+  @apply card bg-base-200 p-6 rounded-xl;
+  border: 1px solid var(--sl-color-gray-5);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.blog-post-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--sl-color-accent);
+  box-shadow: 0 12px 30px -8px oklch(0% 0 0 / 0.12);
+}
+
+.blog-post-card .card-title {
+  @apply text-xl font-semibold mb-2;
+  color: var(--sl-color-white);
+}
+
+.blog-post-card .card-meta {
+  @apply text-sm mb-3;
+  color: var(--sl-color-gray-3);
+}
+
+.blog-post-card .card-excerpt {
+  @apply leading-relaxed mb-4;
+  color: var(--sl-color-gray-2);
+}
+
+.blog-post-card .card-link {
+  @apply font-medium inline-flex items-center gap-1;
+  color: var(--sl-color-text-accent);
+  transition:
+    gap 0.2s ease,
+    color 0.2s ease;
+}
+
+.blog-post-card:hover .card-link {
+  gap: 0.5rem;
+} */
+
+/* =============================================================================
+   Responsive Adjustments
+   ============================================================================= */
+
+@media (min-width: 40rem) {
+  .blog-post-card {
+    @apply p-8;
+  }
 }
 
 /* =============================================================================

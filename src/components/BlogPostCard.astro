@@ -1,0 +1,111 @@
+---
+/**
+ * BlogPostCard - A modern card component for displaying blog post previews
+ * Used on the homepage to showcase recent posts with a clean, engaging design.
+ *
+ * Features:
+ * - Cover image support with lazy loading
+ * - Date and reading time metadata
+ * - Excerpt display
+ * - Subtle hover animations
+ * - Responsive design (mobile-first)
+ */
+import { Image } from 'astro:assets';
+
+interface Props {
+  title: string;
+  excerpt?: string;
+  date: Date | string;
+  href: string;
+  cover?: ImageMetadata;
+  coverAlt?: string;
+  readingTime?: string;
+  tags?: string[];
+  class?: string;
+}
+
+const {
+  title,
+  excerpt,
+  date,
+  href,
+  cover,
+  coverAlt = '',
+  readingTime,
+  tags = [],
+  class: className,
+} = Astro.props;
+
+// Format the date
+const formattedDate = new Date(date).toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<article class:list={['blog-post-card group relative p-6 rounded-xl bg-base-200 border border-(--sl-color-gray-5) transition-all hover:-translate-y-1 hover:border-(--sl-color-accent) hover:shadow-xl', className]}>
+  {cover && (
+    <div class="card-image overflow-hidden rounded-lg mb-4">
+      <Image
+        src={cover}
+        alt={coverAlt}
+        width={800}
+        height={400}
+        class="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
+        loading="lazy"
+      />
+    </div>
+  )}
+
+  <div class="card-body">
+    <h3 class="card-title text-xl font-semibold mb-2 text-(--sl-color-white)">
+      <a href={href} class="after:absolute after:inset-0 after:z-10 no-underline hover:no-underline">
+        {title}
+      </a>
+    </h3>
+
+    <div class="card-meta text-sm mb-3 text-(--sl-color-gray-3)">
+      <time datetime={new Date(date).toISOString()}>
+        {formattedDate}
+      </time>
+      {readingTime && (
+        <>
+          <span class="mx-2">•</span>
+          <span>{readingTime}</span>
+        </>
+      )}
+    </div>
+
+    {tags.length > 0 && (
+      <div class="card-tags relative z-20 flex flex-wrap gap-2 mb-4">
+        {tags.map((tag) => (
+          <a
+            href={`/blog/tags/${tag}/`}
+            class="badge badge-sm badge-secondary badge-outline hover:bg-secondary hover:text-secondary-content transition-colors no-underline"
+          >
+            {tag}
+          </a>
+        ))}
+      </div>
+    )}
+
+    {excerpt && <p class="card-excerpt leading-relaxed mb-4 text-(--sl-color-gray-2)">{excerpt}</p>}
+
+    <span class="card-link font-medium inline-flex items-center gap-1 text-(--sl-color-text-accent) transition-all group-hover:gap-2">
+      Read more →
+    </span>
+  </div>
+</article>
+<style>
+  @reference "../styles/global.css";
+
+  .blog-post-card {
+    /* Base styles now handled by Tailwind classes for better reactivity with group hover */
+  }
+
+  .blog-post-card a,
+  .blog-post-card .card-tags a {
+    text-decoration: none !important;
+  }
+</style>

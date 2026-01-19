@@ -20,7 +20,7 @@ export default defineConfig({
         'A personal blog about computer science, programming, and tech experiences.',
       components: {
         ThemeSelect: './src/components/override/ThemeSelect.astro',
-        PageTitle: './src/components/override/PageTitle.astro',
+        // PageTitle: './src/components/override/PageTitle.astro',
         ContentPanel: './src/components/override/ContentPanel.astro',
         Hero: './src/components/override/Hero.astro',
       },
@@ -67,6 +67,15 @@ export default defineConfig({
       tableOfContents: {
         maxHeadingLevel: 6,
       },
+      expressiveCode: {
+        // themes: ['github', 'material-palenight'],
+        defaultProps: {
+          // title: 'View Source',
+        },
+        // minSyntaxHighlightingColorContrast: 2.5,
+      },
+      // editLink
+      // markdown
     }),
   ],
   markdown: {
