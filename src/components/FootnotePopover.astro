@@ -1,0 +1,23 @@
+---
+import Popover from './Popover.astro';
+
+interface Props {
+  id: string;
+  referenceId: string;
+  index: number;
+}
+
+const { id, referenceId, index } = Astro.props;
+---
+
+<Popover id={id} triggerText={index.toString()} class="prose">
+  <div class="flex flex-col gap-2">
+    <div class="font-bold flex justify-between items-center text-xs text-base-content/70">
+      <span>Footnote {index}</span>
+      <a href={`#${referenceId}`} class="link link-hover">Jump to source</a>
+    </div>
+    <div class="text-base-content">
+      <slot />
+    </div>
+  </div>
+</Popover>

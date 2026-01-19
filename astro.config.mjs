@@ -8,6 +8,7 @@ import starlightGitHubAlerts from 'starlight-github-alerts';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import remarkDirective from 'remark-directive';
+import { rehypeFootnotePopover } from './src/plugins/rehype-footnote-popover.ts';
 
 // https://astro.build/config
 export default defineConfig({
@@ -71,7 +72,10 @@ export default defineConfig({
   ],
   markdown: {
     remarkPlugins: [remarkMath, remarkDirective],
-    rehypePlugins: [rehypeKatex],
+    rehypePlugins: [
+      rehypeKatex,
+      [rehypeFootnotePopover, { removeFootnotesSection: false }],
+    ],
   },
   vite: {
     plugins: [tailwindcss()],

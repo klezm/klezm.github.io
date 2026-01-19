@@ -1,0 +1,65 @@
+---
+interface Props {
+  /** Unique ID for the popover element. Used for `popovertarget` and `id`. */
+  id: string;
+  /**
+   * Optional text for the trigger button.
+   * If not provided, you should pass a trigger element as a slot named "trigger" (not fully supported by native popovertarget in all contexts without JS, but standard button wrapping works).
+   * For this simple implementation, we assume a button trigger.
+   */
+  triggerText?: string;
+  /**
+   * Optional anchor name. If not provided, one will be generated based on the ID.
+   * Format should probably start with `--`.
+   */
+  anchorName?: string;
+  /** Optional class for the popover content */
+  class?: string;
+  /** Icon to show in the trigger (optional) */
+  icon?: string;
+}
+
+const { id, triggerText, anchorName, class: className = "" } = Astro.props;
+
+// Ensure anchor name starts with --
+const finalAnchorName = anchorName ? anchorName : `--anchor-${id}`;
+---
+
+<button
+  class="btn btn-sm btn-ghost p-1 h-auto min-h-0 font-normal underline decoration-dotted underline-offset-4"
+  popovertarget={id}
+  style={`anchor-name: ${finalAnchorName}`}
+>
+  <slot name="trigger">{triggerText}</slot>
+</button>
+
+<div
+  popover
+  id={id}
+  class:list={[
+    "dropdown-content z-[10] p-4 rounded-box shadow-xl bg-base-100 border border-base-200 w-64 text-sm",
+    className,
+  ]}
+  style={`position-anchor: ${finalAnchorName}; top: anchor(bottom); left: anchor(center); translate: -50% 0; margin-top: 0.5rem;`}
+>
+  <slot />
+</div>
+
+<style>
+  /* Basic Polyfill-like behavior for positioning fallback if anchor positioning isn't supported?
+     Actually, pure CSS anchor positioning is bleeding edge.
+     DaisyUI V5 uses it, but we might need a fallback.
+     For now, we stick to the user's "Modern Best Practice" request.
+  */
+  [popover] {
+    /* Native popover styles */
+    margin: 0;
+    inset: auto; /* Reset default centered behavior */
+  }
+
+  /*
+   DaisyUI V5 might handle some of this, but since we are writing raw HTML
+   we need to ensure the anchor positioning works.
+   The inline styles above cover the basic `top: anchor(bottom)` logic.
+  */
+</style>
