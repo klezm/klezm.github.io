@@ -11,16 +11,20 @@ My feature wish list (also see: [tailwind-nextjs-starter-blog features](https://
 
 - [x] Search ([kbar](https://github.com/timc1/kbar), [Pagefind](https://github.com/Pagefind/pagefind), [pliny](https://github.com/timlrx/pliny))
 - [x] Tags
+  - [ ] Page listing all tags with their posts
+- [ ] Author(s)
+  - [ ] Page listing all authors
 - [x] Dark mode (+ switcher)
 - [x] Math (MathJax / KaTeX)
 - [x] Comments ([giscus](https://github.com/giscus/giscus), Disqus, [pliny](https://github.com/timlrx/pliny))
-- [ ] Analytics (Google/Plausible/Simple/Umami Analytics, Posthog, Microsoft Clarity; see: [pliny](https://github.com/timlrx/pliny))
+- [ ] Analytics (Google/Plausible/Simple/Umami Analytics ([for astro](https://www.npmjs.com/package/@yeskunall/astro-umami)), Posthog, Microsoft Clarity; see: [pliny](https://github.com/timlrx/pliny))
 - [x] TOC (with spying / highlighting active section) ([TocBot](https://github.com/tscanlin/tocbot))
 - [ ] Read time estimation
 - [ ] Citation / Bibliography / Referencing ([rehype-citation (has tooltip)](https://github.com/timlrx/rehype-citation))
   - [ ] With card on mouseover / tooltip / popover
   - [ ] Alternative: Markdown Footnotes (see: [1](https://astro-micro.vercel.app/blog/04-markdown-syntax#footnotes))
 - [ ] Syntax highlighting ([highlight.js](https://github.com/highlightjs/highlight.js), [PrismJS](https://github.com/PrismJS/prism/), [bright](https://github.com/code-hike/bright), [shiki](https://github.com/shikijs/shiki), [shiki-magic-move](https://github.com/shikijs/shiki-magic-move))
+- [ ] RSS
 - [ ] Multiple post templates (1/2 column(s), w(/o) banner/katex/citation, coding/science)
 - [ ] (Headless) CMS ([tinaCMS](https://github.com/tinacms/tinacms), [directus](https://github.com/directus/directus))
 - [ ] Components
@@ -33,6 +37,7 @@ My feature wish list (also see: [tailwind-nextjs-starter-blog features](https://
   - [ ] Show/Edit on GitHub
   - [x] Callout components
   - [ ] Bleed (use 95-100% screen width) (see: [pliny](https://github.com/timlrx/pliny))
+  - [ ] Pagination
 - [ ] Lighthouse score
 - [x] Responsive design (mobile)
 - [ ] Image optimization
