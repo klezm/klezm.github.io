@@ -28,7 +28,12 @@ const formattedDate = date
           {typeof coverImage === 'string' ? (
             <img src={coverImage} alt={cover?.alt ?? ''} loading="lazy" />
           ) : (
-            <Image src={coverImage} alt={cover?.alt ?? ''} widths={[400, 800]} loading="lazy" />
+            <Image
+              src={coverImage}
+              alt={cover?.alt ?? ''}
+              widths={[400, 800]}
+              loading="lazy"
+            />
           )}
         </div>
       )

@@ -59,6 +59,22 @@ https://tailwindcss.com/docs/adding-custom-styles#using-custom-css
 }
 
 /*
+  Align the page title with the prose column below it.
+
+  The title panel is a plain `.sl-container` spanning the full content width,
+  while the full-bleed grid below centres prose in a 65ch column — so without
+  this the title sits alone at the far left edge.
+*/
+.content-panel:has(> .sl-container > #_top) .sl-container {
+  display: grid;
+  grid-template-columns: 1fr min(65ch, 100%) 1fr;
+}
+
+.content-panel:has(> .sl-container > #_top) .sl-container > * {
+  grid-column: 2;
+}
+
+/*
   Blog Post Full-Bleed Layout
   Constrains text to readable width while allowing code, tables, and media to span full width.
 */
@@ -86,8 +102,6 @@ https://tailwindcss.com/docs/adding-custom-styles#using-custom-css
   & > picture,
   & > video,
   & > figure,
-  & > .comment-box-center,
-  & > .equation-box-center,
   & > .content-card-bleed,
   & > div:has(> table) {
     /* Tables often wrapped in styled divs */
@@ -100,9 +114,7 @@ https://tailwindcss.com/docs/adding-custom-styles#using-custom-css
 
   /* Elements that hug content but can grow */
   & > .expressive-code,
-  & > pre,
-  & > .comment-box-center,
-  & > .equation-box-center {
+  & > pre {
     width: auto; /* Don't force 100% width, let it fit content */
     min-width: min(65ch, 100%); /* But don't be smaller than text column */
   }
@@ -121,38 +133,6 @@ https://tailwindcss.com/docs/adding-custom-styles#using-custom-css
     min-width: min(65ch, 100%);
     max-width: 100%;
     margin-inline: auto;
-    /* @apply table w-fit min-w-[min(65ch,100%)] max-w-full mx-auto; */
-  }
-
-  /*
-       Handle nested content in .comment-box-center & .equation-box-center
-       We make it a grid so its children can be constrained again.
-       This effectively "passes through" the layout logic.
-    */
-  & > .comment-box-center,
-  & > .equation-box-center {
-    @apply grid;
-    grid-template-columns: 1fr min(65ch, 100%) 1fr;
-    width: 100%; /* The container itself MUST be full width to hold the grid */
-
-    /* Children of the box go back to center */
-    & > * {
-      @apply col-start-2;
-    }
-
-    /* Recursive full-width children */
-    & > .expressive-code,
-    & > pre,
-    & > table,
-    & > .katex-display,
-    & > .MathJax,
-    & > mjx-container {
-      grid-column: 1 / -1;
-      width: auto;
-      max-width: 100%;
-      justify-self: center; /* Center if smaller than full width */
-      /* @apply col-span-full w-auto max-w-full justify-self-center; */
-    }
   }
 }
 

@@ -5,75 +5,138 @@ description: Key memories
 
 # 🧠 Memories & Best Practices
 
+## Astro 7 / Starlight 0.41
+
+- **Markdown processor**: Astro 7 defaults to **Sätteri** and no longer installs
+  `@astrojs/markdown-remark`. This project needs remark-math + rehype-katex and
+  **no Sätteri math plugin exists**, so the unified pipeline is mandatory:
+
+  ```js
+  import { unified } from '@astrojs/markdown-remark';
+  markdown: { processor: unified({ remarkPlugins: [...], rehypePlugins: [...] }) }
+  ```
+
+  The top-level `markdown.remarkPlugins` / `rehypePlugins` keys still work but
+  are deprecated.
+
+- **Plugins are attachers, not transformers.** Pass `[myPlugin, options]`, never
+  `myPlugin(options)`. Passing the invoked result makes unified call your
+  transformer as an attacher: it runs once with `tree === undefined` and then
+  never touches any content — silently, with no error.
+- **Component overrides** no longer receive route data through `Astro.props` —
+  Starlight 0.41's own components take **zero props**. Read
+  `Astro.locals.starlightRoute` and drop any `{...Astro.props}` spread.
+- **Sidebar `autogenerate`** groups must be wrapped in `items: [...]` since 0.39.
+- `z` from `astro:content` is deprecated; import from `astro/zod`.
+- Astro 6+ requires **Node 22.12+**.
+
+## Plugin component-override collisions
+
+Starlight plugins claim component overrides, and when two want the same one the
+loser is **silent** — it warns and skips, or checks "is it free?" and gives up.
+Always scan the build log for `It looks like you already have a X component
+override`.
+
+Known claims in this project:
+
+| Component         | Claimed by                                                                            |
+| ----------------- | ------------------------------------------------------------------------------------- |
+| `MarkdownContent` | `starlight-blog` **and** `starlight-image-zoom` — must compose by hand                |
+| `ThemeSelect`     | `starlight-blog` (`navigation: 'header-end'`), `starlight-kbd` (`globalPicker: true`) |
+| `SiteTitle`       | `starlight-blog` (`navigation: 'header-start'`)                                       |
+| `Pagination`      | `starlight-giscus`                                                                    |
+| `TableOfContents` | `starlight-heading-badges`                                                            |
+
+Consequences already hit: `navigation: 'header-end'` silently dropped the blog
+nav link, and `starlight-kbd`'s default `globalPicker: true` would replace the
+custom theme toggle. `Head`, `Footer` and `Hero` are free.
+
 ## Sidebar
 
-- **Starlight Sidebar Customization**:
-  - **Avoid** overriding the `Sidebar` component or using CSS hacks (`display: none`) to hide the sidebar, as this leaves reserved layout space.
-  - **Prefer** using Starlight Middleware (`routeMiddleware`) to modify `context.locals.starlightRoute.hasSidebar` to `false`. This cleanly adjusts the layout prop `hasSidebar` used by `StarlightPage`, ensuring the main content expands correctly.
-  - **Registration**: Ensure middleware is registered in `astro.config.mjs` under `starlight({ routeMiddleware: [...] })`.
-- **Content Configuration**:
-  - Use `src/content.config.ts` (Astro 5 standard) instead of `src/content/config.ts`.
-  - Extend Starlight schemas via the `extend` callback in `docsSchema`.
+- **Avoid** overriding `Sidebar` or hiding it with CSS (`display: none`) — that
+  leaves the reserved layout column behind and content will not expand.
+- **Prefer** route middleware setting
+  `context.locals.starlightRoute.hasSidebar = false`.
+- **Consequence**: `PageFrame` renders `MobileMenuToggle` only when
+  `hasSidebar`. Turning it off site-wide removes the mobile menu — and that is
+  where `starlight-blog` puts its mobile nav link. `src/components/override/Footer.astro`
+  carries a nav row to compensate.
+- Use `src/content.config.ts` (not `src/content/config.ts`); extend schemas via
+  the `extend` callback in `docsSchema`.
+
+## Blog routes
+
+`starlight-blog` generates tag, author and post-list routes under the same
+`blog/` prefix as real posts, so `id.startsWith('blog/')` matches all of them —
+this had comments rendering on tag pages. Those virtual entries have no `date`,
+which is the reliable discriminator for "this is an actual post".
 
 ## Blog Post Layouts
 
-- **Blog Post Layouts (Full-Bleed)**:
-  - Override `ContentPanel.astro` to wrap content in a custom class (e.g., `.blog-content-wrapper`).
-  - Use CSS Grid on `.sl-markdown-content` to constrain text (e.g., `min(65ch, 100%)`) while allowing specific children (tables, code, media) to span `1 / -1`.
-- **Table Styling**:
-  - For balanced tables in full-width layouts, use `width: fit-content`, `max-width: 100%`, and `margin-inline: auto` instead of forcing 100% width.
-  - Constrain prose columns with `td { max-width: 50ch; white-space: normal; }` to ensure comfortable wrapping and prevent excessive stretching.
-- **Component Styling**:
-  - Prefer reusable Astro components (e.g., `<ContentCard>`) over ad-hoc `div` wrappers for complex layout features like full-bleed, stacking, or captions.
+- **Full-bleed**: wrap content in `.blog-content-wrapper` (done in the
+  `MarkdownContent` override), then use CSS Grid on `.sl-markdown-content` to
+  constrain text to `min(65ch, 100%)` while letting tables, code and media span
+  `1 / -1`.
+- **Tables**: use `width: fit-content`, `max-width: 100%`, `margin-inline: auto`
+  rather than forcing 100%. Constrain prose columns with
+  `td { max-width: 50ch; }`.
+- Prefer reusable components (`<ContentCard>`) over ad-hoc `div` wrappers.
+- **`overflow-x: clip`, not `auto`**, on `.main-pane`: `auto` forces the computed
+  `overflow-y` to `auto` as well, creating a scroll container that breaks
+  `scroll-padding-top`, so anchor jumps land under the sticky header.
 
 ## ContentCard
 
-- **Dependencies**: Avoid adding new dependencies (like parsers) for simple tasks. Prefer robust string manipulation or standard API features.
-- **ContentCard & Component Patterns**:
-  - **Terminology**: Prefer specific names like "Card" over generic ones like "Box".
-  - **Slot Parsing**: `Astro.slots.render('default')` combined with string checking (e.g., `endsWith('</sub>')`) is a valid strategy for "extracting" trailing metadata/captions without heavy AST parsing.
-  - **Styling Preference**:
-    - **Bleed**: Full-width "bleed" layouts are often preferred default (`bleed=true`).
-    - **Captions**: Differentiate captions with distinct background colors rather than borders/hr lines. Ensure tight spacing between content and caption.
-    - **Layout**: Support configurable stacking directions (horizontal/vertical) for internal content.
-- **Responsiveness**:
-  - **Mobile First**: Default to vertical stacks on mobile; switch to horizontal on larger screens (e.g., via `@media (min-width: 40rem)`).
-  - **Prose Width**: Constrain text width in horizontal layouts (e.g., `50ch`) to match common table/prose constraints, but allow full width on mobile/vertical stacks.
-
-## Maintenance & Deprecations
-
-- **Page Metadata**:
-  - **Last Updated**: To remove the "Last updated" footer timestamp from specific pages (e.g., homepage), set `lastUpdated: false` in the page frontmatter.
-
-- **Astro/Starlight Deprecations**:
-  - **Props**: `import type { Props } from '@astrojs/starlight/props'` is deprecated. Use `import type { StarlightRouteData as Props } from '@astrojs/starlight/route-data'` instead.
-  - **Slug**: `starlightRoute.slug` is deprecated. Use `starlightRoute.id` instead.
+- Avoid new dependencies for simple tasks; prefer string manipulation or
+  standard APIs.
+- `Astro.slots.render('default')` plus a string check (`endsWith('</sub>')`) is a
+  valid way to extract a trailing caption without an AST parser.
+- **`v-bind()` is Vue, not Astro.** It emitted literal invalid CSS here and the
+  `proseWidth` prop did nothing for months. Use an inline `style` attribute or
+  `define:vars` to get a value into scoped CSS.
+- Bleed defaults to `true`; captions get a distinct background rather than a
+  border; support horizontal/vertical stacking.
+- **Mobile first**: vertical stacks by default, horizontal at `min-width: 40rem`.
 
 ## Giscus
 
-- **Giscus Integration**:
-  - **Restrict to Blog Posts**: Use Starlight Middleware (`routeMiddleware`) to conditionally enable Giscus.
-  - **Implementation**:
-    - Check if `context.locals.starlightRoute.id` starts with `blog/`.
-    - Modify `context.locals.starlightRoute.entry.data.giscus` directly.
-  - **Configuration**: Ensure the middleware is registered in `astro.config.mjs` *after* any other middleware that might depend on it, or simply in the execution order.
+- Restrict to posts via route middleware, setting `entry.data.giscus` (see
+  "Blog routes" for why the prefix check alone is not enough).
+- **Theme sync contract**: `starlight-giscus` re-themes its iframe by listening
+  for a **`change` event on `<starlight-theme-select>`**. Stock Starlight
+  renders a `<select>` there, which bubbles one for free. This site's override is
+  a `<button>`, so it must `dispatchEvent(new Event('change', { bubbles: true }))`
+  itself — otherwise comments ignore the theme toggle entirely.
 
-## Tailwind CSS v4 & daisyUI v5
+## Tailwind CSS v4
 
-- **Scoped Styles in Frameworks (Astro/Vue/Svelte)**:
-  - When using component-scoped `<style>` blocks with Tailwind v4, you **MUST** include `@reference "/src/styles/global.css";` (adjusted for relative path) at the top of the style block.
-  - This is required for `@apply` to access global theme variables, custom utilities, and plugins (like daisyUI). Without it, the build will fail with "unknown utility class" errors.
-- **daisyUI Integration**:
-  - Register in the global CSS file using `@plugin "daisyui";`.
-- **Styling Strategy**:
-  - **Mix Semantic & Utility**: Use semantic class names (e.g., `.card`) in HTML for readability. apply Tailwind utilities in the CSS block using `@apply`.
-  - **CSS Variables**: Use standard CSS syntax for setting/using CSS variables (e.g., `color: var(--sl-color-gray-2);`) rather than trying to force everything into `@apply`, especially for Starlight theme variables.
+- Component-scoped `<style>` blocks using `@apply` **must** start with
+  `@reference "/src/styles/global.css";` (relative path adjusted) or the build
+  fails with "unknown utility class".
+- **daisyUI was removed.** Its component classes are unprefixed and collide with
+  four class names Starlight uses internally: `.toggle`, `.dropdown`, `.hero`,
+  `.menu`. `.toggle` was restyling the mobile table-of-contents button into a
+  40x24 switch, which a block of `!important` overrides had been papering over.
+  If it is ever reintroduced, configure a prefix.
+- Mix semantic class names in markup with utilities applied in CSS; use plain
+  CSS variable syntax for Starlight theme variables.
 
-## Mobile & Responsive Overrides
+## Mobile & Responsive
 
-- **Component Overrides vs. CSS**:
-  - **Theme Toggle on Mobile**: Instead of shadowing the entire `Header` component (which is fragile), use CSS overrides in `global.css` to force visibility of hidden elements.
-    - Example: `@media (max-width: 50rem) { .header .right-group { display: flex !important; } }`
-- **Tables of Contents (Mobile)**:
-  - **Design Issues**: Be aware that global CSS resets (e.g., from Tailwind/daisyUI) can break Starlight's mobile TOC bar layout (e.g., squashed buttons, transparent backgrounds).
-  - **Fix**: Explicitly restore flex behaviors (`display: flex !important`, `align-items: center`) and constrain icon sizes (`width: 1rem`) in `global.css` targeting `mobile-starlight-toc` elements.
+- **Theme toggle on mobile**: rather than shadowing `Header`, force visibility in
+  `global.css`:
+  `@media (max-width: 50rem) { .header .right-group { display: flex !important; } }`
+- **Mobile TOC**: Starlight 0.41 lays it out correctly unaided. Before adding
+  `!important` patches, check whether a third-party CSS reset is the real cause.
+
+## Dependencies
+
+- **Do not bump `katex` past `^0.16`.** `rehype-katex@7` depends on `katex ^0.16`
+  directly, so a newer top-level version means the CSS and the rendering engine
+  come from different releases.
+- **`astro-og-canvas`** downloads its default font from `api.fontsource.org` at
+  build time. Fonts are vendored in `src/fonts/` and passed via the `fonts`
+  option **inside `getImageOptions`** (not at the route level) to keep builds
+  hermetic.
+- **`rehype-citation`** cannot parse `%` comments or `\url{}` macros in `.bib`
+  files; either aborts the whole build.

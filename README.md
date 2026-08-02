@@ -1,53 +1,79 @@
-# Starlight Starter Kit: Tailwind
+# klezm's blog
 
-[![Built with Starlight](https://astro.badg.es/v2/built-with-starlight/tiny.svg)](https://starlight.astro.build)
+Personal blog at **<https://klezm.github.io>**, built with
+[Astro](https://astro.build) and [Starlight](https://starlight.astro.build).
 
-```
-pnpm create astro@latest -- --template starlight/tailwind
-```
+## Running it
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+Requires Node 22.12+ and pnpm.
 
-## 🚀 Project Structure
-
-Inside of your Astro + Starlight project, you'll see the following folders and files:
-
-```
-.
-├── public/
-├── src/
-│   ├── assets/
-│   ├── content/
-│   │   └── docs/
-│   ├── styles/
-│   │   └── global.css
-│   └── content.config.ts
-├── astro.config.mjs
-├── package.json
-└── tsconfig.json
+```sh
+pnpm install
+pnpm dev          # http://localhost:4321
 ```
 
-Starlight looks for `.md` or `.mdx` files in the `src/content/docs/` directory. Each file is exposed as a route based on its file name.
+| Command                       | What it does                                         |
+| ----------------------------- | ---------------------------------------------------- |
+| `pnpm dev`                    | Dev server with hot reload                           |
+| `pnpm build`                  | Production build to `dist/`                          |
+| `pnpm preview`                | Serve the built site locally                         |
+| `pnpm check`                  | `astro check` — type checking                        |
+| `pnpm format`                 | Format with Prettier (`format:check` to verify only) |
+| `CHECK_LINKS=true pnpm build` | Build and fail on dead internal links                |
 
-Images can be added to `src/assets/` and embedded in Markdown with a relative link.
+## Writing a post
 
-Static assets, like favicons, can be placed in the `public/` directory.
+Posts are Markdown or MDX files in `src/content/docs/blog/`. The filename
+becomes the URL: `blog/my-post.md` → `/blog/my-post/`.
 
-The project includes [Tailwind CSS](https://starlight.astro.build/guides/css-and-tailwind/#tailwind-css) for styling. Customize your design by modifying `src/styles/global.css`.
+```yaml
+---
+title: My Post
+date: 2026-01-15
+authors: [klezm]
+tags: [haskell, types]
+excerpt: One or two sentences shown on the homepage and in the feed.
+cover:
+  alt: Description of the image
+  image: ../../../assets/my-cover.jpg
+featured: true # pin to the "Featured" section on the homepage
+draft: true # dev-only; excluded from production builds
+bibliography: bib/my-post.bib # enables [@citekey] citations
+giscus: false # opt out of comments (on by default for posts)
+---
+```
 
-## 🧞 Commands
+`src/content/docs/blog/kitchen-sink.mdx` demonstrates every supported feature
+and is the fastest way to see what is available. In short: KaTeX math, code
+blocks, Starlight asides and GitHub-style alerts, custom `:::idea` / `:::proof`
+blocks, footnotes with hover popovers, BibTeX citations, keyboard keys and
+zoomable images.
 
-All commands are run from the root of the project, from a terminal:
+## How it fits together
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `pnpm install`             | Installs dependencies                            |
-| `pnpm dev`             | Starts local dev server at `localhost:4321`      |
-| `pnpm build`           | Build your production site to `./dist/`          |
-| `pnpm preview`         | Preview your build locally, before deploying     |
-| `pnpm astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `pnpm astro -- --help` | Get help using the Astro CLI                     |
+The site is blog-only: there is no sidebar anywhere, which is enforced in
+`src/middleware/starlight-sidebar.ts` rather than with CSS.
 
-## 👀 Want to learn more?
+- **`astro.config.mjs`** — all plugin wiring. Several options there are
+  load-bearing and annotated with why; read the comments before changing them.
+- **`src/components/override/`** — Starlight component overrides.
+  `MarkdownContent` deliberately renders both starlight-blog's content and
+  image zoom, because both plugins otherwise compete for that slot and one
+  silently loses.
+- **`src/components/FootnotePopovers.astro`** — the only bespoke feature;
+  everything else is an off-the-shelf plugin.
+- **`src/plugins/rehype-citation-frontmatter.js`** — makes `rehype-citation`
+  read its bibliography path from post frontmatter instead of a single global
+  option.
 
-Check out [Starlight’s docs](https://starlight.astro.build/), read [the Astro documentation](https://docs.astro.build), or jump into the [Astro Discord server](https://astro.build/chat).
+Markdown runs through the **unified (remark/rehype)** processor, not Astro 7's
+default Sätteri pipeline — KaTeX requires it and no Sätteri math plugin exists.
+
+## Deployment
+
+Pushes to `master` build and publish to GitHub Pages via
+`.github/workflows/deploy.yml`. The checkout uses `fetch-depth: 0` because
+`lastUpdated` reads commit timestamps from git history.
+
+> [!NOTE]
+> Repository **Settings → Pages → Source** must be set to **GitHub Actions**.

@@ -11,6 +11,7 @@ import starlightScrollToTop from 'starlight-scroll-to-top';
 import starlightHeadingBadges from 'starlight-heading-badges';
 import starlightMarkdownBlocks, { Aside } from 'starlight-markdown-blocks';
 import starlightKbd from 'starlight-kbd';
+import starlightLinksValidator from 'starlight-links-validator';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import remarkDirective from 'remark-directive';
@@ -27,6 +28,7 @@ export default defineConfig({
       components: {
         ThemeSelect: './src/components/override/ThemeSelect.astro',
         MarkdownContent: './src/components/override/MarkdownContent.astro',
+        Head: './src/components/override/Head.astro',
         Footer: './src/components/override/Footer.astro',
         Hero: './src/components/override/Hero.astro',
       },
@@ -91,6 +93,19 @@ export default defineConfig({
             { id: 'linux', label: 'Linux/Windows', default: true },
           ],
         }),
+        // Fails the build on dead internal links and stale heading anchors.
+        // Gated behind an env var so it does not interrupt local authoring,
+        // where half-written links are normal; CI and deploys set CHECK_LINKS.
+        ...(process.env.CHECK_LINKS
+          ? [
+              starlightLinksValidator({
+                errorOnInvalidHashes: true,
+                // starlight-blog generates these routes itself, so they are not
+                // content entries and the validator cannot see them.
+                exclude: ['/blog/', '/blog/**', '/blog/rss.xml'],
+              }),
+            ]
+          : []),
       ],
       routeMiddleware: [
         './src/middleware/starlight-sidebar.ts',

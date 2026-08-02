@@ -5,13 +5,13 @@ const { hero } = Astro.locals.starlightRoute.entry.data;
 
 const isHeroEmpty = hero && Object.keys(hero).length === 0;
 const isHeroEmptyish =
-	hero &&
-	Object.values(hero).every((val) => {
-		if (val === undefined || val === null || val === '') return true;
-		if (Array.isArray(val) && val.length === 0) return true;
-		if (typeof val === 'object' && Object.keys(val).length === 0) return true;
-		return false;
-	});
+  hero &&
+  Object.values(hero).every((val) => {
+    if (val === undefined || val === null || val === '') return true;
+    if (Array.isArray(val) && val.length === 0) return true;
+    if (typeof val === 'object' && Object.keys(val).length === 0) return true;
+    return false;
+  });
 
 // Hide the Hero if it's an empty object or all its properties are empty
 const shouldHide = isHeroEmpty || isHeroEmptyish;

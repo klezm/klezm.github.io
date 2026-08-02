@@ -8,6 +8,9 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
+    "check": "astro check",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "update": "pnpx npm-check-updates -u -i"
   },
   "dependencies": {
@@ -16,6 +19,8 @@
     "@astrojs/starlight-tailwind": "^5.0.0",
     "@tailwindcss/vite": "^4.0.7",
     "astro": "^7.1.6",
+    "astro-og-canvas": "^0.13.0",
+    "canvaskit-wasm": "^0.41.1",
     "katex": "^0.16.47",
     "rehype-citation": "^2.3.2",
     "rehype-katex": "^7.0.1",
@@ -34,7 +39,9 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.6",
-    "playwright": "^1.62.1",
+    "prettier": "^3.9.6",
+    "prettier-plugin-astro": "^0.14.1",
+    "starlight-links-validator": "^0.25.2",
     "typescript": "^5.9.3"
   }
 }
