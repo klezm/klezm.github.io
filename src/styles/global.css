@@ -4,7 +4,14 @@
 @import 'tailwindcss/theme.css' layer(theme);
 @import 'tailwindcss/utilities.css' layer(utilities);
 
-@plugin "daisyui";
+/*
+  daisyUI was removed here deliberately. Its component classes are unprefixed
+  and extremely generic — `.toggle`, `.dropdown`, `.hero`, `.menu` — and all
+  four are class names Starlight already uses internally. `.toggle` in
+  particular was silently restyling the mobile table-of-contents button into a
+  40x24 switch. It was earning its place styling exactly one button, which is
+  now plain CSS in `src/components/override/ThemeSelect.astro`.
+*/
 
 @theme {
   /*
@@ -28,9 +35,17 @@ https://tailwindcss.com/docs/adding-custom-styles#using-custom-css
   font-size: var(--sl-text-sm);
 }
 
-/* Prevent content from overlapping with the table of contents sidebar */
+/*
+  Prevent wide content (KaTeX, tables) from overlapping the table of contents.
+
+  `clip` rather than `auto`: setting `overflow-x: auto` forces the computed
+  `overflow-y` from `visible` to `auto` as well, which turns this element into a
+  scroll container. That breaks the `scroll-padding-top` Starlight sets for the
+  sticky header, so anchor jumps land underneath it. `clip` leaves the block
+  axis alone.
+*/
 .main-pane {
-  @apply overflow-x-auto;
+  overflow-x: clip;
 }
 
 /* Ensure math blocks with overflow are scrollable */
@@ -150,6 +165,39 @@ https://tailwindcss.com/docs/adding-custom-styles#using-custom-css
 }
 
 /* =============================================================================
+   Table of Contents — scroll-spy emphasis
+
+   Starlight already runs the IntersectionObserver that moves `aria-current`
+   between entries as you scroll. Its only styling for the active entry is a
+   colour change, which is easy to miss on a long post. These rules make the
+   current position legible at a glance.
+   ============================================================================= */
+
+starlight-toc nav a {
+  border-inline-start: 2px solid transparent;
+  transition:
+    color 150ms ease,
+    background-color 150ms ease,
+    border-color 150ms ease;
+}
+
+starlight-toc nav a[aria-current='true'] {
+  font-weight: 600;
+  background-color: var(--sl-color-gray-6);
+  border-inline-start-color: var(--sl-color-text-accent);
+}
+
+starlight-toc nav a:hover {
+  background-color: var(--sl-color-gray-6);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  starlight-toc nav a {
+    transition: none;
+  }
+}
+
+/* =============================================================================
    Header Mobile View Overrides
    ============================================================================= */
 
@@ -170,32 +218,13 @@ https://tailwindcss.com/docs/adding-custom-styles#using-custom-css
 }
 
 /* =============================================================================
-   Mobile TOC Bar Fixes
+   Mobile TOC Bar
    ============================================================================= */
 
-/* Fix the broken toggle button design */
-mobile-starlight-toc .toggle {
-  display: flex !important; /* Restore flex layout */
-  align-items: center;
-  gap: 0.5rem;
-  width: auto !important; /* Prevent squashing */
-  height: auto !important;
-}
-
-mobile-starlight-toc nav:has(details:not([open])) {
-  background-color: transparent !important;
-  border: 0px !important;
-}
-
-mobile-starlight-toc summary {
-  border: 0px !important;
-
-  &::before {
-    content: '';
-    @apply flex-grow;
-  }
-}
-
-mobile-starlight-toc .display-current {
-  display: none;
-}
+/*
+  Starlight 0.41 lays this bar out correctly on its own, so there is nothing to
+  patch here any more. The `!important` overrides that used to live in this
+  block were written against 0.37 and were really working around daisyUI's
+  `.toggle` component class clobbering Starlight's `.toggle` element — see the
+  note at the top of this file. With daisyUI gone, the defaults are correct.
+*/

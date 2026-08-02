@@ -6,6 +6,9 @@ import tailwindcss from '@tailwindcss/vite';
 import starlightBlog from 'starlight-blog';
 import starlightGiscus from 'starlight-giscus';
 import starlightGitHubAlerts from 'starlight-github-alerts';
+import starlightImageZoom from 'starlight-image-zoom';
+import starlightScrollToTop from 'starlight-scroll-to-top';
+import starlightHeadingBadges from 'starlight-heading-badges';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import remarkDirective from 'remark-directive';
@@ -20,8 +23,8 @@ export default defineConfig({
         'A personal blog about computer science, programming, and tech experiences.',
       components: {
         ThemeSelect: './src/components/override/ThemeSelect.astro',
-        PageTitle: './src/components/override/PageTitle.astro',
-        ContentPanel: './src/components/override/ContentPanel.astro',
+        MarkdownContent: './src/components/override/MarkdownContent.astro',
+        Footer: './src/components/override/Footer.astro',
         Hero: './src/components/override/Hero.astro',
       },
       plugins: [
@@ -49,6 +52,15 @@ export default defineConfig({
           categoryId: 'DIC_kwDOEYaD0s4Ck5JR',
         }),
         starlightGitHubAlerts(),
+        starlightImageZoom({ showCaptions: true }),
+        starlightScrollToTop({
+          // The progress ring doubles as the reading-progress indicator.
+          showProgressRing: true,
+          progressRingColor: 'var(--sl-color-text-accent)',
+          showTooltip: true,
+          showOnHomepage: false,
+        }),
+        starlightHeadingBadges(),
       ],
       routeMiddleware: [
         './src/middleware/starlight-sidebar.ts',
@@ -59,8 +71,11 @@ export default defineConfig({
       ],
       customCss: ['./src/styles/global.css', './src/styles/katex.css'],
       lastUpdated: true,
+      // h4-h6 made the table of contents unusable on long posts; the
+      // type-unification post alone contributed dozens of entries.
       tableOfContents: {
-        maxHeadingLevel: 6,
+        minHeadingLevel: 2,
+        maxHeadingLevel: 3,
       },
     }),
   ],
