@@ -83,6 +83,11 @@ import { Icon } from '@astrojs/starlight/components';
 				if (window.StarlightThemeProvider) {
 					window.StarlightThemeProvider.updatePickers(theme);
 				}
+				// starlight-giscus re-themes the comment iframe when it sees a
+				// `change` event on `<starlight-theme-select>`. Stock Starlight
+				// uses a <select>, which bubbles one for free; this override is a
+				// <button>, so it has to announce the change itself.
+				this.dispatchEvent(new Event('change', { bubbles: true }));
 			};
 
 			if (button) {

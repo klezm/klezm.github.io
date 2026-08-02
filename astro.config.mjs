@@ -53,6 +53,14 @@ export default defineConfig({
           repoId: 'MDEwOlJlcG9zaXRvcnkyOTQwMjgyNDI=',
           category: 'Blog Comment',
           categoryId: 'DIC_kwDOEYaD0s4Ck5JR',
+          mapping: 'pathname',
+          theme: {
+            light: 'light',
+            dark: 'transparent_dark',
+            auto: 'preferred_color_scheme',
+          },
+          // Keep the comment iframe off the critical path.
+          lazy: true,
         }),
         starlightGitHubAlerts(),
         starlightImageZoom({ showCaptions: true }),
