@@ -1,15 +1,13 @@
 import { defineRouteMiddleware } from '@astrojs/starlight/route-data';
 
+/**
+ * The site is blog-only, so there is no page hierarchy for a sidebar to
+ * navigate and every route renders full width.
+ *
+ * This is done by flipping `hasSidebar` rather than hiding the sidebar with
+ * CSS: `display: none` would leave the reserved layout column behind and the
+ * content would not expand to fill it.
+ */
 export const onRequest = defineRouteMiddleware((context) => {
-  const { id, entry } = context.locals.starlightRoute;
-  const isBlog = id === 'blog' || id.startsWith('blog/');
-  const showSidebar =
-    entry.data.show_sidebar === true && entry.data.template !== 'splash';
-  // Change the sidebar visibility for blog posts or if show_sidebar is set in the frontmatter
-  const setSidebarVisibility = isBlog || entry.data.show_sidebar !== undefined;
-
-  if (setSidebarVisibility) {
-    context.locals.starlightRoute.hasSidebar =
-      (isBlog && showSidebar) || showSidebar;
-  }
+  context.locals.starlightRoute.hasSidebar = false;
 });

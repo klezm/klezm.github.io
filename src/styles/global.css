@@ -18,6 +18,16 @@ Add additional Tailwind styles to this file:
 https://tailwindcss.com/docs/adding-custom-styles#using-custom-css
 */
 
+/* Homepage post grid */
+.post-grid {
+  @apply grid gap-4;
+  grid-template-columns: repeat(auto-fill, minmax(min(20rem, 100%), 1fr));
+}
+
+.home-links {
+  font-size: var(--sl-text-sm);
+}
+
 /* Prevent content from overlapping with the table of contents sidebar */
 .main-pane {
   @apply overflow-x-auto;

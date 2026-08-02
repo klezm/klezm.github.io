@@ -16,7 +16,6 @@ export default defineConfig({
   integrations: [
     starlight({
       title: "klezm's blog",
-      // description: "Welcome to my personal blog! I'm a computer science student writing about my experience.",
       description:
         'A personal blog about computer science, programming, and tech experiences.',
       components: {
@@ -27,7 +26,7 @@ export default defineConfig({
       },
       plugins: [
         starlightBlog({
-          title: "klezm's blog",
+          title: 'Blog',
           authors: {
             klezm: {
               name: 'klezm',
@@ -35,8 +34,13 @@ export default defineConfig({
           },
           metrics: {
             readingTime: true,
+            words: 'rounded',
           },
-          navigation: 'none',
+          // 'header-end' would make starlight-blog override ThemeSelect, which
+          // this site already overrides with its own toggle — the nav link is
+          // silently dropped in that case. 'header-start' overrides SiteTitle
+          // instead, which is untouched here.
+          navigation: 'header-start',
         }),
         starlightGiscus({
           repo: 'klezm/klezm.github.io',

@@ -79,6 +79,7 @@ if (trimmedParams.endsWith('</sub>')) {
                 stack === 'horizontal' && 'horizontal-stack'
             ]}
             data-stack={stack}
+            style={`--cc-prose-width: ${proseWidth};`}
         >
             <Fragment set:html={content} />
         </div>
@@ -103,9 +104,9 @@ if (trimmedParams.endsWith('</sub>')) {
         border: 1px solid var(--sl-color-gray-5);
     }
 
+    /* `--cc-prose-width` is set inline from the `proseWidth` prop. */
     .card-content {
         @apply flex flex-col w-full gap-4 p-4 items-center max-w-full [&>*]:max-w-full;
-        --cc-prose-width: v-bind(proseWidth);
     }
 
     /* Horizontal stack: text on left, code on right */
