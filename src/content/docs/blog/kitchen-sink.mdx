@@ -8,11 +8,20 @@ tags:
   - markdown
 excerpt: Every authoring feature this blog supports, on one page — asides, alerts, math, code, footnotes, keyboard keys and comments.
 featured: true
+bibliography: bib/type-unification.bib
 ---
 
 This post exists so that every feature the blog ships is rendered somewhere and
 breaks loudly when it regresses. If something below looks wrong, the build is
 wrong.
+
+## Citations
+
+A post that declares a `bibliography:` in its frontmatter can cite entries by
+key. Hindley–Milner type inference was introduced in [@milner1978theory] and
+given its principal-types treatment in [@damas1982principal]; the unification
+walkthrough follows [@krishnamurthi2007plai]. The reference list is generated
+below, from BibTeX.
 
 ## Asides and directives
 
@@ -33,6 +42,18 @@ Use this one sparingly.
 
 :::danger
 And this one even more sparingly.
+:::
+
+Custom block types come from `starlight-markdown-blocks`, which extends the
+same `:::` syntax rather than replacing it:
+
+:::idea
+A custom block registered in `astro.config.mjs`. Adding one is a config change,
+not a component.
+:::
+
+:::proof[By induction]
+Custom blocks accept an optional label in square brackets, just like asides.
 :::
 
 ## GitHub alerts

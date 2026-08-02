@@ -12,6 +12,8 @@ export const collections = {
         blogSchema(context).extend({
           /** Opt a page in or out of Giscus comments. Defaults to on for blog posts. */
           giscus: z.boolean().optional(),
+          /** Path to a BibTeX/CSL-JSON file, relative to the post. Enables `[@key]` citations. */
+          bibliography: z.string().optional(),
         }),
     }),
   }),

@@ -9,9 +9,12 @@ import starlightGitHubAlerts from 'starlight-github-alerts';
 import starlightImageZoom from 'starlight-image-zoom';
 import starlightScrollToTop from 'starlight-scroll-to-top';
 import starlightHeadingBadges from 'starlight-heading-badges';
+import starlightMarkdownBlocks, { Aside } from 'starlight-markdown-blocks';
+import starlightKbd from 'starlight-kbd';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import remarkDirective from 'remark-directive';
+import { rehypeCitationFrontmatter } from './src/plugins/rehype-citation-frontmatter.js';
 
 // https://astro.build/config
 export default defineConfig({
@@ -61,6 +64,25 @@ export default defineConfig({
           showOnHomepage: false,
         }),
         starlightHeadingBadges(),
+        // Custom `:::` blocks. Deliberately NOT remark-directive-rehype: that
+        // is a blanket directive->element transform and, since user plugins run
+        // ahead of Starlight's own, it would consume `:::note` and friends
+        // before Starlight's aside transformer ever saw them.
+        starlightMarkdownBlocks({
+          blocks: {
+            idea: Aside({ label: 'Idea', icon: '💡', color: 'purple' }),
+            proof: Aside({ label: 'Proof', icon: '📐', color: 'green' }),
+          },
+        }),
+        starlightKbd({
+          // Leaving this at its `true` default would override ThemeSelect and
+          // replace the custom theme toggle with the keyboard-type picker.
+          globalPicker: false,
+          types: [
+            { id: 'mac', label: 'macOS', detector: 'apple' },
+            { id: 'linux', label: 'Linux/Windows', default: true },
+          ],
+        }),
       ],
       routeMiddleware: [
         './src/middleware/starlight-sidebar.ts',
@@ -86,7 +108,11 @@ export default defineConfig({
     // itself in ahead of it and silently no-ops if it is missing.
     processor: unified({
       remarkPlugins: [remarkMath, remarkDirective],
-      rehypePlugins: [rehypeKatex],
+      rehypePlugins: [
+        rehypeKatex,
+        // Opt-in per post via the `bibliography` frontmatter key.
+        [rehypeCitationFrontmatter, { csl: 'apa', linkCitations: true }],
+      ],
     }),
   },
   vite: {

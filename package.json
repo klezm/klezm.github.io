@@ -17,6 +17,7 @@
     "@tailwindcss/vite": "^4.0.7",
     "astro": "^7.1.6",
     "katex": "^0.16.47",
+    "rehype-citation": "^2.3.2",
     "rehype-katex": "^7.0.1",
     "remark-directive": "^4.0.0",
     "remark-math": "^6.0.0",
@@ -26,6 +27,8 @@
     "starlight-github-alerts": "^0.4.0",
     "starlight-heading-badges": "^0.8.0",
     "starlight-image-zoom": "^0.15.0",
+    "starlight-kbd": "^0.4.0",
+    "starlight-markdown-blocks": "^0.1.1",
     "starlight-scroll-to-top": "^1.0.1",
     "tailwindcss": "^4.0.7"
   },
