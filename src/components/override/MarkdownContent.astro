@@ -12,6 +12,7 @@
  */
 import BlogMarkdownContent from 'starlight-blog/overrides/MarkdownContent.astro';
 import ImageZoom from 'starlight-image-zoom/components/ImageZoom.astro';
+import FootnotePopovers from '../FootnotePopovers.astro';
 
 const { id, entry } = Astro.locals.starlightRoute;
 
@@ -26,6 +27,7 @@ const isPost = id.startsWith('blog/') && entry.data.date !== undefined;
       <BlogMarkdownContent>
         <slot />
       </BlogMarkdownContent>
+      <FootnotePopovers />
     </div>
   ) : (
     <BlogMarkdownContent>
