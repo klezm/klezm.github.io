@@ -1,5 +1,6 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
+import { unified } from '@astrojs/markdown-remark';
 import starlight from '@astrojs/starlight';
 import tailwindcss from '@tailwindcss/vite';
 import starlightBlog from 'starlight-blog';
@@ -52,16 +53,6 @@ export default defineConfig({
       social: [
         { icon: 'github', label: 'GitHub', href: 'https://github.com/klezm' },
       ],
-      sidebar: [
-        {
-          label: 'Guides',
-          items: [{ label: 'Example Guide', slug: 'guides/example' }],
-        },
-        {
-          label: 'Reference',
-          autogenerate: { directory: 'reference' },
-        },
-      ],
       customCss: ['./src/styles/global.css', './src/styles/katex.css'],
       lastUpdated: true,
       tableOfContents: {
@@ -70,8 +61,14 @@ export default defineConfig({
     }),
   ],
   markdown: {
-    remarkPlugins: [remarkMath, remarkDirective],
-    rehypePlugins: [rehypeKatex],
+    // Astro 7 defaults to the Sätteri processor, which has no math support.
+    // KaTeX requires the remark/rehype pipeline, so opt back into it explicitly.
+    // `remarkDirective` must stay registered: starlight-github-alerts splices
+    // itself in ahead of it and silently no-ops if it is missing.
+    processor: unified({
+      remarkPlugins: [remarkMath, remarkDirective],
+      rehypePlugins: [rehypeKatex],
+    }),
   },
   vite: {
     plugins: [tailwindcss()],

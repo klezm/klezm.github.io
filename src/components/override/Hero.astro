@@ -1,5 +1,4 @@
 ---
-import type { StarlightRouteData as Props } from '@astrojs/starlight/route-data';
 import Default from '@astrojs/starlight/components/Hero.astro';
 
 const { hero } = Astro.locals.starlightRoute.entry.data;
@@ -18,4 +17,4 @@ const isHeroEmptyish =
 const shouldHide = isHeroEmpty || isHeroEmptyish;
 ---
 
-{!shouldHide && <Default {...Astro.props} />}
+{!shouldHide && <Default />}
