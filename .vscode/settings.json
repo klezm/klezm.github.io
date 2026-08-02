@@ -1,92 +1,92 @@
 {
-    "prettier.singleQuote": true,
-    // "prettier.tabWidth": 4,
-    "github.copilot.chat.edits.suggestRelatedFilesFromGitHistory": false,
-    "workbench.localHistory.exclude": {
-        // "**/global.css": true
-    },
-    "files.eol": "\n",
-    "files.insertFinalNewline": true,
-    "files.trimTrailingWhitespace": true,
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "[html]": {
-        "editor.defaultFormatter": "vscode.html-language-features"
-    },
-    "[markdown]": {
-        "files.trimTrailingWhitespace": false,
-        "editor.defaultFormatter": "DavidAnson.vscode-markdownlint",
-        "editor.minimap.autohide": "mouseover"
-    },
-    "markdownlint.config": {
-        // LLMs don't like these rules
-        // "MD022": false, // Headings should be surrounded by blank lines
-        // "MD031": false, // Fenced code blocks should be surrounded by blank lines
-        // "MD032": false, // Lists should be surrounded by blank lines
-        // "MD041": false, // First line in file should be a top level heading
-        // "MD028": false, // Allow blank lines between blockquotes
-        // "MD033": false, // Allow inline HTML
-        // "MD034": false, // Allow bare URLs
-        // "MD045": false // Allow Images without alt text
-    },
-    "terminal.integrated.defaultProfile.linux": "zsh-local-history",
-    "terminal.integrated.defaultProfile.windows": "PowerShell-Local-History",
-    "terminal.integrated.automationProfile.linux": {
-        "path": "bash",
-        "icon": "github-action",
-        "env": {
-            "HISTCONTROL": "ignoreboth",
-            "HISTFILE": "${workspaceFolder}/.bash_history.automation.sh"
-        }
-    },
-    "terminal.integrated.automationProfile.windows": {
-        "path": "pwsh",
-        "icon": "terminal-powershell",
-        "env": {
-            "VSC_WS_FOLDER": "${workspaceFolder}"
-        },
-        "args": [
-            "-NoProfile",
-            "-NoExit",
-            "-Command",
-            "$OutputEncoding = [System.Text.Encoding]::UTF8; [Console]::OutputEncoding = [System.Text.Encoding]::UTF8; Set-PSReadLineOption -HistorySavePath (Join-Path $env:VSC_WS_FOLDER '.ps_history.automation.ps1')"
-        ]
-    },
-    "terminal.integrated.profiles.linux": {
-        "bash-local-history": {
-            "env": {
-                "HISTCONTROL": "ignoreboth",
-                "HISTFILE": "${workspaceFolder}/.bash_history",
-                "HISTIGNORE": " *:source *venv*/activate"
-            },
-            "icon": "terminal-bash",
-            "path": "bash"
-        },
-        "zsh-local-history": {
-            "args": ["-c", "zsh"],
-            "env": {
-                "HIST_IGNORE_DUPS": "true",
-                "HIST_IGNORE_SPACE": "true",
-                "HISTFILE": "${workspaceFolder}/.zsh_history",
-                "HISTORY_IGNORE": "(env|source *venv*/activate)",
-                "HISTIGNORE": "source *"
-            },
-            "icon": "terminal-linux",
-            "path": "bash"
-        }
-    },
-    "terminal.integrated.profiles.windows": {
-        "PowerShell-Local-History": {
-            "args": [
-                "-noprofile",
-                "-NoExit",
-                "-Command",
-                "$OutputEncoding = [System.Text.Encoding]::UTF8; [Console]::OutputEncoding = [System.Text.Encoding]::UTF8; Set-PSReadLineOption -HistorySavePath (Join-Path $env:VSC_WS_FOLDER '.ps_history.ps1')"
-            ],
-            "env": {
-                "VSC_WS_FOLDER": "${workspaceFolder}"
-            },
-            "icon": "terminal-powershell",
-            "path": "pwsh"
-        }
+  "prettier.singleQuote": true,
+  // "prettier.tabWidth": 4,
+  "github.copilot.chat.edits.suggestRelatedFilesFromGitHistory": false,
+  "workbench.localHistory.exclude": {
+    // "**/global.css": true
+  },
+  "files.eol": "\n",
+  "files.insertFinalNewline": true,
+  "files.trimTrailingWhitespace": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "[html]": {
+    "editor.defaultFormatter": "vscode.html-language-features"
+  },
+  "[markdown]": {
+    "files.trimTrailingWhitespace": false,
+    "editor.defaultFormatter": "DavidAnson.vscode-markdownlint",
+    "editor.minimap.autohide": "mouseover"
+  },
+  "markdownlint.config": {
+    // LLMs don't like these rules
+    // "MD022": false, // Headings should be surrounded by blank lines
+    // "MD031": false, // Fenced code blocks should be surrounded by blank lines
+    // "MD032": false, // Lists should be surrounded by blank lines
+    // "MD041": false, // First line in file should be a top level heading
+    // "MD028": false, // Allow blank lines between blockquotes
+    // "MD033": false, // Allow inline HTML
+    // "MD034": false, // Allow bare URLs
+    // "MD045": false // Allow Images without alt text
+  },
+  "terminal.integrated.defaultProfile.linux": "zsh-local-history",
+  "terminal.integrated.defaultProfile.windows": "PowerShell-Local-History",
+  "terminal.integrated.automationProfile.linux": {
+    "path": "bash",
+    "icon": "github-action",
+    "env": {
+      "HISTCONTROL": "ignoreboth",
+      "HISTFILE": "${workspaceFolder}/.bash_history.automation.sh"
     }
+  },
+  "terminal.integrated.automationProfile.windows": {
+    "path": "pwsh",
+    "icon": "terminal-powershell",
+    "env": {
+      "VSC_WS_FOLDER": "${workspaceFolder}"
+    },
+    "args": [
+      "-NoProfile",
+      "-NoExit",
+      "-Command",
+      "$OutputEncoding = [System.Text.Encoding]::UTF8; [Console]::OutputEncoding = [System.Text.Encoding]::UTF8; Set-PSReadLineOption -HistorySavePath (Join-Path $env:VSC_WS_FOLDER '.ps_history.automation.ps1')"
+    ]
+  },
+  "terminal.integrated.profiles.linux": {
+    "bash-local-history": {
+      "env": {
+        "HISTCONTROL": "ignoreboth",
+        "HISTFILE": "${workspaceFolder}/.bash_history",
+        "HISTIGNORE": " *:source *venv*/activate"
+      },
+      "icon": "terminal-bash",
+      "path": "bash"
+    },
+    "zsh-local-history": {
+      "args": ["-c", "zsh"],
+      "env": {
+        "HIST_IGNORE_DUPS": "true",
+        "HIST_IGNORE_SPACE": "true",
+        "HISTFILE": "${workspaceFolder}/.zsh_history",
+        "HISTORY_IGNORE": "(env|source *venv*/activate)",
+        "HISTIGNORE": "source *"
+      },
+      "icon": "terminal-linux",
+      "path": "bash"
+    }
+  },
+  "terminal.integrated.profiles.windows": {
+    "PowerShell-Local-History": {
+      "args": [
+        "-noprofile",
+        "-NoExit",
+        "-Command",
+        "$OutputEncoding = [System.Text.Encoding]::UTF8; [Console]::OutputEncoding = [System.Text.Encoding]::UTF8; Set-PSReadLineOption -HistorySavePath (Join-Path $env:VSC_WS_FOLDER '.ps_history.ps1')"
+      ],
+      "env": {
+        "VSC_WS_FOLDER": "${workspaceFolder}"
+      },
+      "icon": "terminal-powershell",
+      "path": "pwsh"
+    }
+  }
 }

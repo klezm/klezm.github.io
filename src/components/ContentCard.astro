@@ -20,116 +20,116 @@ let caption = '';
 
 const trimmedParams = html.trim();
 if (trimmedParams.endsWith('</sub>')) {
-    // Find the last opening sub tag
-    // We are looking for the last <sub> that pairs with the final </sub>
-    // This is a naive check: finding the last index of "<sub" before the end
-    const lastSubIndex = trimmedParams.lastIndexOf('<sub');
+  // Find the last opening sub tag
+  // We are looking for the last <sub> that pairs with the final </sub>
+  // This is a naive check: finding the last index of "<sub" before the end
+  const lastSubIndex = trimmedParams.lastIndexOf('<sub');
 
-    if (lastSubIndex !== -1) {
-        // Basic check to see if this constitutes the "end" of the string
-        // We compare the length of the string from that point to the end vs the content
-        // But since we know it ends with </sub>, we just need to be careful not to cut off nested subs incorrectly.
-        // For this specific feature (caption at the end), we assume the user puts the sub tag *after* the main content.
+  if (lastSubIndex !== -1) {
+    // Basic check to see if this constitutes the "end" of the string
+    // We compare the length of the string from that point to the end vs the content
+    // But since we know it ends with </sub>, we just need to be careful not to cut off nested subs incorrectly.
+    // For this specific feature (caption at the end), we assume the user puts the sub tag *after* the main content.
 
-        // Let's verify no other content follows it (we already trimmed)
-        // Extract
-        const potentialCaption = trimmedParams.substring(lastSubIndex);
+    // Let's verify no other content follows it (we already trimmed)
+    // Extract
+    const potentialCaption = trimmedParams.substring(lastSubIndex);
 
-        // Remove the sub tags to get the inner HTML
-        // This regex handles attributes in sub if any, though usually none for simple markdown
-        const match = potentialCaption.match(/^<sub[^>]*>(.*)<\/sub>$/s);
+    // Remove the sub tags to get the inner HTML
+    // This regex handles attributes in sub if any, though usually none for simple markdown
+    const match = potentialCaption.match(/^<sub[^>]*>(.*)<\/sub>$/s);
 
-        if (match) {
-            caption = match[1];
-            // The content is everything before the lastSubIndex
-            // We use the original html string but slice based on finding that same substring
-            // to preserve whitespace in the main content if needed, though trimming usually safer for layout.
-            // Let's rely on the trimmed version's index logic but apply to the original if possible,
-            // or just use trimmedParams.
-            content = trimmedParams.substring(0, lastSubIndex);
-        }
+    if (match) {
+      caption = match[1];
+      // The content is everything before the lastSubIndex
+      // We use the original html string but slice based on finding that same substring
+      // to preserve whitespace in the main content if needed, though trimming usually safer for layout.
+      // Let's rely on the trimmed version's index logic but apply to the original if possible,
+      // or just use trimmedParams.
+      content = trimmedParams.substring(0, lastSubIndex);
     }
+  }
 }
 ---
 
 <div
-    class:list={[
-        'content-card-wrapper',
-        align === 'center' && 'justify-center',
-        align === 'start' && 'justify-start',
-        align === 'end' && 'justify-end',
-        bleed && 'content-card-bleed',
-        className
-    ]}
-    {...props}
+  class:list={[
+    'content-card-wrapper',
+    align === 'center' && 'justify-center',
+    align === 'start' && 'justify-start',
+    align === 'end' && 'justify-end',
+    bleed && 'content-card-bleed',
+    className,
+  ]}
+  {...props}
 >
-    <div
-        class:list={[
-            'content-card',
-            caption && 'has-caption'
-        ]}
-        style={`
+  <div
+    class:list={['content-card', caption && 'has-caption']}
+    style={`
             background-color: ${bgColor};
             width: ${width};
         `}
+  >
+    <div
+      class:list={[
+        'card-content',
+        stack === 'horizontal' && 'horizontal-stack',
+      ]}
+      data-stack={stack}
+      style={`--cc-prose-width: ${proseWidth};`}
     >
-        <div
-            class:list={[
-                'card-content',
-                stack === 'horizontal' && 'horizontal-stack'
-            ]}
-            data-stack={stack}
-        >
-            <Fragment set:html={content} />
-        </div>
-
-        {caption && (
-            <div class="card-caption">
-                <Fragment set:html={caption} />
-            </div>
-        )}
+      <Fragment set:html={content} />
     </div>
+
+    {
+      caption && (
+        <div class="card-caption">
+          <Fragment set:html={caption} />
+        </div>
+      )
+    }
+  </div>
 </div>
 
 <style>
-    @reference "../styles/global.css";
+  @reference "../styles/global.css";
 
-    .content-card-wrapper {
-        @apply flex w-full;
-    }
+  .content-card-wrapper {
+    @apply flex w-full;
+  }
 
-    .content-card {
-        @apply flex flex-col max-w-full overflow-hidden rounded-lg box-border;
-        border: 1px solid var(--sl-color-gray-5);
-    }
+  .content-card {
+    @apply flex flex-col max-w-full overflow-hidden rounded-lg box-border;
+    border: 1px solid var(--sl-color-gray-5);
+  }
 
-    .card-content {
-        @apply flex flex-col w-full gap-4 p-4 items-center max-w-full [&>*]:max-w-full;
-        --cc-prose-width: v-bind(proseWidth);
-    }
+  /* `--cc-prose-width` is set inline from the `proseWidth` prop. */
+  .card-content {
+    @apply flex flex-col w-full gap-4 p-4 items-center max-w-full [&>*]:max-w-full;
+  }
 
-    /* Horizontal stack: text on left, code on right */
+  /* Horizontal stack: text on left, code on right */
+  .card-content.horizontal-stack {
+    @apply flex flex-col items-start;
+  }
+
+  @media (min-width: 40rem) {
     .card-content.horizontal-stack {
-        @apply flex flex-col items-start;
+      @apply flex-row items-center justify-between gap-8;
     }
+  }
 
-    @media (min-width: 40rem) {
-        .card-content.horizontal-stack {
-            @apply flex-row items-center justify-between gap-8;
-        }
-    }
+  .card-caption {
+    @apply text-center py-2 px-4 mt-0 w-full dark:text-gray-100;
+    font-size: var(--sl-text-sm);
+    background-color: var(--sl-color-gray-5);
+  }
 
-    .card-caption {
-        @apply text-center py-2 px-4 mt-0 w-full dark:text-gray-100;
-        font-size: var(--sl-text-sm);
-        background-color: var(--sl-color-gray-5);
-    }
-
-    /* Constrain prose width for direct children */
-    .card-content :global(> p),
-    .card-content :global(> ul > li),
-    .card-content :global(> ol > li) {
-        max-width: var(--cc-prose-width, none);
-        width: 100%;
-    }
+  /* Constrain prose width for direct children */
+  .card-content :global(> p),
+  .card-content :global(> ul > li),
+  .card-content :global(> ol > li) {
+    max-width: var(--cc-prose-width, none);
+    width: 100%;
+  }
 </style>

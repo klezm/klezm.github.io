@@ -1,49 +1,83 @@
 # GitHub Copilot Instructions for klezm.github.io
 
-This is an **Astro** project using the **Starlight** documentation theme, customized as a personal blog.
+An **Astro 7** project using the **Starlight 0.41** theme as a personal,
+blog-only site. Deployed to GitHub Pages at <https://klezm.github.io>.
 
 ## 🏗 Project Architecture
 
-- **Framework**: Astro 5.x with `@astrojs/starlight`.
-- **Styling**: Tailwind CSS v4 (via `@tailwindcss/vite`).
-- **Content**: MDX/Markdown files located in `src/content/docs/`.
-- **Routing**: Handled automatically by Starlight based on file structure in `src/content/docs/`, except for custom overrides in `src/pages/`.
+- **Framework**: Astro 7 with `@astrojs/starlight` 0.41.
+- **Styling**: Tailwind CSS v4 (via `@tailwindcss/vite`) plus plain CSS.
+  **No daisyUI** — its unprefixed component classes (`.toggle`, `.dropdown`,
+  `.hero`, `.menu`) collide with Starlight's own and silently break things.
+- **Content**: Markdown/MDX in `src/content/docs/`; routing is Starlight's
+  file-based routing.
+- **Markdown pipeline**: the **unified** processor
+  (`markdown.processor: unified(...)`), _not_ Astro 7's default Sätteri.
+  KaTeX requires remark/rehype and there is no Sätteri math plugin.
 
 ### Key Directories
-- `src/content/docs/`: **Source of truth** for all site content (blog posts, guides).
-- `src/content/docs/blog/`: Dedicated directory for blog posts.
-- `src/pages/`: Custom Astro pages that override Starlight's auto-routing (e.g., `index.astro` for the custom homepage).
-- `src/components/`: Reusable UI components (e.g., `BlogPreview.astro`).
-- `astro.config.mjs`: **Critical configuration** for Starlight plugins, sidebar navigation, and integrations.
+
+- `src/content/docs/blog/` — blog posts. This is effectively the whole site.
+- `src/components/override/` — Starlight component overrides.
+- `src/components/` — reusable components (`PostCard`, `ContentCard`,
+  `FootnotePopovers`).
+- `src/middleware/` — Starlight route middleware (sidebar off, Giscus scoping).
+- `src/plugins/` — local remark/rehype plugins.
+- `src/pages/og/` — generated Open Graph card route.
+- `astro.config.mjs` — **all** plugin wiring; heavily commented because several
+  options are load-bearing.
+
+There is no `src/pages/index.astro`. The homepage is
+`src/content/docs/index.mdx` using `template: splash` with an empty `hero: {}`,
+which the `Hero` override suppresses.
 
 ## 📝 Content & Frontmatter Conventions
 
-- **Schema**: Content must adhere to the schema defined in `src/content.config.ts` (Starlight docs schema + `starlight-blog` schema).
-- **Blog Posts**:
-  - Location: `src/content/docs/blog/*.{md,mdx}`
-  - Required Frontmatter: `title`, `date`.
-  - Optional Frontmatter: `tags`, `authors`, `excerpt`.
-- **Math Support**: Use standard LaTeX syntax (`$E=mc^2$`) supported by `remark-math` and `rehype-katex`.
+- **Schema**: `src/content.config.ts` — Starlight docs schema + `starlight-blog`
+  schema, extended with `giscus` and `bibliography`.
+- **Blog posts**: `src/content/docs/blog/*.{md,mdx}`; require `title` and
+  `date`. Optional: `tags`, `authors`, `excerpt`, `cover`, `featured`, `draft`,
+  `bibliography`, `giscus`.
+- `date` is what distinguishes a real post from the tag/author/list routes
+  `starlight-blog` generates under the same `blog/` prefix. Code that needs
+  "is this an actual post" should check it.
+- **Math**: standard LaTeX (`$E=mc^2$`) via `remark-math` + `rehype-katex`.
+- `src/content/docs/blog/kitchen-sink.mdx` exercises every feature — check
+  changes against it.
 
 ## 🎨 Styling & Components
 
-- **Tailwind CSS**: Use Tailwind utility classes for styling. Configuration is minimal due to v4.
-- **Starlight Overrides**: Custom pages (like `src/pages/index.astro`) use `<StarlightPage>` to wrap content while maintaining the site shell (header/footer) but disabling the sidebar (`hasSidebar={false}`).
-- **Custom Components**: When creating components, prefer `.astro` files.
+- Prefer `.astro` components.
+- Component-scoped `<style>` blocks that use `@apply` **must** start with
+  `@reference "/src/styles/global.css";` (path adjusted), or the build fails
+  with "unknown utility class".
+- **Never** hide the sidebar with CSS. Set
+  `starlightRoute.hasSidebar = false` in route middleware, or the reserved
+  layout column stays behind.
+- Before adding a Starlight component override, check whether a plugin already
+  claims it — plugins warn and skip, or skip silently, and the feature
+  disappears. `MarkdownContent` is shared between `starlight-blog` and
+  `starlight-image-zoom` and is composed by hand for that reason.
 
 ## 🛠 Development Workflow
 
-- **Package Manager**: `npm` (detected `package-lock.json`).
-- **Dev Server**: `npm run dev` (runs `astro dev`).
-- **Build**: `npm run build` (outputs to `dist/`).
-- **New Content**: To add a page, create a file in `src/content/docs/`. No manual routing config needed unless adding to the sidebar in `astro.config.mjs`.
+- **Package manager**: `pnpm` (`pnpm-lock.yaml` is committed).
+- `pnpm dev` / `pnpm build` / `pnpm check` / `pnpm format`.
+- `CHECK_LINKS=true pnpm build` runs `starlight-links-validator`; CI and
+  deploys set it.
 
 ## 🧩 Integrations
 
-- **Blog**: `starlight-blog` handles blog-specific features (authors, reading time).
-- **Comments**: `starlight-giscus` powers the comment section on posts.
-- **Alerts**: GitHub-style alerts (e.g., `> [!NOTE]`) are supported via `starlight-github-alerts`.
+`starlight-blog` (posts, tags, authors, RSS, metrics), `starlight-giscus`
+(comments), `starlight-github-alerts`, `starlight-image-zoom`,
+`starlight-scroll-to-top`, `starlight-heading-badges`,
+`starlight-markdown-blocks` (custom `:::` blocks), `starlight-kbd`,
+`starlight-links-validator`, `rehype-citation`, `astro-og-canvas`.
+
+Reach for an existing plugin before writing code. The only bespoke feature is
+`src/components/FootnotePopovers.astro`, because no plugin covers it.
 
 ## NON-NEGOTIABLES
 
-- Use latest best practices for Astro and Starlight. Deprecated patterns are not allowed.
+- Use latest best practices for Astro and Starlight. Deprecated patterns are not
+  allowed.

@@ -4,9 +4,9 @@ date: 2025-12-17
 authors:
   - klezm
 excerpt: Welcome to my personal blog where I share my experiences as a computer science student.
+tags:
+  - meta
 ---
-
-# Welcome!
 
 Hello and welcome to my personal blog! I'm a computer science student and I'll be sharing my experiences, learnings, and projects here.
 

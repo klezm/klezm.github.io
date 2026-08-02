@@ -4,7 +4,14 @@
 @import 'tailwindcss/theme.css' layer(theme);
 @import 'tailwindcss/utilities.css' layer(utilities);
 
-@plugin "daisyui";
+/*
+  daisyUI was removed here deliberately. Its component classes are unprefixed
+  and extremely generic — `.toggle`, `.dropdown`, `.hero`, `.menu` — and all
+  four are class names Starlight already uses internally. `.toggle` in
+  particular was silently restyling the mobile table-of-contents button into a
+  40x24 switch. It was earning its place styling exactly one button, which is
+  now plain CSS in `src/components/override/ThemeSelect.astro`.
+*/
 
 @theme {
   /*
@@ -18,9 +25,27 @@ Add additional Tailwind styles to this file:
 https://tailwindcss.com/docs/adding-custom-styles#using-custom-css
 */
 
-/* Prevent content from overlapping with the table of contents sidebar */
+/* Homepage post grid */
+.post-grid {
+  @apply grid gap-4;
+  grid-template-columns: repeat(auto-fill, minmax(min(20rem, 100%), 1fr));
+}
+
+.home-links {
+  font-size: var(--sl-text-sm);
+}
+
+/*
+  Prevent wide content (KaTeX, tables) from overlapping the table of contents.
+
+  `clip` rather than `auto`: setting `overflow-x: auto` forces the computed
+  `overflow-y` from `visible` to `auto` as well, which turns this element into a
+  scroll container. That breaks the `scroll-padding-top` Starlight sets for the
+  sticky header, so anchor jumps land underneath it. `clip` leaves the block
+  axis alone.
+*/
 .main-pane {
-  @apply overflow-x-auto;
+  overflow-x: clip;
 }
 
 /* Ensure math blocks with overflow are scrollable */
@@ -31,6 +56,22 @@ https://tailwindcss.com/docs/adding-custom-styles#using-custom-css
 /* Ensure tables don't overflow into sidebar */
 .sl-markdown-content table {
   @apply block overflow-x-auto;
+}
+
+/*
+  Align the page title with the prose column below it.
+
+  The title panel is a plain `.sl-container` spanning the full content width,
+  while the full-bleed grid below centres prose in a 65ch column — so without
+  this the title sits alone at the far left edge.
+*/
+.content-panel:has(> .sl-container > #_top) .sl-container {
+  display: grid;
+  grid-template-columns: 1fr min(65ch, 100%) 1fr;
+}
+
+.content-panel:has(> .sl-container > #_top) .sl-container > * {
+  grid-column: 2;
 }
 
 /*
@@ -61,8 +102,6 @@ https://tailwindcss.com/docs/adding-custom-styles#using-custom-css
   & > picture,
   & > video,
   & > figure,
-  & > .comment-box-center,
-  & > .equation-box-center,
   & > .content-card-bleed,
   & > div:has(> table) {
     /* Tables often wrapped in styled divs */
@@ -75,9 +114,7 @@ https://tailwindcss.com/docs/adding-custom-styles#using-custom-css
 
   /* Elements that hug content but can grow */
   & > .expressive-code,
-  & > pre,
-  & > .comment-box-center,
-  & > .equation-box-center {
+  & > pre {
     width: auto; /* Don't force 100% width, let it fit content */
     min-width: min(65ch, 100%); /* But don't be smaller than text column */
   }
@@ -96,38 +133,6 @@ https://tailwindcss.com/docs/adding-custom-styles#using-custom-css
     min-width: min(65ch, 100%);
     max-width: 100%;
     margin-inline: auto;
-    /* @apply table w-fit min-w-[min(65ch,100%)] max-w-full mx-auto; */
-  }
-
-  /*
-       Handle nested content in .comment-box-center & .equation-box-center
-       We make it a grid so its children can be constrained again.
-       This effectively "passes through" the layout logic.
-    */
-  & > .comment-box-center,
-  & > .equation-box-center {
-    @apply grid;
-    grid-template-columns: 1fr min(65ch, 100%) 1fr;
-    width: 100%; /* The container itself MUST be full width to hold the grid */
-
-    /* Children of the box go back to center */
-    & > * {
-      @apply col-start-2;
-    }
-
-    /* Recursive full-width children */
-    & > .expressive-code,
-    & > pre,
-    & > table,
-    & > .katex-display,
-    & > .MathJax,
-    & > mjx-container {
-      grid-column: 1 / -1;
-      width: auto;
-      max-width: 100%;
-      justify-self: center; /* Center if smaller than full width */
-      /* @apply col-span-full w-auto max-w-full justify-self-center; */
-    }
   }
 }
 
@@ -137,6 +142,39 @@ https://tailwindcss.com/docs/adding-custom-styles#using-custom-css
 */
 .blog-content-wrapper .sl-markdown-content table td {
   @apply max-w-[50ch];
+}
+
+/* =============================================================================
+   Table of Contents — scroll-spy emphasis
+
+   Starlight already runs the IntersectionObserver that moves `aria-current`
+   between entries as you scroll. Its only styling for the active entry is a
+   colour change, which is easy to miss on a long post. These rules make the
+   current position legible at a glance.
+   ============================================================================= */
+
+starlight-toc nav a {
+  border-inline-start: 2px solid transparent;
+  transition:
+    color 150ms ease,
+    background-color 150ms ease,
+    border-color 150ms ease;
+}
+
+starlight-toc nav a[aria-current='true'] {
+  font-weight: 600;
+  background-color: var(--sl-color-gray-6);
+  border-inline-start-color: var(--sl-color-text-accent);
+}
+
+starlight-toc nav a:hover {
+  background-color: var(--sl-color-gray-6);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  starlight-toc nav a {
+    transition: none;
+  }
 }
 
 /* =============================================================================
@@ -160,32 +198,13 @@ https://tailwindcss.com/docs/adding-custom-styles#using-custom-css
 }
 
 /* =============================================================================
-   Mobile TOC Bar Fixes
+   Mobile TOC Bar
    ============================================================================= */
 
-/* Fix the broken toggle button design */
-mobile-starlight-toc .toggle {
-  display: flex !important; /* Restore flex layout */
-  align-items: center;
-  gap: 0.5rem;
-  width: auto !important; /* Prevent squashing */
-  height: auto !important;
-}
-
-mobile-starlight-toc nav:has(details:not([open])) {
-  background-color: transparent !important;
-  border: 0px !important;
-}
-
-mobile-starlight-toc summary {
-  border: 0px !important;
-
-  &::before {
-    content: '';
-    @apply flex-grow;
-  }
-}
-
-mobile-starlight-toc .display-current {
-  display: none;
-}
+/*
+  Starlight 0.41 lays this bar out correctly on its own, so there is nothing to
+  patch here any more. The `!important` overrides that used to live in this
+  block were written against 0.37 and were really working around daisyUI's
+  `.toggle` component class clobbering Starlight's `.toggle` element — see the
+  note at the top of this file. With daisyUI gone, the defaults are correct.
+*/

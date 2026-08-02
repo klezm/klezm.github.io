@@ -1,4 +1,5 @@
-import { defineCollection, z } from 'astro:content';
+import { defineCollection } from 'astro:content';
+import { z } from 'astro/zod';
 import { docsLoader } from '@astrojs/starlight/loaders';
 import { docsSchema } from '@astrojs/starlight/schema';
 import { blogSchema } from 'starlight-blog/schema';
@@ -9,9 +10,10 @@ export const collections = {
     schema: docsSchema({
       extend: (context) =>
         blogSchema(context).extend({
-          hide_title: z.boolean().optional(),
-          show_sidebar: z.boolean().optional(),
+          /** Opt a page in or out of Giscus comments. Defaults to on for blog posts. */
           giscus: z.boolean().optional(),
+          /** Path to a BibTeX/CSL-JSON file, relative to the post. Enables `[@key]` citations. */
+          bibliography: z.string().optional(),
         }),
     }),
   }),

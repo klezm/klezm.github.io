@@ -1,0 +1,37 @@
+---
+/**
+ * `starlight-blog` and `starlight-image-zoom` both want to own the
+ * `MarkdownContent` component. starlight-image-zoom only claims it when it is
+ * still free, and starlight-blog warns and skips when it is already taken, so
+ * whichever plugin is registered first wins and the other silently loses its
+ * feature. Owning the override here and rendering both is the only way to keep
+ * post metadata *and* image zoom.
+ *
+ * It also carries `.blog-content-wrapper`, the hook for the full-bleed grid in
+ * `src/styles/global.css`.
+ */
+import BlogMarkdownContent from 'starlight-blog/overrides/MarkdownContent.astro';
+import ImageZoom from 'starlight-image-zoom/components/ImageZoom.astro';
+import FootnotePopovers from '../FootnotePopovers.astro';
+
+const { id, entry } = Astro.locals.starlightRoute;
+
+// Generated list/tag/author routes live under `blog/` too, but have no date.
+const isPost = id.startsWith('blog/') && entry.data.date !== undefined;
+---
+
+<ImageZoom />
+{
+  isPost ? (
+    <div class="blog-content-wrapper">
+      <BlogMarkdownContent>
+        <slot />
+      </BlogMarkdownContent>
+      <FootnotePopovers />
+    </div>
+  ) : (
+    <BlogMarkdownContent>
+      <slot />
+    </BlogMarkdownContent>
+  )
+}
