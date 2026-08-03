@@ -18,6 +18,7 @@ import starlightMarkdownBlocks, { Aside } from 'starlight-markdown-blocks';
 import starlightScrollToTop from 'starlight-scroll-to-top';
 
 import { rehypeCitationFrontmatter } from './src/plugins/rehype-citation-frontmatter.js';
+import { rehypeMathHeadings } from './src/plugins/rehype-math-headings.js';
 
 const site = 'https://klezm.github.io';
 
@@ -147,6 +148,9 @@ export default defineConfig({
       remarkPlugins: [remarkMath, remarkDirective],
       rehypePlugins: [
         rehypeKatex,
+        // Must follow rehypeKatex: stops KaTeX's duplicated MathML and raw TeX
+        // from leaking into table-of-contents labels.
+        rehypeMathHeadings,
         // Opt-in per post via the `bibliography` frontmatter key.
         [rehypeCitationFrontmatter, { csl: 'apa', linkCitations: true }],
       ],
