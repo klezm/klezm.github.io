@@ -44,8 +44,28 @@ featured: true # pin to the featured group
 draft: true # dev-only; excluded from production builds
 bibliography: blog/bib/my-post.bib # enables [@citekey] citations
 giscus: false # opt out of comments (on by default for posts)
+postLayout: two-column # default | wide | two-column
+frame: false # hide the rule marking the prose column
 ---
 ```
+
+### Post layouts
+
+`postLayout` picks the template:
+
+| Value        | Measure | Best for                    |
+| ------------ | ------- | --------------------------- |
+| `default`    | 65ch    | Essays, most posts          |
+| `wide`       | 90ch    | Code- and table-heavy posts |
+| `two-column` | 100ch   | Short reference material    |
+
+`two-column` swaps the bleed grid for a real multi-column container, so text
+flows down column one and continues at the top of column two. Headings, banners,
+bleeding elements and the tags/prev-next block span both columns.
+
+Every post also draws a dashed rule marking where the text measure ends, with
+accent marks on elements that deliberately break past it. Turn it off per post
+with `frame: false`; it hides itself on narrow screens and in print.
 
 `src/content/docs/blog/kitchen-sink.mdx` exercises every feature and component,
 and is the fastest way to see what is available.
@@ -54,15 +74,19 @@ and is the fastest way to see what is available.
 
 Available under `src/components/`, all built on daisyUI primitives:
 
-| Component      | Purpose                                              |
-| -------------- | ---------------------------------------------------- |
-| `ContentCard`  | Card with optional title, caption slot, and stacking |
-| `Callout`      | Admonition (`note`/`tip`/`info`/`warning`/`danger`)  |
-| `Figure`       | Any block plus a caption                             |
-| `ColoredBox`   | Tinted box or leading accent bar                     |
-| `Bleed`        | Break out of the prose column                        |
-| `Banner`       | Article banner, optionally over an image             |
-| `EditOnGitHub` | View/edit links derived from the current route       |
+| Component      | Purpose                                             |
+| -------------- | --------------------------------------------------- |
+| `ContentCard`  | Card with optional title, caption, and stacking     |
+| `Callout`      | Admonition (`note`/`tip`/`info`/`warning`/`danger`) |
+| `Figure`       | Any block plus a caption                            |
+| `ColoredBox`   | Tinted box or leading accent bar                    |
+| `Bleed`        | Break out of the prose column                       |
+| `Banner`       | Article banner, optionally over an image            |
+| `EditOnGitHub` | View/edit links derived from the current route      |
+
+`ContentCard` takes its caption either from a `caption` slot or, when no slot is
+given, from whatever follows a trailing `---` in its body — so a card can be
+written as plain Markdown.
 
 ## How it fits together
 

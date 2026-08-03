@@ -30,12 +30,21 @@ const { entry } = Astro.locals.starlightRoute;
  */
 const isPost =
   entry.id.startsWith('blog/') && Boolean((entry.data as { date?: Date }).date);
+
+const data = entry.data as { postLayout?: string; frame?: boolean };
+const postLayout = data.postLayout ?? 'default';
+// `frame` defaults to true in the schema, but virtual routes bypass it.
+const frame = data.frame !== false;
 ---
 
 {
   isPost ? (
     <>
-      <div class="blog-content-wrapper">
+      <div
+        class="blog-content-wrapper"
+        data-post-layout={postLayout}
+        data-frame={frame ? 'true' : 'false'}
+      >
         <BlogMarkdownContent>
           <slot />
         </BlogMarkdownContent>

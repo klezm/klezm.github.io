@@ -87,6 +87,18 @@ sit visibly short of their tracks.
 
 </ContentCard>
 
+A card with no `caption` slot treats anything after a trailing `---` as its
+caption, so the whole card can be written as plain Markdown:
+
+<ContentCard title="Caption after a rule">
+  The body of the card goes here, as ordinary Markdown.
+
+---
+
+Everything after the final rule becomes the caption.
+
+</ContentCard>
+
 ## Colored boxes
 
 <ColoredBox tone="primary">

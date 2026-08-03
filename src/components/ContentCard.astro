@@ -19,7 +19,39 @@ interface Props {
 
 const { title, stack = 'vertical', bleed = false, proseWidth } = Astro.props;
 
-const hasCaption = Astro.slots.has('caption');
+const hasCaptionSlot = Astro.slots.has('caption');
+
+/*
+ * Caption-after-a-rule.
+ *
+ * When no `caption` slot is given, a trailing `---` in the card's body splits
+ * it: everything after the final horizontal rule becomes the caption. This lets
+ * a card be written as plain Markdown without a slot attribute.
+ *
+ * Done by string surgery on the rendered slot rather than by parsing an AST —
+ * the shape being matched is a single well-known tag, and pulling in an HTML
+ * parser to find it would be far more machinery than the job needs.
+ */
+let bodyHtml = await Astro.slots.render('default');
+let captionHtml: string | null = null;
+
+if (!hasCaptionSlot) {
+  // Match the last top-level rule, however Astro chose to serialise it.
+  const rule = /<hr\s*\/?>(?![\s\S]*<hr\s*\/?>)/;
+  const match = bodyHtml.match(rule);
+
+  if (match?.index !== undefined) {
+    captionHtml = bodyHtml.slice(match.index + match[0].length).trim();
+    bodyHtml = bodyHtml.slice(0, match.index);
+    // A rule with nothing after it is just a rule.
+    if (captionHtml.length === 0) {
+      captionHtml = null;
+      bodyHtml = await Astro.slots.render('default');
+    }
+  }
+}
+
+const hasCaption = hasCaptionSlot || captionHtml !== null;
 ---
 
 <figure
@@ -46,12 +78,16 @@ const hasCaption = Astro.slots.has('caption');
       resolves against the (empty) explicit grid.
     */
     }
-    <div class="content-card-content"><slot /></div>
+    <div class="content-card-content" set:html={bodyHtml} />
   </div>
   {
     hasCaption && (
       <figcaption class="content-card-caption">
-        <slot name="caption" />
+        {hasCaptionSlot ? (
+          <slot name="caption" />
+        ) : (
+          <Fragment set:html={captionHtml} />
+        )}
       </figcaption>
     )
   }

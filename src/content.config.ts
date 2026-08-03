@@ -22,6 +22,22 @@ export const collections = {
           bibliography: z.string().optional(),
           /** Opt out of comments. Comments are on for posts by default. */
           giscus: z.boolean().optional(),
+          /**
+           * Post layout template.
+           *
+           * Named `postLayout` rather than `layout` because Starlight already
+           * uses `template` for its own doc/splash distinction and a second
+           * near-synonym invites confusion.
+           *
+           * - `default`   — single column at the readable measure
+           * - `wide`      — single column, roomier; for code- or table-heavy posts
+           * - `two-column`— prose flows in two columns on wide screens
+           */
+          postLayout: z
+            .enum(['default', 'wide', 'two-column'])
+            .default('default'),
+          /** Draw the frame marking the prose column. On by default. */
+          frame: z.boolean().default(true),
         }),
     }),
   }),

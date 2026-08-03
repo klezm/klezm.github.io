@@ -95,11 +95,16 @@
  * right-hand column for the table of contents, so a viewport-relative breakout
  * drifts off-centre and slides under the TOC.
  */
+.blog-content-wrapper {
+  --content-measure: 65ch;
+}
+
 .blog-content-wrapper .sl-markdown-content {
+  position: relative;
   display: grid;
   grid-template-columns:
     minmax(0, 1fr)
-    min(var(--content-measure, 65ch), 100%)
+    min(var(--content-measure), 100%)
     minmax(0, 1fr);
 }
 
@@ -110,6 +115,135 @@
 
 .blog-content-wrapper .sl-markdown-content > .is-bleed {
   grid-column: 1 / -1;
+}
+
+/* ---------------------------------------------------------------- *
+ * Post layout templates, selected by the `postLayout` frontmatter.  *
+ * ---------------------------------------------------------------- */
+
+/* Roomier measure for code- and table-heavy posts. */
+.blog-content-wrapper[data-post-layout='wide'] {
+  --content-measure: 90ch;
+}
+
+/*
+ * Two text columns once there is room.
+ *
+ * The whole content box becomes the multi-column container, so text flows DOWN
+ * column one and continues at the top of column two — newspaper order. Setting
+ * `columns` on the individual blocks instead splits each paragraph across both
+ * columns, which reads as two unrelated half-sentences side by side.
+ *
+ * Multi-column and grid are mutually exclusive, so the bleed grid is swapped
+ * out here and `column-span: all` does the equivalent job.
+ */
+@media (min-width: 60rem) {
+  .blog-content-wrapper[data-post-layout='two-column'] {
+    --content-measure: 100ch;
+  }
+
+  .blog-content-wrapper[data-post-layout='two-column'] .sl-markdown-content {
+    display: block;
+    max-width: min(var(--content-measure), 100%);
+    margin-inline: auto;
+    columns: 2;
+    column-gap: 2.5rem;
+  }
+
+  /*
+   * Structure and wide media break the flow rather than sitting in a column.
+   *
+   * `.sl-heading-wrapper` is in this list because Starlight wraps every heading
+   * in one — a bare `> h2` selector matches nothing here, since the heading is a
+   * grandchild. `.metadata` and `.post-footer` are starlight-blog's byline and
+   * its tags/prev-next block, which read as page furniture rather than prose.
+   */
+  .blog-content-wrapper[data-post-layout='two-column']
+    .sl-markdown-content
+    > :is(
+      .sl-heading-wrapper,
+      h1,
+      h2,
+      .is-bleed,
+      .footnotes,
+      .metadata,
+      .post-footer,
+      .article-banner
+    ) {
+    column-span: all;
+  }
+
+  /*
+   * Only atomic blocks resist the column break. Paragraphs and lists are left
+   * to break naturally — that is ordinary newspaper flow and reads fine, while
+   * forcing them whole punches large holes at the bottom of a column.
+   */
+  .blog-content-wrapper[data-post-layout='two-column']
+    .sl-markdown-content
+    > :is(pre, table, figure, .content-card, .callout, .colored-box) {
+    break-inside: avoid;
+  }
+}
+
+/* ---------------------------------------------------------------- *
+ * Prose frame + overflow indicator.                                 *
+ * ---------------------------------------------------------------- */
+
+/*
+ * A dashed rule marks where the text measure ends, so it is obvious at a glance
+ * which elements are deliberately breaking out of it and which are not.
+ *
+ * Drawn with an absolutely-positioned pseudo-element rather than a grid item.
+ * A pseudo-element inside a grid container IS a grid item, and spanning it down
+ * the page with `grid-row: 1 / -1` silently collapses: the rows here are all
+ * implicit, so `-1` resolves against the empty explicit grid.
+ */
+.blog-content-wrapper[data-frame='true'] .sl-markdown-content::before {
+  content: '';
+  position: absolute;
+  inset-block: 0;
+  left: 50%;
+  width: calc(min(var(--content-measure), 100%) + 3rem);
+  transform: translateX(-50%);
+  border-inline: 1px dashed var(--sl-color-gray-6);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Keep content above the frame so the rule never crosses text. */
+.blog-content-wrapper[data-frame='true'] .sl-markdown-content > * {
+  position: relative;
+  z-index: 1;
+}
+
+/*
+ * Elements that extend past the frame get accent edge marks, so a bleed reads
+ * as intentional rather than as a layout bug.
+ */
+.blog-content-wrapper[data-frame='true'] .sl-markdown-content > .is-bleed {
+  position: relative;
+}
+
+.blog-content-wrapper[data-frame='true']
+  .sl-markdown-content
+  > .is-bleed::after {
+  content: '';
+  position: absolute;
+  inset-block: 0;
+  inset-inline: -0.75rem;
+  border-inline: 2px solid var(--sl-color-accent);
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+/* The frame is decoration; hide it from print and narrow screens. */
+@media (max-width: 50rem), print {
+  .blog-content-wrapper[data-frame='true'] .sl-markdown-content::before,
+  .blog-content-wrapper[data-frame='true']
+    .sl-markdown-content
+    > .is-bleed::after {
+    display: none;
+  }
 }
 
 /*
@@ -134,8 +268,78 @@
   overflow-x: auto;
 }
 
-.sl-markdown-content table td {
-  max-width: 50ch;
+/*
+ * Prose inside a cell must not outrun the body measure either, or one verbose
+ * column stretches the whole table past the text it belongs to.
+ */
+.sl-markdown-content table td,
+.sl-markdown-content table th {
+  max-width: min(50ch, var(--content-measure, 65ch));
+}
+
+/* ---------------------------------------------------------------- *
+ * Footnote section.                                                 *
+ * ---------------------------------------------------------------- */
+
+/*
+ * GFM emits `<section data-footnotes class="footnotes">` with a visually hidden
+ * `<h2>`. Left alone it reads as an unlabelled list bolted to the end of the
+ * post, so give it a visible rule, a label and quieter type.
+ */
+.sl-markdown-content .footnotes {
+  margin-top: 3rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--sl-color-gray-5);
+  font-size: var(--sl-text-sm);
+  color: var(--sl-color-gray-3);
+}
+
+.sl-markdown-content .footnotes::before {
+  content: 'Notes';
+  display: block;
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+  font-size: var(--sl-text-base);
+  color: var(--sl-color-white);
+}
+
+.sl-markdown-content .footnotes ol {
+  display: grid;
+  gap: 0.5rem;
+  padding-inline-start: 1.25rem;
+}
+
+.sl-markdown-content .footnotes li p {
+  margin: 0;
+}
+
+.sl-markdown-content .footnotes li + li {
+  margin-top: 0;
+}
+
+/* Highlight the note you just jumped to. */
+.sl-markdown-content .footnotes li:target {
+  background: var(--sl-color-gray-6);
+  border-radius: var(--radius-field, 0.375rem);
+  padding: 0.25rem 0.5rem;
+  margin-inline: -0.5rem;
+}
+
+.sl-markdown-content [data-footnote-backref] {
+  text-decoration: none;
+  margin-inline-start: 0.25rem;
+}
+
+/* The reference numbers themselves — these carry the hover popovers. */
+.sl-markdown-content [data-footnote-ref] {
+  text-decoration: none;
+  padding-inline: 0.15em;
+  border-radius: 0.2em;
+}
+
+.sl-markdown-content [data-footnote-ref]:hover,
+.sl-markdown-content [data-footnote-ref]:focus-visible {
+  background: var(--sl-color-accent-low);
 }
 
 /*
