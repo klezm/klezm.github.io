@@ -325,8 +325,13 @@
   margin-inline: -0.5rem;
 }
 
+/*
+ * The backref keeps its underline on purpose. Stripping it leaves colour as the
+ * only thing distinguishing the link from the note text around it, which fails
+ * WCAG 1.4.1 (use of colour) — Lighthouse flags it as "links rely on color to
+ * be distinguishable".
+ */
 .sl-markdown-content [data-footnote-backref] {
-  text-decoration: none;
   margin-inline-start: 0.25rem;
 }
 
