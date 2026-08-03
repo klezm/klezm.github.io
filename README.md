@@ -152,6 +152,28 @@ for free.
   `overflow-y: auto` too, breaking `scroll-padding-top` so anchor links land
   under the sticky header.
 
+## Analytics
+
+[Umami](https://umami.is) — cookieless, storing no personal data, so the site
+carries no consent banner. Swapping in a provider that sets cookies would change
+that.
+
+It is configured entirely through environment variables, so no site identifier
+is committed and forks stay un-instrumented. See `.env.example`:
+
+| Variable                  | Purpose                                       |
+| ------------------------- | --------------------------------------------- |
+| `PUBLIC_UMAMI_WEBSITE_ID` | Umami site id. Unset means no tag is emitted. |
+| `PUBLIC_UMAMI_SRC`        | Script URL. Only needed when self-hosting.    |
+
+The `PUBLIC_` prefix is required — Astro only exposes variables to the client
+bundle under it. No tag is emitted during `pnpm dev` regardless, so local
+browsing never reaches the real numbers.
+
+To enable on the deployed site, set both as **repository variables** (Settings →
+Secrets and variables → Actions → Variables). They are not secrets: both values
+ship to the browser in the tag itself.
+
 ## Deployment
 
 Pushes to `master` build and publish to GitHub Pages via

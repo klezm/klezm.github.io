@@ -39,6 +39,10 @@ jobs:
         env:
           # Fail the deploy on dead internal links and stale heading anchors.
           CHECK_LINKS: true
+          # Repository variables, not secrets — both values ship to the browser
+          # in the analytics tag anyway. Unset means no analytics.
+          PUBLIC_UMAMI_WEBSITE_ID: ${{ vars.PUBLIC_UMAMI_WEBSITE_ID }}
+          PUBLIC_UMAMI_SRC: ${{ vars.PUBLIC_UMAMI_SRC }}
 
       - uses: actions/upload-pages-artifact@v4
         with:

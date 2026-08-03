@@ -33,6 +33,7 @@ export default defineConfig({
       components: {
         MarkdownContent: './src/components/override/MarkdownContent.astro',
         Footer: './src/components/override/Footer.astro',
+        Head: './src/components/override/Head.astro',
       },
       plugins: [
         starlightBlog({
