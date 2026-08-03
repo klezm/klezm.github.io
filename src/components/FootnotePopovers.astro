@@ -1,0 +1,156 @@
+---
+/**
+ * Hover/focus popovers on footnote reference numbers.
+ *
+ * Pure progressive enhancement over the standard GFM footnote markup
+ * (`a[data-footnote-ref]` pointing at `li` elements inside `[data-footnotes]`).
+ * With JavaScript disabled the references still work as plain anchor jumps.
+ */
+---
+
+<div id="footnote-popover" role="tooltip" hidden></div>
+
+<script>
+  const SHOW_DELAY = 120;
+  const HIDE_DELAY = 200;
+
+  function init() {
+    const popover = document.getElementById('footnote-popover');
+    if (!popover) return;
+
+    const refs = document.querySelectorAll<HTMLAnchorElement>(
+      'a[data-footnote-ref]',
+    );
+    if (refs.length === 0) return;
+
+    let showTimer: number | undefined;
+    let hideTimer: number | undefined;
+    let current: HTMLAnchorElement | null = null;
+
+    const clearTimers = () => {
+      window.clearTimeout(showTimer);
+      window.clearTimeout(hideTimer);
+    };
+
+    const hide = () => {
+      popover.hidden = true;
+      popover.classList.remove('is-visible');
+      current = null;
+    };
+
+    const position = (ref: HTMLAnchorElement) => {
+      const rect = ref.getBoundingClientRect();
+      const pop = popover.getBoundingClientRect();
+      const margin = 8;
+
+      // Prefer above the reference; flip below when there is no room.
+      let top = rect.top - pop.height - margin;
+      if (top < margin) top = rect.bottom + margin;
+
+      // Keep the panel inside the viewport horizontally.
+      let left = rect.left + rect.width / 2 - pop.width / 2;
+      left = Math.max(
+        margin,
+        Math.min(
+          left,
+          document.documentElement.clientWidth - pop.width - margin,
+        ),
+      );
+
+      popover.style.top = `${top + window.scrollY}px`;
+      popover.style.left = `${left + window.scrollX}px`;
+    };
+
+    const show = (ref: HTMLAnchorElement) => {
+      const id = decodeURIComponent(ref.getAttribute('href') ?? '').slice(1);
+      const target = id ? document.getElementById(id) : null;
+      if (!target) return;
+
+      const content = target.cloneNode(true) as HTMLElement;
+      // Drop the "back to content" arrows — they are meaningless in a popover.
+      content
+        .querySelectorAll('[data-footnote-backref]')
+        .forEach((el) => el.remove());
+
+      popover.innerHTML = content.innerHTML;
+      popover.hidden = false;
+      popover.classList.add('is-visible');
+      current = ref;
+      position(ref);
+    };
+
+    const scheduleShow = (ref: HTMLAnchorElement) => {
+      clearTimers();
+      showTimer = window.setTimeout(() => show(ref), SHOW_DELAY);
+    };
+
+    const scheduleHide = () => {
+      clearTimers();
+      hideTimer = window.setTimeout(hide, HIDE_DELAY);
+    };
+
+    refs.forEach((ref) => {
+      ref.addEventListener('mouseenter', () => scheduleShow(ref));
+      ref.addEventListener('mouseleave', scheduleHide);
+      ref.addEventListener('focus', () => show(ref));
+      ref.addEventListener('blur', hide);
+    });
+
+    // Keep the popover open while the pointer is inside it, so links in a
+    // footnote are actually clickable.
+    popover.addEventListener('mouseenter', clearTimers);
+    popover.addEventListener('mouseleave', scheduleHide);
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') hide();
+    });
+
+    window.addEventListener(
+      'scroll',
+      () => {
+        if (current) position(current);
+      },
+      { passive: true },
+    );
+  }
+
+  init();
+  // Starlight uses view transitions; re-bind after each navigation.
+  document.addEventListener('astro:page-load', init);
+</script>
+
+<style is:global>
+  #footnote-popover {
+    position: absolute;
+    z-index: 100;
+    max-width: min(32rem, calc(100vw - 2rem));
+    padding: 0.625rem 0.875rem;
+    background: var(--sl-color-black);
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: var(--radius-box, 0.5rem);
+    box-shadow: 0 8px 24px rgb(0 0 0 / 0.18);
+    color: var(--sl-color-gray-1);
+    font-size: var(--sl-text-sm);
+    line-height: 1.5;
+    opacity: 0;
+    transition: opacity 120ms ease;
+  }
+
+  #footnote-popover.is-visible {
+    opacity: 1;
+  }
+
+  #footnote-popover p {
+    margin: 0;
+  }
+
+  #footnote-popover p + p {
+    margin-top: 0.5rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #footnote-popover {
+      transition: none;
+    }
+  }
+</style>

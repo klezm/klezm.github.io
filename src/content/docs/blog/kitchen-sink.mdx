@@ -1,0 +1,161 @@
+---
+title: Kitchen sink
+date: 2026-08-02
+authors: [klezm]
+tags: [meta, math, components]
+excerpt: Every component and content feature this site supports, on one page.
+featured: true
+bibliography: blog/bib/kitchen-sink.bib
+---
+
+import ContentCard from '../../../components/ContentCard.astro';
+import Callout from '../../../components/Callout.astro';
+import Figure from '../../../components/Figure.astro';
+import ColoredBox from '../../../components/ColoredBox.astro';
+import Bleed from '../../../components/Bleed.astro';
+import { Aside, Tabs, TabItem, Steps } from '@astrojs/starlight/components';
+
+This post exists to exercise everything at once, so a regression in any feature
+shows up somewhere on this page.
+
+## Text and footnotes
+
+Ordinary prose is capped at a readable measure regardless of how wide the window
+gets. Footnote references get a popover on hover or keyboard focus[^measure],
+falling back to a plain anchor jump when JavaScript is unavailable[^nojs].
+
+[^measure]:
+    Roughly 65 characters per line. Longer lines make it harder for the
+    eye to find the start of the next one.
+
+[^nojs]:
+    The popovers are progressive enhancement — the markup is standard GFM
+    footnotes and works without any script.
+
+## Math
+
+Inline math like $e^{i\pi} + 1 = 0$ sits in the run of text. Display math gets
+its own block and scrolls horizontally rather than widening the page:
+
+$$
+H(X) = -\sum_{i=1}^{n} P(x_i) \log_b P(x_i)
+$$
+
+## Citations
+
+Citations are opt-in per post through the `bibliography` frontmatter key.
+Information theory begins with [@shannon1948], computability with [@turing1936],
+and the type-systems material with [@pierce2002].
+
+## Callouts
+
+<Callout type="note">
+  A `d-alert` under the hood, so it inherits the daisyUI palette.
+</Callout>
+
+<Callout type="warning" title="Mind the prefix">
+  Every daisyUI class on this site is prefixed with `d-`. Dropping the prefix
+  reintroduces the collision with Starlight's `.toggle`, `.dropdown`, `.hero`
+  and `.menu`.
+</Callout>
+
+<Callout type="danger" title="Do not do this">
+  Hiding the sidebar with `display: none` leaves its grid column behind and the
+  content never expands.
+</Callout>
+
+Starlight's own asides still work alongside them:
+
+<Aside type="tip">This is Starlight's built-in aside component.</Aside>
+
+## Content cards
+
+<ContentCard title="A card with a caption">
+  Cards group related content and cap their own prose at the readable measure,
+  so a card never produces longer lines than the surrounding text.
+
+  <span slot="caption">The caption sits on a tinted band rather than behind a border.</span>
+</ContentCard>
+
+<ContentCard title="Horizontal stacking" stack="horizontal">
+  Mobile-first: this stacks vertically by default and only splits into columns
+  at 40rem and up.
+
+In a horizontal split each column is already narrower than the readable
+measure, so the per-child width cap is lifted — otherwise the columns would
+sit visibly short of their tracks.
+
+</ContentCard>
+
+## Colored boxes
+
+<ColoredBox tone="primary">
+  A tinted box for setting a passage apart without implying a severity.
+</ColoredBox>
+
+<ColoredBox tone="warning" bar>
+  With `bar`, the tint is replaced by a single accent rule on the leading edge.
+</ColoredBox>
+
+## Bleed
+
+<Bleed>
+  <ContentCard title="Full content width">
+    This card spans the whole content column instead of the prose measure. The
+    breakout is done with a three-track grid rather than a viewport-relative
+    width, because on wide screens the content column is not centred in the
+    viewport — Starlight reserves a right-hand column for the table of contents.
+  </ContentCard>
+</Bleed>
+
+## Figures
+
+<Figure caption="Figures take a caption prop or a caption slot for rich content.">
+  <ColoredBox tone="info">Any block can sit inside a figure.</ColoredBox>
+</Figure>
+
+## Code
+
+Code blocks carry a language indicator and a title, courtesy of Expressive Code:
+
+```ts title="src/middleware/starlight-sidebar.ts"
+export const onRequest = defineRouteMiddleware((context) => {
+  // Never do this with CSS — the reserved grid column stays behind.
+  context.locals.starlightRoute.hasSidebar = false;
+});
+```
+
+```python
+def entropy(probabilities):
+    return -sum(p * log2(p) for p in probabilities if p > 0)
+```
+
+## Tabs and steps
+
+<Tabs>
+  <TabItem label="pnpm">```sh pnpm install ```</TabItem>
+  <TabItem label="npm">```sh npm install ```</TabItem>
+</Tabs>
+
+<Steps>
+
+1. Install dependencies.
+
+2. Run `pnpm dev`.
+
+3. Open the site at `localhost:4321`.
+
+</Steps>
+
+## Tables
+
+Tables size to their content rather than stretching to fill, and scroll inside
+their own box when they cannot fit:
+
+| Feature  | Source               | Prefixed |
+| -------- | -------------------- | -------- |
+| Search   | Starlight (Pagefind) | n/a      |
+| Tags     | starlight-blog       | n/a      |
+| Cards    | daisyUI `d-card`     | yes      |
+| Callouts | daisyUI `d-alert`    | yes      |
+| Math     | remark-math + KaTeX  | n/a      |

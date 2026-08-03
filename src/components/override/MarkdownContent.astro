@@ -1,0 +1,50 @@
+---
+/**
+ * Wraps the rendered post body so the bleed grid in `global.css` has something
+ * to hang off, and mounts the footnote popovers.
+ *
+ * Deliberately composes starlight-blog's own override rather than Starlight's
+ * default: starlight-blog claims `MarkdownContent` to render post metadata,
+ * cover images, tags and prev/next links. Pointing this at the plain default
+ * would silently drop all of that.
+ *
+ * starlight-blog logs "It looks like you already have a `MarkdownContent`
+ * component override" on every build. That warning is expected here and is
+ * benign — it means the plugin stepped aside for this file, which then delegates
+ * straight back to it. Do not let it desensitise you to the same warning naming
+ * a DIFFERENT component; that one would be a real, silent collision.
+ */
+import BlogMarkdownContent from 'starlight-blog/overrides/MarkdownContent.astro';
+import FootnotePopovers from '../FootnotePopovers.astro';
+
+const { entry } = Astro.locals.starlightRoute;
+
+/*
+ * Only real posts get the bleed grid and popovers. The `blog/` prefix alone is
+ * not enough — starlight-blog generates its tag, author and post-list routes
+ * under that same prefix. Those virtual entries have no `date`.
+ *
+ * This also keeps the grid off the splash homepage, which renders
+ * `.sl-markdown-content` too and would otherwise have its card grid squeezed
+ * down to the 65ch prose measure.
+ */
+const isPost =
+  entry.id.startsWith('blog/') && Boolean((entry.data as { date?: Date }).date);
+---
+
+{
+  isPost ? (
+    <>
+      <div class="blog-content-wrapper">
+        <BlogMarkdownContent>
+          <slot />
+        </BlogMarkdownContent>
+      </div>
+      <FootnotePopovers />
+    </>
+  ) : (
+    <BlogMarkdownContent>
+      <slot />
+    </BlogMarkdownContent>
+  )
+}

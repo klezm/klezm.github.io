@@ -1,0 +1,149 @@
+/*
+ * Cascade layer order. This declaration must come first in the file and this
+ * file must be first in Starlight's `customCss`, because every later stylesheet
+ * — including everything Tailwind and daisyUI emit — is sorted into these.
+ *
+ * `starlight` sits above `base` so Starlight's chrome always beats daisyUI's
+ * base reset; `utilities` sits last so a Tailwind utility can still win.
+ */
+@layer base, starlight, theme, components, utilities;
+
+@import '@astrojs/starlight-tailwind';
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities);
+
+/*
+ * daisyUI MUST stay prefixed.
+ *
+ * Its component classes are unprefixed by default and collide with four class
+ * names Starlight uses internally: `.toggle`, `.dropdown`, `.hero` and `.menu`.
+ * An earlier iteration of this site shipped daisyUI unprefixed and its `.toggle`
+ * silently restyled the mobile table-of-contents button into a 40x24 switch.
+ *
+ * `rootscrollgutter` is excluded because it sets `scrollbar-gutter` on :root,
+ * which fights Starlight's own layout and shifts the sticky header.
+ *
+ * Theme names are deliberately `light` and `dark`: Starlight's theme control
+ * writes the resolved value into `document.documentElement.dataset.theme`
+ * (never "auto" — see ThemeSelect.astro), and daisyUI selects themes off that
+ * same `data-theme` attribute. They bind with no glue JavaScript.
+ */
+@plugin "daisyui" {
+  themes:
+    light --default,
+    dark --prefersdark;
+  prefix: 'd-';
+  exclude: rootscrollgutter;
+  logs: false;
+}
+
+@theme {
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji',
+    'Segoe UI Emoji';
+  --font-mono:
+    ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono',
+    monospace;
+}
+
+/*
+ * Bridge daisyUI's semantic palette onto Starlight's theme variables so daisyUI
+ * components inherit the site's colors instead of shipping their own.
+ *
+ * Deliberately unlayered: daisyUI emits its theme variables inside a cascade
+ * layer, and unlayered declarations beat layered ones regardless of order.
+ *
+ * Starlight's naming is inverted from what you would guess — `--sl-color-black`
+ * is the page background and `--sl-color-white` is the body text, in BOTH
+ * themes. Mapping them directly is correct.
+ */
+:root {
+  --color-base-100: var(--sl-color-black);
+  --color-base-200: var(--sl-color-gray-6);
+  --color-base-300: var(--sl-color-gray-5);
+  --color-base-content: var(--sl-color-white);
+
+  --color-primary: var(--sl-color-accent);
+  --color-primary-content: var(--color-white);
+
+  --color-neutral: var(--sl-color-gray-6);
+  --color-neutral-content: var(--sl-color-gray-1);
+
+  --radius-box: 0.5rem;
+  --radius-field: 0.375rem;
+}
+
+/*
+ * `clip`, never `auto`. `overflow-x: auto` forces the computed `overflow-y` to
+ * `auto` as well, which turns this into a scroll container and breaks
+ * `scroll-padding-top` — anchor links then land underneath the sticky header.
+ */
+.main-pane {
+  overflow-x: clip;
+}
+
+/*
+ * Bleed grid.
+ *
+ * Prose is capped at a readable measure in the centre track, while anything
+ * marked `.is-bleed` spans the full content width.
+ *
+ * This is done with grid rather than the usual `width: 95vw` +
+ * `translateX(-50%)` breakout because that trick assumes the content column is
+ * centred in the viewport. Here it is not: on wide screens Starlight reserves a
+ * right-hand column for the table of contents, so a viewport-relative breakout
+ * drifts off-centre and slides under the TOC.
+ */
+.blog-content-wrapper .sl-markdown-content {
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1fr)
+    min(var(--content-measure, 65ch), 100%)
+    minmax(0, 1fr);
+}
+
+.blog-content-wrapper .sl-markdown-content > * {
+  grid-column: 2;
+  min-width: 0;
+}
+
+.blog-content-wrapper .sl-markdown-content > .is-bleed {
+  grid-column: 1 / -1;
+}
+
+/*
+ * Wide content keeps the readable measure for its text but is allowed to scroll
+ * inside its own box rather than stretching the column.
+ */
+.blog-content-wrapper .sl-markdown-content > .overflow-x-auto,
+.blog-content-wrapper .sl-markdown-content > pre {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+/*
+ * Tables size to their content instead of being forced to 100%, and prose-heavy
+ * cells are capped so a single long column cannot stretch the whole table.
+ */
+.sl-markdown-content table {
+  width: fit-content;
+  max-width: 100%;
+  margin-inline: auto;
+  display: block;
+  overflow-x: auto;
+}
+
+.sl-markdown-content table td {
+  max-width: 50ch;
+}
+
+/*
+ * The theme toggle lives in the header's right group, which Starlight hides on
+ * narrow screens. Keep it reachable on mobile.
+ */
+@media (max-width: 50rem) {
+  .header .right-group {
+    display: flex;
+  }
+}

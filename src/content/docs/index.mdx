@@ -1,0 +1,32 @@
+---
+title: klezm's blog
+description: Notes on computer science, programming and things worth writing down.
+template: splash
+# The splash page is not part of the post sequence.
+prev: false
+next: false
+hero:
+  tagline: Notes on computer science, programming and things worth writing down.
+  actions:
+    - text: Read the blog
+      link: /blog/
+      icon: right-arrow
+    - text: GitHub
+      link: https://github.com/klezm
+      icon: external
+      variant: minimal
+---
+
+import { CardGrid } from '@astrojs/starlight/components';
+import ContentCard from '../../components/ContentCard.astro';
+
+<CardGrid>
+  <ContentCard title="Writing">
+    Long-form posts on type systems, tooling and whatever else is currently
+    holding my attention.
+  </ContentCard>
+  <ContentCard title="Built with">
+    Astro and Starlight, styled with daisyUI. Math via KaTeX, search via
+    Pagefind, comments via giscus.
+  </ContentCard>
+</CardGrid>

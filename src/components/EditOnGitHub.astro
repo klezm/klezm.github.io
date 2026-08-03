@@ -1,0 +1,67 @@
+---
+/**
+ * "View / edit this page on GitHub" links.
+ *
+ * Derives the source path from the current route rather than taking it as a
+ * prop, so it can be dropped into any page or override without wiring.
+ */
+interface Props {
+  /** Repository in `owner/name` form. */
+  repo?: string;
+  /** Branch the content lives on. */
+  branch?: string;
+  /** Render the "View" link alongside "Edit". */
+  showView?: boolean;
+}
+
+const {
+  repo = 'klezm/klezm.github.io',
+  branch = 'master',
+  showView = true,
+} = Astro.props;
+
+// Starlight 0.41 component overrides receive no props — route data lives here.
+const filePath = Astro.locals.starlightRoute?.entry?.filePath;
+
+const editUrl = filePath
+  ? `https://github.com/${repo}/edit/${branch}/${filePath}`
+  : undefined;
+const viewUrl = filePath
+  ? `https://github.com/${repo}/blob/${branch}/${filePath}`
+  : undefined;
+---
+
+{
+  editUrl && (
+    <p class="edit-on-github">
+      <a href={editUrl} rel="noopener noreferrer">
+        Edit this page on GitHub
+      </a>
+      {showView && viewUrl && (
+        <>
+          <span aria-hidden="true"> · </span>
+          <a href={viewUrl} rel="noopener noreferrer">
+            View source
+          </a>
+        </>
+      )}
+    </p>
+  )
+}
+
+<style>
+  .edit-on-github {
+    margin-block: 1rem 0;
+    font-size: var(--sl-text-sm);
+    color: var(--sl-color-gray-3);
+  }
+
+  .edit-on-github a {
+    color: var(--sl-color-gray-3);
+    text-decoration-color: var(--sl-color-gray-5);
+  }
+
+  .edit-on-github a:hover {
+    color: var(--sl-color-white);
+  }
+</style>

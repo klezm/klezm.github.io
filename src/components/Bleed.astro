@@ -1,0 +1,29 @@
+---
+/**
+ * Lets its children escape the prose column and use the full content width.
+ *
+ * Useful for wide tables, diagrams and image strips that are unreadable when
+ * squeezed into the text measure.
+ *
+ * The breakout is done by the bleed grid in `global.css`, which spans any
+ * `.is-bleed` child of `.sl-markdown-content` across all three tracks. Outside
+ * that grid this degrades to an ordinary full-width block.
+ */
+---
+
+<div class="bleed is-bleed">
+  <slot />
+</div>
+
+<style>
+  .bleed {
+    width: 100%;
+    max-width: none;
+    margin-block: 1.5rem;
+  }
+
+  .bleed > :global(img) {
+    max-width: 100%;
+    height: auto;
+  }
+</style>

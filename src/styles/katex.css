@@ -1,0 +1,29 @@
+/*
+ * KaTeX stylesheet plus the fixes it needs to live inside Starlight's layout.
+ *
+ * The `katex` package is pinned to ^0.16 on purpose: rehype-katex@7 depends on
+ * katex ^0.16 directly, so a newer top-level version would mean this CSS and
+ * the rendering engine come from different releases.
+ */
+@import 'katex/dist/katex.min.css';
+
+/*
+ * Long display equations must scroll on their own rather than widening the
+ * page. `overflow-x: auto` is correct here — this is a leaf container, not an
+ * ancestor of the anchor targets, so it cannot break `scroll-padding-top`.
+ */
+.sl-markdown-content .katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-block: 0.5rem;
+}
+
+/* KaTeX ships its own font sizing; keep it from fighting Starlight's scale. */
+.sl-markdown-content .katex {
+  font-size: 1.05em;
+}
+
+/* Equation numbers and tags should not be clipped by the scroll container. */
+.sl-markdown-content .katex-display > .katex {
+  text-align: center;
+}
