@@ -1,0 +1,138 @@
+---
+/**
+ * A bordered card for grouping related content inside a post — an equation
+ * with its name, a snippet with its explanation, a diagram with a label.
+ *
+ * Captions use a trailing `<sub>` element rather than a named slot, because
+ * MDX authors write these inline in prose and `<sub>…</sub>` reads naturally
+ * in the source:
+ *
+ *   <ContentCard>
+ *   $$ … $$
+ *   <sub>Application Rule</sub>
+ *   </ContentCard>
+ *
+ * The slot is rendered to HTML and a trailing `<sub>` is split off. That is a
+ * string operation rather than an AST parse, which is a deliberate trade: it
+ * avoids pulling in a parser for what is a presentational convention, and it
+ * only ever matches at the very end of the content.
+ */
+interface Props {
+  /** Stack children vertically, or side by side from 40rem up. */
+  stack?: 'vertical' | 'horizontal';
+  /** Let the card break out of the prose column to the full content width. */
+  bleed?: boolean;
+  /** Max width for prose children, so text does not run too long. */
+  proseWidth?: string;
+  class?: string;
+}
+
+const {
+  stack = 'vertical',
+  bleed = true,
+  proseWidth = stack === 'horizontal' ? '40ch' : '65ch',
+  class: className,
+} = Astro.props;
+
+const rendered = (await Astro.slots.render('default')).trim();
+
+let content = rendered;
+let caption = '';
+
+if (rendered.endsWith('</sub>')) {
+  const start = rendered.lastIndexOf('<sub');
+  const match =
+    start === -1
+      ? null
+      : rendered.slice(start).match(/^<sub[^>]*>(.*)<\/sub>$/s);
+
+  if (match) {
+    caption = match[1] ?? '';
+    content = rendered.slice(0, start).trim();
+  }
+}
+---
+
+<div class:list={['content-card', bleed && 'content-card-bleed', className]}>
+  <div
+    class:list={['card-content', stack === 'horizontal' && 'is-horizontal']}
+    style={`--cc-prose-width: ${proseWidth};`}
+  >
+    <Fragment set:html={content} />
+  </div>
+
+  {
+    caption && (
+      <div class="card-caption">
+        <Fragment set:html={caption} />
+      </div>
+    )
+  }
+</div>
+
+<style>
+  .content-card {
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+    max-width: 100%;
+    margin-inline: auto;
+    overflow: hidden;
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 0.5rem;
+    background-color: var(--sl-color-gray-6);
+  }
+
+  .card-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    max-width: 100%;
+  }
+
+  .card-content > :global(*) {
+    max-width: 100%;
+  }
+
+  /* Mobile first: stack, then go side by side when there is room. */
+  @media (min-width: 40rem) {
+    .card-content.is-horizontal {
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
+    }
+  }
+
+  /* Keep prose to a comfortable measure; leave code and maths alone. */
+  .card-content :global(> p),
+  .card-content :global(> ul),
+  .card-content :global(> ol) {
+    max-width: var(--cc-prose-width, none);
+    width: 100%;
+  }
+
+  /*
+    A distinct background rather than a rule, and tight against the content
+    above it, so the caption reads as part of the card.
+  */
+  .card-caption {
+    width: 100%;
+    margin: 0;
+    padding: 0.5rem 1rem;
+    text-align: center;
+    font-size: var(--sl-text-sm);
+    color: var(--sl-color-gray-2);
+    background-color: var(--sl-color-gray-5);
+  }
+
+  .card-caption :global(> :first-child) {
+    margin-block-start: 0;
+  }
+
+  .card-caption :global(> :last-child) {
+    margin-block-end: 0;
+  }
+</style>

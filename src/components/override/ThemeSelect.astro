@@ -23,8 +23,10 @@ import { Icon } from '@astrojs/starlight/components';
   </button>
 </starlight-theme-select>
 
-{/* Inlined to avoid a flash of the wrong theme. Uses the global that
-    Starlight's ThemeProvider defines. */}
+{
+  /* Inlined to avoid a flash of the wrong theme. Uses the global that
+    Starlight's ThemeProvider defines. */
+}
 <script is:inline>
   StarlightThemeProvider.updatePickers();
 </script>

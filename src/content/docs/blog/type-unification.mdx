@@ -1,0 +1,625 @@
+---
+title: Type Unification
+date: 2024-10-23
+authors:
+    - klezm
+featured: true
+tags: ['haskell', 'functional programming', 'type unification']
+cover:
+    alt: "Type Inference & Type Unification"
+    image: ../../../assets/type-inference-unification.jpg
+excerpt: Type unification with examples in Haskell
+bibliography: bib/type-unification.bib
+---
+
+import ContentCard from '../../../components/ContentCard.astro';
+
+During my time tutoring a university course on functional programming languages with Haskell, I noticed that many students found the concept of type unification challenging.
+To help bridge this gap I wrote this summary, complete with visualized examples to make type unification more approachable and easier to grasp.
+
+## Motivation
+
+Type unification lets us determine the types of an expression and helps us check if the types of an expression are consistent.
+
+the `map` function in Haskell has the following type:
+
+$$
+    \textsf{map ::}
+    \underbrace{\textsf{(a} \rightarrow \textsf{b)}}_{
+        \colorbox{slategray}{$
+            \displaystyle
+            \color{white}{
+                \begin{array}{c}
+                    \textrm{1. argument} \\ \\
+                    %\hline
+                    \textrm{\footnotesize Function to be applied} \\
+                    \textrm{\footnotesize to each element}
+                \end{array}
+            }
+        $}
+    }
+    \rightarrow
+    \underbrace{\textsf{[a]}}_{
+        \colorbox{slategray}{$
+            \displaystyle
+            \color{white}{
+                \begin{array}{c}
+                    \textrm{2. argument} \\ \\
+                    \textrm{\footnotesize List of elements}
+                \end{array}
+            }
+        $}
+    }
+    \rightarrow
+    \underbrace{\textsf{[b]}}_{
+        \colorbox{slategray}{$
+            \displaystyle
+            \color{white}{
+                \begin{array}{c}
+                    \textrm{return value} \\ \\
+                    \textrm{\footnotesize Processed list}
+                    %\textrm{\footnotesize List of elements where the} \\
+                    %\textrm{\footnotesize function in argument 1 has ben applied}
+                \end{array}
+            }
+        $}
+    }
+$$
+
+Its 1st argument is a function that will be applied to each element of the list in the 2nd argument
+(e.g. `map abs [-1,-2,3,4]` returns `[1,2,3,4]`)
+
+Imagine we define a function:
+
+```hs
+mapAbs = map abs -- which is equivalent to: mapAbs xs = map abs xs
+```
+
+<ContentCard stack="horizontal">
+Where
+<span className="tooltip" data-tip="Applies a function to each element of a list">`map`</span>
+and
+<span className="tooltip" data-tip="Returns the absolute value of a number">`abs`</span>
+have these types:
+
+```hs
+map :: (a -> b) -> [a] -> [b]
+abs :: Num a => a -> a
+```
+
+</ContentCard>
+
+This function expects a list and will apply the
+<span className="peer/ref-abs">`abs`</span>
+function on each element. Since
+<span className="peer-hover/ref-abs:bg-yellow-400/40">`abs` gives us the absolute value of a number</span>
+the most general type of `mapAbs` will be stricter than `map`'s type.
+As you can see, the arguments of `mapAbs` have to be derived from the class `Num` (e.g. `Int`,
+`Float`) and cannot be of type `Char` for example. Running `:type map abs` in GHCi returns the type
+of `mapAbs`:
+
+```hs
+mapAbs :: Num b => [b] -> [b]
+```
+
+How can we determine the types of such expressions ourselves though?
+This is where type unification comes into play.
+First we will look at the typing rules, particularly the application rule
+and then we will look at some examples, where we will calculate the types of different expressions.
+
+## Typing Rules
+
+
+There are several typing rules [^TypingRulesSources].
+For type unification we are interested in the application rule.
+
+### Application Rule
+
+<ContentCard>
+
+$$
+\dfrac{
+        {\color{OrangeRed}s} :: {\color{Orange}σ} \rightarrow {\color{Plum}τ}; \quad
+        {\color{YellowGreen}t} :: {\color{Cyan}ρ}
+        \quad \text{and} \quad
+        γ({\color{Orange}σ}) = γ({\color{Cyan}ρ})
+    }{
+        ({\color{OrangeRed}s} \; {\color{YellowGreen}t}) :: γ({\color{Plum}τ})
+    }
+$$
+
+<sub>
+Application Rule
+</sub>
+</ContentCard>
+
+${\color{OrangeRed}s}$
+and
+${\color{YellowGreen}t}$
+are two functions where
+${\color{YellowGreen}t}$
+is passed as the first argument to
+${\color{OrangeRed}s}$
+and
+$γ$
+is the most general unifier.
+${\color{Orange}σ}$
+is the type of the argument passed to the function
+${\color{OrangeRed}s}$
+which is the function
+${\color{YellowGreen}t}$
+.
+${\color{Plum}τ}$
+is the type of the return value of
+${\color{OrangeRed}s}$
+and
+${\color{Cyan}ρ}$
+is the type of the argument passed to
+${\color{YellowGreen}t}$
+.
+
+In
+$γ({\color{Orange}σ}) = γ({\color{Cyan}ρ})$
+we match the type of the argument of
+${\color{OrangeRed}s}$
+with the type signature of
+${\color{YellowGreen}t}$
+.
+Lastly, in
+$({\color{OrangeRed}s} \; {\color{YellowGreen}t}) :: γ({\color{Plum}τ})$
+we define the type of the application
+$({\color{OrangeRed}s} \; {\color{YellowGreen}t})$
+as
+$γ({\color{Plum}τ})$
+.
+Notice that
+$γ({\color{Plum}τ})$
+is exactly what we want to determine with the type unification.
+
+#### Multiple Arguments
+
+<ContentCard>
+
+$$
+%\begin{equation}
+% https://latexeditor.lagrida.com/
+% https://hslpicker.com/#98CC70
+% https://color.adobe.com/de/create/color-wheel
+% https://paletton.com/#uid=10o0u0koPuKf7I6klzytTrovplp
+% Orange	    #F58137 (max saturation = #ff7d2d) (ffa46b ff7d2d ff6200) (#f9b58b Orange #ff7d2d)
+% YellowGreen	#98CC70 (#75b842) (#a0d07b #75b842)
+% cyan	        #00FFFF (#00c7c7) (#7affff #00c7c7)
+% OrangeRed	    #ED135A
+\dfrac{
+        {\color{OrangeRed}s} ::
+            {\color{#f9b58b}σ_1} \rightarrow
+            {\color{Orange}σ_2} \ \cdots \rightarrow
+            {\color{#ff7d2d}σ_n} \rightarrow
+            {\color{Plum}τ}; \quad
+        {\color{#a0d07b}t_1} :: {\color{#7affff}ρ_1}, \
+            \ldots \ ,
+            {\color{#75b842}t_n} :: {\color{#00c7c7}ρ_n}
+        \quad \text{and} \quad
+        γ({\color{#f9b58b}σ_1}) = γ({\color{#7affff}ρ_1}), \
+            \ldots \ ,
+            γ({\color{#ff7d2d}σ_n}) = γ({\color{#00c7c7}ρ_n})
+    }{
+        (
+            {\color{OrangeRed}s} \;
+            {\color{#a0d07b}t_1}
+                \ \ldots \
+                {\color{#75b842}t_n}
+        ) :: γ({\color{Plum}τ})
+    }
+%\end{equation}
+$$
+
+<sub>
+Application Rule for multiple arguments
+</sub>
+</ContentCard>
+
+Similar to the application rule for one argument
+${\color{OrangeRed}s}$
+and
+${\color{YellowGreen}t_{1 \ldots n}}$
+are functions where the functions
+${\color{YellowGreen}t_{1 \ldots n}}$
+are passed to
+${\color{OrangeRed}s}$
+.
+$γ$
+is the most general unifier again
+.
+${\color{Orange}σ_{1 \ldots n}}$
+are the types of the arguments passed to the function
+${\color{OrangeRed}s_{1 \ldots n}}$
+.
+${\color{Plum}τ}$
+is the type of the return value of
+${\color{OrangeRed}s}$
+and
+${\color{Cyan}ρ_{1 \ldots n}}$
+are the types of the arguments passed to
+${\color{YellowGreen}t_{1 \ldots n}}$
+.
+
+In
+$γ({\color{Orange}σ_{1 \ldots n}}) = γ({\color{Cyan}ρ_{1 \ldots n}})$
+we match the types of the arguments of
+${\color{OrangeRed}s}$
+with the type signatures of
+${\color{YellowGreen}t_{1 \ldots n}}$
+.
+Lastly, in
+$({\color{OrangeRed}s} \; {\color{#a0d07b}t_1} \ \ldots \ {\color{#75b842}t_n}) :: γ({\color{Plum}τ})$
+we define the type of the application
+$({\color{OrangeRed}s} \; {\color{#a0d07b}t_1} \ \ldots \ {\color{#75b842}t_n})$
+as
+$γ({\color{Plum}τ})$
+.
+
+## Example: `(f g)`
+
+Given two functions $f$ and $g$ we want to determine the type of the application
+$(f \ g)$
+.
+Calculate the type of the application `(f g)`.
+
+<div className="compact max-w-fit justify-self-center">
+> [!TIP]
+>
+> It might help to imagine defining a function `h` which applies `f` to `g`:
+>
+> ```hs
+> h = (f g)
+> ```
+>
+</div>
+
+The types of the functions `f` and `g` are defined as follows:
+
+```hs
+f :: (a -> a -> b) -> a -> b
+f g xs = g xs xs
+
+g :: c -> Int -> c
+g x y = x
+-- This is the const function, but with a constraint on the
+-- type of the second argument which has to be of type Int here.
+```
+
+### Application Rule
+
+Applying the types defined above to the application rule gives us:
+
+<ContentCard>
+
+$$
+\dfrac{
+        {\color{OrangeRed}f} ::
+            % σ
+            {\color{Orange}(a \rightarrow a \rightarrow b)}
+            \rightarrow
+            % τ
+            {\color{Plum}a \rightarrow b}
+            ; \quad
+        {\color{YellowGreen}g} ::
+            % ρ
+            {\color{Cyan}c \rightarrow \text{Int} \rightarrow c}
+        \quad \text{and} \quad
+        γ(
+            % σ
+            {\color{Orange}a \rightarrow a \rightarrow b}
+        ) = γ(
+            % ρ
+            {\color{Cyan}c \rightarrow \text{Int} \rightarrow c}
+        )
+    }{
+        ({\color{OrangeRed}f} \; {\color{YellowGreen}g}) ::
+        γ(
+            % τ
+            {\color{Plum}a \rightarrow b}
+        )
+    }
+$$
+
+</ContentCard>
+
+> [!CAUTION]
+>
+> The type variables in
+> ${\color{Orange}\rho}$
+> and
+> ${\color{Cyan}\sigma}$
+> must be distinct.
+> If they are not, we have to rename them.
+
+### Calculation of $γ$
+
+We find
+$γ({\color{Orange}a \rightarrow a \rightarrow b}) = γ({\color{Cyan}c \rightarrow \text{Int} \rightarrow c})$
+.
+
+In the following we decompose the expression and use expressions that cannot be further decomposed to substitute all their occurrences. [^UnificationSubstitution]
+
+<div className="prose-tr:border-b-slate-500 prose-thead:border-b-slate-500 [&_td:first-child]:equation-cell [&_td:nth-child(2)]:equation-cell [&_td:nth-child(3)]:max-w-[15em]">
+G | E | Explanation |
+--- | --- | --- |
+$\emptyset$ | ${\color{Orange}a \rightarrow a \rightarrow b} \doteq {\color{Cyan}c \rightarrow \text{Int} \rightarrow c}$ | **Decomposition**: First we need to decompose the expression.
+$\emptyset$ | ${\color{Orange}a} \doteq {\color{Cyan}c} \\ {\color{Orange}a} \doteq {\color{Cyan}\text{Int}} \\ {\color{Orange}b} \doteq {\color{Cyan}c}$ | **Substitution**: After the decomposition we see that ${\color{Orange}a} \doteq {\color{Cyan}c}$ cannot be further decomposed. Therefore, we substitute all occurrences of $a$ with $\rlap{\raisebox{1pt}{c}}{{\color{red}\bold\_}}$ and move ${\color{Orange}a} \doteq {\color{Cyan}c}$ to the left side.
+${\color{Orange}a} \nobreak \mapsto \nobreak {\color{Cyan}c}$ | ${\color{red}\underline{\color{Orange}c}} \doteq {\color{Cyan}\text{Int}} \\ {\color{Orange}b} \doteq {\color{Cyan}c}$ | **Substitution**: Now we substitute all occurrences of $c$ with $\rlap{\text{Int}}{{\color{red}\underline{\hphantom{\text{Int}}}}}$. Notice that we substitute on the left and the right side.
+${\color{Orange}a} \nobreak \mapsto \nobreak {\color{red}\underline{\color{Cyan}\text{Int}}} \\ {\color{red}\underline{\color{Orange}c}} \mapsto {\color{Cyan}\text{Int}}$ | ${\color{Orange}b} \doteq {\color{red}\underline{\color{Cyan}\text{Int}}}$ | **Substitution**: Finally we need to substitute all occurrences of $b$. But since there are no further occurences of $b$ there is nothing to substitute.
+${\color{Orange}a} \nobreak \mapsto \nobreak {\color{red}\underline{\color{Cyan}\text{Int}}} \\ {\color{red}\underline{\color{Orange}c}} \mapsto {\color{Cyan}\text{Int}} \\ {\color{Orange}b} \mapsto {\color{red}\underline{\color{Cyan}\text{Int}}}$ | $\emptyset$ | With the empty set on the right side we are done and can create the most general unifier.
+</div>
+
+### Type Substitution
+
+Thus, the most general unifier (MGU) [^MostGeneralUnifier] is:
+
+<ContentCard>
+$$
+γ = \{\;
+    {\color{Orange}a} \mapsto {\color{Cyan}\text{Int}}, \quad
+    {\color{Orange}c} \mapsto {\color{Cyan}\text{Int}}, \quad
+    {\color{Orange}b} \mapsto {\color{Cyan}\text{Int}}
+\;\}
+$$
+</ContentCard>
+
+### Type of $({\color{OrangeRed}f} \; {\color{YellowGreen}g})$
+
+Now we can determine the type of
+$({\color{OrangeRed}f} \; {\color{YellowGreen}g})$
+by applying the type substitution to
+$γ({\color{Plum}a \rightarrow b})$
+:
+
+<ContentCard>
+$$
+({\color{OrangeRed}f} \; {\color{YellowGreen}g}) ::
+{\color{Cyan}\text{Int}} \rightarrow {\color{Cyan}\text{Int}}
+=
+γ({\color{Plum}a \rightarrow b})
+%\qquad \phantom{}_{\square} \quad
+\quad \raisebox{-0.5em}{$\blacksquare$} \;
+$$
+</ContentCard>
+
+Therefore, `(f g)` expects an argument of type `Int` and returns an `Int`.
+
+### Validation
+
+We can validate the type calculation using the Haskell interpreter.
+Therefore, open `ghci` in your terminal and enter the following commands.
+If you don't have GHCi installed you can open GHCi in the terminal online on [tutorialspoint.com](http://tpcg.io/_6UKYKW),
+or you can run Haskell locally in your browser using WASM on [VaibhavSagar.com/WebVM](https://vaibhavsagar.com/webvm/) [^GHCiInBrowser].
+
+```hs
+-- This will always print the type after evaluation
+:set +t
+
+-- Multiline input can be entered in GHCi by surrounding it with :{ and :}
+:{
+f :: (a -> a -> b) -> a -> b
+f g xs = g xs xs
+
+g :: c -> Int -> c
+g x y = x
+:}
+
+-- Now we can check the type of (f g)
+:type (f g)
+```
+
+> [!TIP]
+>
+> - On [hoogle.haskell.org](https://hoogle.haskell.org/) you can search for functions by their type signature.
+> - For a list of all available commands in GHCi type `:help` in the GHCi prompt.
+
+## Example: `(f length words)`
+
+How do we determine the type of the application `(f length words)`?
+
+This is type of `f`:
+
+```hs
+f :: (a -> b) -> (c -> [a]) -> c -> [b]
+f g1 g2 xs = map g1 $ g2 xs
+-- :type (f length words)       -- output: (f length words) :: String -> [Int]
+-- f length words "a bb cccc"   -- output: [1,2,4]
+```
+
+<ContentCard stack="horizontal">
+The builtin functions (from the `Prelude` library) `length` and `words` have the following types
+(Note that `String = [Char]` [^HaskellDocsChar]
+
+```hs
+length :: Foldable t => t a -> Int -- ≅ [a] -> Int
+words :: String -> [String] -- = [Char] -> [[Char]]
+```
+
+</ContentCard>
+
+Next we apply the application rule:
+
+<ContentCard>
+
+$$
+\dfrac{
+        {\color{OrangeRed}f} ::
+            {\color{#f9b58b}(a \rightarrow b)} \rightarrow
+            {\color{#ff7d2d}(c \rightarrow [a])} \rightarrow
+            {\color{Plum}c \rightarrow [b]}; \
+        \begin{array}{c}
+            {\color{#a0d07b}length} :: {\color{#7affff}[d] \rightarrow \text{Int}}, \\
+            {\color{#75b842}words} :: {\color{#00c7c7}\text{[Char]} \rightarrow [\text{[Char]}]}
+        \end{array}
+        \ \text{and} \
+        \begin{array}{c}
+            γ({\color{#f9b58b}a \rightarrow b}) = γ({\color{#7affff}[d] \rightarrow \text{Int}}), \\
+            γ({\color{#ff7d2d}c \rightarrow [a]}) = γ({\color{#00c7c7}\text{[Char]} \rightarrow [\text{[Char]}]})
+        \end{array}
+    }{
+        (
+            {\color{OrangeRed}f} \;
+            {\color{#a0d07b}length} \;
+                {\color{#75b842}words}
+        ) :: γ({\color{Plum}c \rightarrow [b]})
+    }
+$$
+
+</ContentCard>
+
+Now that we have the constraints we can calculate the most general unifier
+
+<div className="prose-tr:border-b-slate-500 prose-thead:border-b-slate-500 [&_td:first-child]:equation-cell [&_td:nth-child(2)]:equation-cell [&_td:nth-child(3)]:max-w-[15em]">
+G | E | Explanation |
+--- | --- | --- |
+$\emptyset$ | ${\color{Orange}a \rightarrow b} \doteq {\color{Cyan}[d] \rightarrow \text{Int}} \\ {\color{Orange}c \rightarrow [a]} \doteq {\color{Cyan}\text{[Char]} \rightarrow [\text{[Char]}]}$ | **Decomposition**: First we decompose the first expression.
+$\emptyset$ | ${\color{Orange}a} \doteq {\color{Cyan}[d]} \\ {\color{Orange}b} \doteq {\color{Cyan}\text{Int}} \\ {\color{Orange}c \rightarrow [a]} \doteq {\color{Cyan}\text{[Char]} \rightarrow [\text{[Char]}]}$ | **Substitution**: ${\color{Orange}a} \doteq {\color{Cyan}[d]}$ cannot be further decomposed. Therefore, we substitute all occurrences of $a$ with $\rlap{{\color{red}\underline{\hphantom{[d]}}}}{[d]}$.
+${\color{Orange}a} \nobreak \mapsto \nobreak {\color{Cyan}[d]}$ | ${\color{Orange}b} \doteq {\color{Cyan}\text{Int}} \\ {\color{Orange}c \rightarrow [{\color{red}\underline{{\color{Orange}[d]}}}]} \doteq {\color{Cyan}\text{[Char]} \rightarrow [\text{[Char]}]}$ | **Substitution** of $b$ (No further $b$'s to substitute).
+${\color{Orange}a} \nobreak \mapsto \nobreak {\color{Cyan}[d]} \\ {\color{Orange}b} \mapsto {\color{Cyan}\text{Int}}$ | ${\color{Orange}c \rightarrow [{\color{red}\underline{{\color{Orange}[d]}}}]} \doteq {\color{Cyan}\text{[Char]} \rightarrow [\text{[Char]}]}$ | **Decomposition** of the second expression.
+${\color{Orange}a} \nobreak \mapsto \nobreak {\color{Cyan}[d]} \\ {\color{Orange}b} \mapsto {\color{Cyan}\text{Int}}$ | ${\color{Orange}c} \doteq {\color{Cyan}\text{[Char]}} \\ {\color{Orange}[{\color{red}\underline{{\color{Orange}[d]}}}]} \doteq {\color{Cyan}[\text{[Char]}]}$ | **Substitution**: of $c$ (No further $c$'s to substitute).
+${\color{Orange}a} \nobreak \mapsto \nobreak {\color{Cyan}[d]} \\ {\color{Orange}b} \mapsto {\color{Cyan}\text{Int}} \\ {\color{Orange}c} \mapsto {\color{Cyan}\text{[Char]}}$ | ${\color{Orange}[{\color{red}\underline{{\color{Orange}[d]}}}]} \doteq {\color{Cyan}[\text{[Char]}]}$ | We unpack the lists on both sides.
+${\color{Orange}a} \nobreak \mapsto \nobreak {\color{Cyan}[d]} \\ {\color{Orange}b} \mapsto {\color{Cyan}\text{Int}} \\ {\color{Orange}c} \mapsto {\color{Cyan}\text{[Char]}}$ | ${\color{Orange}{\color{red}\underline{{\color{Orange}d}}}} \doteq {\color{Cyan}\text{Char}}$ | **Substitution**: ${\color{Orange}d} \doteq {\color{Cyan}\text{Char}}$ cannot be further decomposed. Therefore, we substitute all occurrences of $d$ with $\rlap{{\color{red}\underline{\hphantom{\text{Char}}}}}{\text{Char}}$.
+${\color{Orange}a} \nobreak \mapsto \nobreak {\color{Cyan}[{\color{red}\underline{\color{Cyan}\text{Char}}}]} \\ {\color{Orange}b} \mapsto {\color{Cyan}\text{Int}} \\ {\color{Orange}c} \mapsto {\color{Cyan}\text{[Char]}} \\ {\color{Orange}{\color{red}\underline{{\color{Orange}d}}}} \mapsto {\color{Cyan}\text{Char}}$ | $\emptyset$ |
+</div>
+
+The most general unifier (MGU) is:
+
+<ContentCard>
+$$
+γ = \{\;
+    {\color{Orange}a} \mapsto {\color{Cyan}[\text{Char}]}, \quad
+    {\color{Orange}b} \mapsto {\color{Cyan}\text{Int}}, \quad
+    {\color{Orange}c} \mapsto {\color{Cyan}\text{[Char]}}, \quad
+    {\color{Orange}d} \mapsto {\color{Cyan}\text{Char}}
+\;\}
+$$
+</ContentCard>
+
+The type of `(f length words)` is:
+
+<ContentCard>
+$$
+(
+{\color{OrangeRed}f} \;
+{\color{#a0d07b}length} \;
+{\color{#75b842}words}
+) ::
+{\color{Cyan}[\text{Char}]} \rightarrow {\color{Cyan}[\text{Int}]}
+=
+γ({\color{Plum}c \rightarrow [b]})
+%\qquad \phantom{}_{\square} \quad
+\quad \raisebox{-0.5em}{$\blacksquare$} \;
+$$
+</ContentCard>
+
+In other words `(f length words)` takes an argument of type `String` (`String = [Char]`) and returns a list of `Int`'s.
+The returned list shows the length of the words in the passed string.
+
+Do you want to try to find the type of `(f2 length words)` yourself?
+
+```hs
+f2 :: (a -> b) -> (c -> a) -> [c] -> [b]
+f2 g1 g2 xs = map (g1 . g2) xs
+-- :type (f2 length words)                   -- output: (f2 length words) :: [String] -> [Int]
+-- f2 length words ["a", "b b", "c c c c"]   -- output: [1,2,4]
+```
+
+## Example: Error
+
+Calculate the type of the application `(all g)`.
+
+```hs
+all :: Foldable t => (a -> Bool) -> t a -> Bool -- ≅ (a -> Bool) -> [a] -> Bool
+
+g :: (Ord a, Num a) => a -> [Bool] -- ≅ a -> [Bool]
+g x = [x > 5, x > 50]
+-- Another function with the same type signature would be:
+g = zipWith (>) [5, 50] . replicate 2
+```
+
+Next we apply the application rule:
+
+<ContentCard>
+$$
+\dfrac{
+        {\color{OrangeRed}all} ::
+            % σ
+            {\color{Orange}(a \rightarrow Bool)}
+            \rightarrow
+            % τ
+            {\color{Plum}[a] \rightarrow Bool}
+            ; \quad
+        {\color{YellowGreen}g} ::
+            % ρ
+            {\color{Cyan}b \rightarrow [Bool]}
+        \quad \text{and} \quad
+        γ(
+            % σ
+            {\color{Orange}a \rightarrow Bool}
+        ) = γ(
+            % ρ
+            {\color{Cyan}b \rightarrow [Bool]}
+        )
+    }{
+        ({\color{OrangeRed}all} \; {\color{YellowGreen}g}) ::
+        γ(
+            % τ
+            {\color{Plum}[a] \rightarrow Bool}
+        )
+    }
+$$
+</ContentCard>
+
+Now that we have the constraints we can calculate the most general unifier
+
+<div className="prose-tr:border-b-slate-500 prose-thead:border-b-slate-500 [&_td:nth-child(3)]:max-w-[15em]">
+G | E | Explanation |
+--- | --- | ---
+<span className="eq-cell">$\emptyset$</span> | <span className="eq-cell">${\color{Orange}a \rightarrow Bool} \doteq {\color{Cyan}b \rightarrow [Bool]}$</span> | **Decomposition**
+<span className="eq-cell">$\emptyset$</span> | <span className="eq-cell">${\color{Orange}a} \doteq {\color{Cyan}b} \\ {\color{Orange}Bool} \doteq {\color{Cyan}[Bool]}$</span> | **Substitution** of $a$ with $b$.
+<span className="eq-cell">${\color{Orange}a} \nobreak \mapsto \nobreak {\color{Cyan}b}$</span> | <span className="eq-cell">${\color{Orange}Bool} \doteq {\color{Cyan}[Bool]}$</span> | Error, because ${\color{Orange}Bool}$ is in the domain of ${\color{Cyan}[Bool]}$.
+</div>
+
+The application `(all g)` is not typable because
+${\color{Orange}Bool}$
+is in the domain of
+${\color{Cyan}[Bool]}$.
+Therefore, we cannot unify the types.
+$$ \quad \raisebox{-0.5em}{$\blacksquare$} $$
+
+Other examples of untypable applications are:
+
+```hs
+foldl (:) []
+-- foldl    :: (b -> a -> b) -> b -> [a] -> b
+-- (:)      :: c -> [c] -> [c]
+-- []       :: [d]
+
+words ["a bb ccc", "dd ee"]
+-- words                    :: [Char] -> [[Char]]
+-- ["a bb ccc", "dd ee"]    :: [[Char]]
+```
+
+[^TypingRulesSources]: Typing Rules
+    - https://inria.hal.science/inria-00076025/file/RR-0529.pdf
+      (Page 7 fig. 2, DOI:10.1145/319838.319847)
+    - https://pp.ipd.kit.edu/lehre/WS202021/pse_typeinference/files/TypinferenzEinfuehrung.pdf
+      (Slide 9)
+    - https://tuprints.ulb.tu-darmstadt.de/544/1/diss.pdf
+      (Page 16 fig. 2.2, p. 18, pp. 21-22)
+    - https://www.pst.ifi.lmu.de/Lehre/WS0203/psem/doku/eckl_aus.pdf
+      (Page 6)
+    - https://www.andres-loeh.de/math-uu.pdf
+      (Slide 34)
+[^UnificationSubstitution]:
+    https://cs.brown.edu/~sk/Publications/Books/ProgLangs/2007-04-26/plai-2007-04-26.pdf (p 281)
+[^MostGeneralUnifier]: Most General Unifier (MGU)
+    - https://www.cs.cornell.edu/courses/cs3110/2011sp/Lectures/lec26-type-inference/type-inference.htm (Section: Unification)
+    - https://www.javatpoint.com/ai-unification-in-first-order-logic
+    - https://www.cs.trincoll.edu/~ram/cpsc352/notes/unification.html
+[^GHCiInBrowser]: https://vaibhavsagar.com/blog/2024/07/03/ghci-in-the-browser/
+[^HaskellDocsChar]: https://hackage.haskell.org/package/base-4.3.1.0/docs/Data-Char.html#t:Char (`type String = [Char]`)

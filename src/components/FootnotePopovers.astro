@@ -1,0 +1,147 @@
+---
+/**
+ * Shows a footnote's text in a popover when its reference is hovered or
+ * focused, so readers do not have to jump to the bottom of the page and back.
+ *
+ * Progressive enhancement is the requirement, not a nicety: the markup is left
+ * untouched server-side and the script bails out where the Popover API is
+ * missing, so references stay ordinary anchors into the footnotes section.
+ *
+ * Positioning is JavaScript (getBoundingClientRect plus position: fixed)
+ * rather than CSS anchor positioning, which is still Chromium-only. This works
+ * in every browser that has `popover` at all.
+ *
+ * Mounted as a custom element rather than an `astro:page-load` listener:
+ * Starlight does not add ClientRouter by default, so that event never fires.
+ * `connectedCallback` is correct today and stays correct if view transitions
+ * are added later.
+ */
+---
+
+<footnote-popovers></footnote-popovers>
+
+<style is:global>
+  .footnote-popover {
+    /* The UA sets `margin: auto` on popovers, which fights fixed positioning. */
+    margin: 0;
+    position: fixed;
+    z-index: 100;
+    max-width: min(38ch, calc(100vw - 2rem));
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 0.5rem;
+    background-color: var(--sl-color-black);
+    color: var(--sl-color-gray-2);
+    box-shadow: 0 4px 16px rgb(0 0 0 / 0.2);
+    font-size: var(--sl-text-sm);
+    line-height: 1.5;
+    /* Footnotes are often bare URLs, which would otherwise overflow. */
+    overflow-wrap: anywhere;
+  }
+
+  .footnote-popover ul {
+    margin-block: 0.25rem;
+    padding-inline-start: 1.25rem;
+  }
+
+  .footnote-popover > :first-child {
+    margin-block-start: 0;
+  }
+
+  .footnote-popover > :last-child {
+    margin-block-end: 0;
+  }
+</style>
+
+<script>
+  class FootnotePopovers extends HTMLElement {
+    connectedCallback() {
+      if (!('popover' in HTMLElement.prototype)) return;
+
+      const refs = document.querySelectorAll<HTMLAnchorElement>(
+        'a[data-footnote-ref]',
+      );
+      if (refs.length === 0) return;
+
+      // Long enough for the pointer to travel from the ref into the popover.
+      const HIDE_DELAY_MS = 120;
+
+      for (const ref of refs) {
+        const id = ref.getAttribute('href')?.slice(1);
+        if (!id) continue;
+
+        const footnote = document.getElementById(id);
+        if (!footnote) continue;
+
+        const popover = document.createElement('div');
+        popover.className = 'footnote-popover';
+        popover.popover = 'manual';
+
+        // Clone so the real footnote list is untouched, and drop the "back to
+        // content" arrow, which means nothing inside a popover.
+        const content = footnote.cloneNode(true) as HTMLElement;
+        for (const backref of content.querySelectorAll(
+          'a[data-footnote-backref]',
+        )) {
+          backref.remove();
+        }
+        popover.append(...content.childNodes);
+        document.body.append(popover);
+
+        let hideTimer: ReturnType<typeof setTimeout> | undefined;
+
+        const place = () => {
+          const anchor = ref.getBoundingClientRect();
+          const { width, height } = popover.getBoundingClientRect();
+          const margin = 8;
+
+          // Prefer above the reference; flip below when there is no room.
+          const above = anchor.top - height - margin;
+          popover.style.top = `${above >= margin ? above : anchor.bottom + margin}px`;
+
+          const ideal = anchor.left + anchor.width / 2 - width / 2;
+          const maxLeft = window.innerWidth - width - margin;
+          popover.style.left = `${Math.max(margin, Math.min(ideal, maxLeft))}px`;
+        };
+
+        const show = () => {
+          clearTimeout(hideTimer);
+          if (popover.matches(':popover-open')) return;
+          popover.showPopover();
+          place();
+        };
+
+        const hide = () => {
+          clearTimeout(hideTimer);
+          if (popover.matches(':popover-open')) popover.hidePopover();
+        };
+
+        const hideSoon = () => {
+          clearTimeout(hideTimer);
+          hideTimer = setTimeout(hide, HIDE_DELAY_MS);
+        };
+
+        ref.addEventListener('pointerenter', show);
+        ref.addEventListener('pointerleave', hideSoon);
+        ref.addEventListener('focus', show);
+        ref.addEventListener('blur', hide);
+        // Let the anchor do its normal job when actually activated.
+        ref.addEventListener('click', hide);
+
+        popover.addEventListener('pointerenter', () => clearTimeout(hideTimer));
+        popover.addEventListener('pointerleave', hideSoon);
+      }
+
+      document.addEventListener('keydown', (event) => {
+        if (event.key !== 'Escape') return;
+        for (const open of document.querySelectorAll<HTMLElement>(
+          '.footnote-popover:popover-open',
+        )) {
+          open.hidePopover();
+        }
+      });
+    }
+  }
+
+  customElements.define('footnote-popovers', FootnotePopovers);
+</script>

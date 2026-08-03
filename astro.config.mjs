@@ -65,7 +65,9 @@ export default defineConfig({
       plugins: [
         starlightBlog({
           title: 'Blog',
-          authors: { klezm: { name: 'klezm', url: 'https://github.com/klezm' } },
+          authors: {
+            klezm: { name: 'klezm', url: 'https://github.com/klezm' },
+          },
           metrics: { readingTime: true, words: 'rounded' },
           // 'header-end' implements the nav link by overriding ThemeSelect,
           // which this site owns — the link would be silently dropped.
