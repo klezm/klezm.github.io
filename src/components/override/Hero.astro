@@ -1,0 +1,23 @@
+---
+/**
+ * Suppresses the hero when the frontmatter declares an empty one.
+ *
+ * The homepage uses `template: splash` with `hero: {}` to get the splash
+ * layout (single content panel, no page title) without an actual hero banner.
+ * Starlight would otherwise render an empty hero block there.
+ */
+import Default from '@astrojs/starlight/components/Hero.astro';
+
+const { hero } = Astro.locals.starlightRoute.entry.data;
+
+const isEmpty =
+  hero &&
+  Object.values(hero).every((value) => {
+    if (value === undefined || value === null || value === '') return true;
+    if (Array.isArray(value)) return value.length === 0;
+    if (typeof value === 'object') return Object.keys(value).length === 0;
+    return false;
+  });
+---
+
+{!isEmpty && <Default />}
