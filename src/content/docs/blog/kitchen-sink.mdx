@@ -41,6 +41,14 @@ $$
 H(X) = -\sum_{i=1}^{n} P(x_i) \log_b P(x_i)
 $$
 
+### Math in a heading, like $e^{i\pi}+1=0$
+
+Check the table of contents against this heading. KaTeX renders every
+expression three times over — visual, MathML, and the raw LaTeX in an
+annotation — and all three are real text, so a naive table of contents shows
+`eiπ+1=0e^{i\pi}+1=0eiπ+1=0` and slugs the anchor to match. A rehype plugin
+drops the MathML twin inside headings only, leaving body maths accessible.
+
 ## Citations
 
 Citations are opt-in per post through the `bibliography` frontmatter key.

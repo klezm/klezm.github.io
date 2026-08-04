@@ -10,6 +10,7 @@ import remarkMath from 'remark-math';
 import remarkDirective from 'remark-directive';
 import rehypeKatex from 'rehype-katex';
 import { rehypeCitationFrontmatter } from './src/plugins/rehype-citation-frontmatter.js';
+import { rehypeKatexHeadings } from './src/plugins/rehype-katex-headings.js';
 
 // https://astro.build/config
 export default defineConfig({
@@ -129,6 +130,10 @@ export default defineConfig({
       remarkPlugins: [remarkMath, remarkDirective],
       rehypePlugins: [
         rehypeKatex,
+        // Must follow rehypeKatex: KaTeX renders each expression three times
+        // over (visual, MathML, and the raw LaTeX annotation), and all three
+        // land in the table of contents and the heading slug.
+        rehypeKatexHeadings,
         // Opt in per post via the `bibliography` frontmatter key.
         [rehypeCitationFrontmatter, { csl: 'apa', linkCitations: true }],
       ],
