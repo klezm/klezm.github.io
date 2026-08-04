@@ -12,3 +12,6 @@ This post has `draft: true` in its frontmatter. Starlight shows it during
 
 It exists so the draft mechanism is covered by something real rather than
 assumed to work.
+
+See `wide-example.mdx` for the companion draft that exercises the `wide`
+template, a banner with a background image, `frame: false` and `giscus: false`.

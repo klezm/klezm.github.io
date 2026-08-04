@@ -75,7 +75,18 @@ const { title, subtitle, image, alt = '' } = Astro.props;
     z-index: 1;
   }
 
-  .article-banner.has-image .article-banner-content {
+  /*
+   * Over an image the text must be light in BOTH themes, so the colour is set
+   * on the heading itself rather than inherited from this wrapper.
+   *
+   * Inheriting is not enough: Starlight styles `h1` directly with
+   * `color: var(--sl-color-white)`, which resolves to near-black in light theme
+   * — a direct rule on the element always beats an inherited value, so the
+   * title rendered dark-on-dark and was effectively invisible.
+   */
+  .article-banner.has-image .article-banner-content,
+  .article-banner.has-image .article-banner-title,
+  .article-banner.has-image .article-banner-subtitle {
     color: #fff;
   }
 
