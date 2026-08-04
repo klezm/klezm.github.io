@@ -1,0 +1,112 @@
+/*
+  Light-mode colour corrections for maths.
+
+  Posts colour their equations with named CSS colours (`\color{OrangeRed}`,
+  `\color{Cyan}`, …) chosen to read well on a dark background. Several of them
+  — Cyan, YellowGreen, Orange, white — wash out badly on white, so light mode
+  remaps each to a darker equivalent of the same hue. Dark mode is left alone.
+
+  The upstream values are matched on the inline `style` attribute KaTeX emits,
+  which is why these are attribute substring selectors rather than classes.
+*/
+
+:root {
+  /* Neutrals */
+  --color-eq-white-light: #0f172a; /* deep slate, readable on white */
+  --color-eq-slategray-light: #e2e8f0;
+
+  /* Standalone accents */
+  --color-eq-orangered-light: #c5104a;
+  --color-eq-red-light: #b91c1c;
+  --color-eq-plum-light: #6d28d9;
+
+  /* Oranges (light -> dark) */
+  --color-eq-orange-1-light: #ff8c42; /* from #f9b58b */
+  --color-eq-orange-2-light: #ff6b1a; /* from Orange / #ffa500 */
+  --color-eq-orange-3-light: #d14500; /* from #ff7d2d */
+
+  /* YellowGreens (light -> dark) */
+  --color-eq-yg-1-light: #6db33f; /* from #a0d07b */
+  --color-eq-yg-2-light: #4a9b2e; /* from YellowGreen / #9acd32 */
+  --color-eq-yg-3-light: #2d7016; /* from #75b842 */
+
+  /* Cyans (light -> dark) */
+  --color-eq-cyan-1-light: #17b6cc; /* from #7affff */
+  --color-eq-cyan-2-light: #0097a7; /* from Cyan / #00ffff */
+  --color-eq-cyan-3-light: #006674; /* from #00c7c7 */
+}
+
+[data-theme='light'] {
+  /* Named colours */
+  .katex [style*='color:OrangeRed' i],
+  .katex [style*='color: OrangeRed' i] {
+    color: var(--color-eq-orangered-light) !important;
+  }
+
+  .katex [style*='color:Orange' i],
+  .katex [style*='color: Orange' i] {
+    color: var(--color-eq-orange-2-light) !important;
+  }
+
+  .katex [style*='color:Plum' i],
+  .katex [style*='color: Plum' i] {
+    color: var(--color-eq-plum-light) !important;
+  }
+
+  .katex [style*='color:YellowGreen' i],
+  .katex [style*='color: YellowGreen' i] {
+    color: var(--color-eq-yg-2-light) !important;
+  }
+
+  .katex [style*='color:Cyan' i],
+  .katex [style*='color: Cyan' i] {
+    color: var(--color-eq-cyan-2-light) !important;
+  }
+
+  .katex [style*='color:red' i],
+  .katex [style*='color: red' i] {
+    color: var(--color-eq-red-light) !important;
+  }
+
+  .katex [style*='color:white' i],
+  .katex [style*='color: white' i] {
+    color: var(--color-eq-white-light) !important;
+  }
+
+  /* Hex colours */
+  .katex [style*='color:#f9b58b' i],
+  .katex [style*='color: #f9b58b' i] {
+    color: var(--color-eq-orange-1-light) !important;
+  }
+
+  .katex [style*='color:#ff7d2d' i],
+  .katex [style*='color: #ff7d2d' i] {
+    color: var(--color-eq-orange-3-light) !important;
+  }
+
+  .katex [style*='color:#a0d07b' i],
+  .katex [style*='color: #a0d07b' i] {
+    color: var(--color-eq-yg-1-light) !important;
+  }
+
+  .katex [style*='color:#75b842' i],
+  .katex [style*='color: #75b842' i] {
+    color: var(--color-eq-yg-3-light) !important;
+  }
+
+  .katex [style*='color:#7affff' i],
+  .katex [style*='color: #7affff' i] {
+    color: var(--color-eq-cyan-1-light) !important;
+  }
+
+  .katex [style*='color:#00c7c7' i],
+  .katex [style*='color: #00c7c7' i] {
+    color: var(--color-eq-cyan-3-light) !important;
+  }
+
+  /* Highlight backgrounds */
+  .katex [style*='background-color:slategray' i],
+  .katex [style*='background-color: slategray' i] {
+    background-color: var(--color-eq-slategray-light) !important;
+  }
+}

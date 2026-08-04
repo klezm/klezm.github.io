@@ -1,0 +1,37 @@
+---
+/**
+ * Points each blog post at its generated Open Graph card.
+ *
+ * Starlight's `head` config is static, so a per-page image needs an override.
+ * The cards are built by `src/pages/og/[...route].ts`, which only emits routes
+ * for real posts — the condition here has to match, or pages would advertise
+ * an image that was never generated.
+ */
+import Default from '@astrojs/starlight/components/Head.astro';
+
+const { id, entry } = Astro.locals.starlightRoute;
+
+const hasCard =
+  id.startsWith('blog/') && !!entry.data.date && !entry.data.draft;
+
+const ogImage = hasCard
+  ? new URL(
+      `${import.meta.env.BASE_URL}og/${id}.png`.replace(/\/{2,}/g, '/'),
+      Astro.site,
+    )
+  : undefined;
+---
+
+<Default />
+
+{
+  ogImage && (
+    <>
+      <meta property="og:image" content={ogImage.href} />
+      <meta property="og:image:width" content="1200" />
+      <meta property="og:image:height" content="630" />
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:image" content={ogImage.href} />
+    </>
+  )
+}

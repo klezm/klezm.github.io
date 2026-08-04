@@ -1,0 +1,135 @@
+---
+/**
+ * A single sun/moon toggle button in place of Starlight's three-way dropdown.
+ */
+import { Icon } from '@astrojs/starlight/components';
+---
+
+<starlight-theme-select>
+  <button
+    type="button"
+    aria-label={Astro.locals.t('themeSelect.accessibleLabel')}
+    title={Astro.locals.t('themeSelect.accessibleLabel')}
+    class="theme-toggle group"
+  >
+    <Icon
+      name="sun"
+      class="block dark:group-hover:block dark:hidden group-hover:hidden"
+    />
+    <Icon
+      name="moon"
+      class="hidden dark:group-hover:hidden dark:block group-hover:block"
+    />
+  </button>
+</starlight-theme-select>
+
+{
+  /* Inlined to avoid a flash of the wrong theme. Uses the global that
+    Starlight's ThemeProvider defines. */
+}
+<script is:inline>
+  StarlightThemeProvider.updatePickers();
+</script>
+
+<style>
+  .theme-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0;
+    border: 0;
+    border-radius: 0.375rem;
+    background: transparent;
+    cursor: pointer;
+    color: var(--sl-color-gray-2);
+    transition:
+      color 150ms ease,
+      background-color 150ms ease;
+  }
+
+  .theme-toggle:hover {
+    color: var(--sl-color-white);
+    background-color: var(--sl-color-gray-6);
+  }
+
+  .theme-toggle:focus-visible {
+    outline: 2px solid var(--sl-color-text-accent);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .theme-toggle {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  type Theme = 'auto' | 'dark' | 'light';
+
+  const STORAGE_KEY = 'starlight-theme';
+
+  class StarlightThemeSelect extends HTMLElement {
+    connectedCallback() {
+      const button = this.querySelector('button');
+      if (!button) return;
+
+      const loadTheme = (): Theme => {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        return stored === 'light' || stored === 'dark' || stored === 'auto'
+          ? stored
+          : 'auto';
+      };
+
+      const storeTheme = (theme: Theme) => {
+        localStorage.setItem(STORAGE_KEY, theme === 'auto' ? '' : theme);
+      };
+
+      const preferredColorScheme = (): Theme =>
+        matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+
+      const applyTheme = (theme: Theme) => {
+        document.documentElement.dataset.theme =
+          theme === 'auto' ? preferredColorScheme() : theme;
+        storeTheme(theme);
+
+        // Keep any other picker (e.g. in the mobile menu) in sync.
+        window.StarlightThemeProvider?.updatePickers(theme);
+
+        // starlight-giscus re-themes the comment iframe when it sees a
+        // `change` event on `<starlight-theme-select>`. Stock Starlight uses a
+        // <select>, which bubbles one for free; this override is a <button>,
+        // so it has to announce the change itself.
+        this.dispatchEvent(new Event('change', { bubbles: true }));
+      };
+
+      button.addEventListener('click', () => {
+        const current = loadTheme();
+        const active = document.documentElement.dataset.theme;
+        // From 'auto', flip away from whatever is currently showing.
+        const next: Theme =
+          current === 'auto'
+            ? active === 'dark'
+              ? 'light'
+              : 'dark'
+            : current === 'dark'
+              ? 'light'
+              : 'dark';
+
+        applyTheme(next);
+      });
+
+      // Follow the system setting while still in 'auto'.
+      matchMedia('(prefers-color-scheme: light)').addEventListener(
+        'change',
+        () => {
+          if (loadTheme() === 'auto') applyTheme('auto');
+        },
+      );
+    }
+  }
+
+  customElements.define('starlight-theme-select', StarlightThemeSelect);
+</script>

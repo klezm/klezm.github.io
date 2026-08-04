@@ -1,0 +1,139 @@
+---
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  post: CollectionEntry<'docs'>;
+}
+
+const { post } = Astro.props;
+const { title, date, excerpt, tags, cover } = post.data;
+
+// `cover` is a union: either a single `image`, or a `light`/`dark` pair.
+const coverImage =
+  cover && 'image' in cover ? cover.image : cover ? cover.light : undefined;
+
+const href = `${import.meta.env.BASE_URL}${post.id}/`.replace(/\/{2,}/g, '/');
+
+const formattedDate = date
+  ? new Intl.DateTimeFormat('en', { dateStyle: 'long' }).format(date)
+  : undefined;
+---
+
+<article class="post-card">
+  <a class="post-card-link" href={href}>
+    {
+      coverImage && (
+        <div class="post-card-media">
+          {typeof coverImage === 'string' ? (
+            <img src={coverImage} alt={cover?.alt ?? ''} loading="lazy" />
+          ) : (
+            <Image
+              src={coverImage}
+              alt={cover?.alt ?? ''}
+              widths={[400, 800]}
+              loading="lazy"
+            />
+          )}
+        </div>
+      )
+    }
+    <div class="post-card-body">
+      <h3 class="post-card-title">{title}</h3>
+      {date && <time datetime={date.toISOString()}>{formattedDate}</time>}
+      {excerpt && <p class="post-card-excerpt">{excerpt}</p>}
+      {
+        tags && tags.length > 0 && (
+          <ul class="post-card-tags">
+            {tags.map((tag) => (
+              <li>{tag}</li>
+            ))}
+          </ul>
+        )
+      }
+    </div>
+  </a>
+</article>
+
+<style>
+  .post-card {
+    overflow: hidden;
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 0.5rem;
+    background-color: var(--sl-color-black);
+    transition:
+      border-color 200ms ease,
+      transform 200ms ease;
+  }
+
+  .post-card:hover {
+    border-color: var(--sl-color-accent);
+    transform: translateY(-2px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .post-card,
+    .post-card:hover {
+      transition: none;
+      transform: none;
+    }
+  }
+
+  /* The whole card is the hit target, so the title must not be a second link. */
+  .post-card-link {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .post-card-media :global(img) {
+    width: 100%;
+    object-fit: cover;
+    aspect-ratio: 2 / 1;
+  }
+
+  .post-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1rem;
+  }
+
+  .post-card-title {
+    margin: 0;
+    font-size: var(--sl-text-h4);
+    line-height: var(--sl-line-height-headings);
+    color: var(--sl-color-white);
+  }
+
+  .post-card-body time {
+    font-size: var(--sl-text-xs);
+    color: var(--sl-color-gray-3);
+  }
+
+  .post-card-excerpt {
+    margin: 0;
+    font-size: var(--sl-text-sm);
+    color: var(--sl-color-gray-2);
+  }
+
+  .post-card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .post-card-tags li {
+    padding: 0.125rem 0.5rem;
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 9999px;
+    font-size: var(--sl-text-xs);
+    color: var(--sl-color-gray-2);
+    background-color: var(--sl-color-gray-6);
+  }
+</style>

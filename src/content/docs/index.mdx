@@ -1,0 +1,40 @@
+---
+title: klezm's blog
+description: Notes on computer science, type systems, and whatever I happen to be building.
+template: splash
+lastUpdated: false
+hero: {}
+---
+
+import { getCollection } from 'astro:content';
+import PostCard from '../../components/PostCard.astro';
+
+export const posts = (
+  await getCollection('docs', ({ id, data }) => id.startsWith('blog/') && !data.draft)
+).sort((a, b) => new Date(b.data.date).valueOf() - new Date(a.data.date).valueOf());
+
+export const featured = posts.filter((post) => post.data.featured);
+export const rest = posts.filter((post) => !post.data.featured);
+
+# klezm's blog
+
+Notes on computer science, type systems, and whatever I happen to be building.
+
+{featured.length > 0 && (
+  <>
+    <h2>Featured</h2>
+    <div class="post-grid">
+      {featured.map((post) => <PostCard post={post} />)}
+    </div>
+  </>
+)}
+
+<h2>{featured.length > 0 ? 'More posts' : 'Posts'}</h2>
+
+<div class="post-grid">
+  {rest.map((post) => <PostCard post={post} />)}
+</div>
+
+<p class="home-links">
+  <a href="/blog/">Browse all posts</a> · <a href="/blog/rss.xml">RSS</a>
+</p>

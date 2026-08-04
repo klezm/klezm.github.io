@@ -1,0 +1,8 @@
+dist
+.astro
+node_modules
+pnpm-lock.yaml
+
+# Content is hand-formatted; reflowing prose and MDX churns diffs and can
+# change how Markdown renders.
+src/content

@@ -1,0 +1,175 @@
+@layer base, starlight, theme, components, utilities;
+
+@import '@astrojs/starlight-tailwind';
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities);
+
+/*
+  No daisyUI here, deliberately. Its component classes are unprefixed and
+  collide with class names Starlight uses internally — `.toggle`, `.dropdown`,
+  `.hero`, `.menu`. `.toggle` in particular silently restyles the mobile
+  table-of-contents button into a 40x24 switch. If it is ever added, give it a
+  prefix.
+*/
+
+@theme {
+  /* Starlight theme customisation goes here. */
+}
+
+/* =============================================================================
+   Layout
+   ============================================================================= */
+
+/*
+  Keep wide content (KaTeX, tables) from overlapping the table of contents.
+
+  `clip` rather than `auto`: `overflow-x: auto` forces the computed
+  `overflow-y` from `visible` to `auto` too, which makes this a scroll
+  container and breaks the `scroll-padding-top` Starlight sets for the sticky
+  header — anchor jumps then land underneath it. `clip` leaves the block axis
+  alone.
+*/
+.main-pane {
+  overflow-x: clip;
+}
+
+.sl-markdown-content .katex-display {
+  @apply overflow-x-auto overflow-y-hidden;
+}
+
+/*
+  Align the page title with the prose column below it. The title panel is a
+  plain `.sl-container` spanning the full content width, while the full-bleed
+  grid centres prose in a 65ch column — without this the title sits alone at
+  the far left edge.
+*/
+.content-panel:has(> .sl-container > #_top) .sl-container {
+  display: grid;
+  grid-template-columns: 1fr min(65ch, 100%) 1fr;
+}
+
+.content-panel:has(> .sl-container > #_top) .sl-container > * {
+  grid-column: 2;
+}
+
+/* =============================================================================
+   Blog post full-bleed layout
+
+   Prose stays at a readable measure while code, tables and media are allowed
+   to break out to the full content width.
+   ============================================================================= */
+
+.blog-content-wrapper .sl-markdown-content {
+  @apply grid w-full;
+  grid-template-columns: 1fr min(65ch, 100%) 1fr;
+
+  & > * {
+    @apply col-start-2;
+  }
+
+  & > .expressive-code,
+  & > pre,
+  & > table,
+  & > .katex-display,
+  & > img,
+  & > picture,
+  & > video,
+  & > figure,
+  & > .content-card-bleed,
+  & > div:has(> table) {
+    grid-column: 1 / -1;
+    width: 100%;
+    max-width: 100%;
+    justify-self: center;
+  }
+
+  /* Hug their content, but never narrower than the prose column. */
+  & > .expressive-code,
+  & > pre {
+    width: auto;
+    min-width: min(65ch, 100%);
+  }
+
+  & > div:has(> table) {
+    @apply w-full max-w-full overflow-x-auto col-span-full;
+  }
+
+  /* Balanced tables: size to content and centre, rather than stretch. */
+  & > table,
+  & > div:has(> table) > table {
+    display: table;
+    width: fit-content;
+    min-width: min(65ch, 100%);
+    max-width: 100%;
+    margin-inline: auto;
+  }
+}
+
+/* Keep prose columns comfortable instead of stretching the table. */
+.blog-content-wrapper .sl-markdown-content table td {
+  @apply max-w-[50ch];
+}
+
+/* =============================================================================
+   Table of contents — scroll-spy emphasis
+
+   Starlight already runs the IntersectionObserver that moves `aria-current`
+   between entries while scrolling. Its only styling for the active entry is a
+   colour change, which is easy to miss on a long post.
+   ============================================================================= */
+
+starlight-toc nav a {
+  border-inline-start: 2px solid transparent;
+  transition:
+    color 150ms ease,
+    background-color 150ms ease,
+    border-color 150ms ease;
+}
+
+starlight-toc nav a[aria-current='true'] {
+  font-weight: 600;
+  background-color: var(--sl-color-gray-6);
+  border-inline-start-color: var(--sl-color-text-accent);
+}
+
+starlight-toc nav a:hover {
+  background-color: var(--sl-color-gray-6);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  starlight-toc nav a {
+    transition: none;
+  }
+}
+
+/* =============================================================================
+   Homepage
+   ============================================================================= */
+
+.post-grid {
+  @apply grid gap-4;
+  grid-template-columns: repeat(auto-fill, minmax(min(20rem, 100%), 1fr));
+}
+
+.home-links {
+  font-size: var(--sl-text-sm);
+}
+
+/* =============================================================================
+   Header on mobile
+
+   The stock Header hides the right-hand group below `md`, which takes the
+   theme toggle with it. Show the group but keep the items that were meant to
+   be hidden hidden.
+   ============================================================================= */
+
+@media (max-width: 50rem) {
+  .header .right-group {
+    display: flex !important;
+  }
+
+  .header .right-group > .social-icons,
+  .header .right-group > starlight-language-select {
+    display: none !important;
+  }
+}
