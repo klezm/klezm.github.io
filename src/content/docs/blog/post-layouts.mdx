@@ -1,0 +1,57 @@
+---
+title: Post layouts
+date: 2026-08-01
+authors: [klezm]
+tags: [meta, components]
+excerpt: The available post templates, and what each is for.
+postLayout: two-column
+---
+
+import Banner from '../../../components/Banner.astro';
+import Bleed from '../../../components/Bleed.astro';
+
+<Banner
+  title="Post layouts"
+  subtitle="One template per shape of post, chosen in frontmatter."
+/>
+
+This post uses `postLayout: two-column`, so its prose flows in two columns once
+the window is wide enough. Below 60rem it collapses back to a single column,
+because two columns of a handful of words each are worse than one.
+
+## The templates
+
+Pick one in frontmatter with `postLayout`:
+
+- `default` — a single column at the readable measure of about 65 characters.
+  This is the right choice for almost everything and is what you get if you say
+  nothing.
+- `wide` — a single column at roughly 90 characters. Use it for posts that are
+  mostly code listings or tables, where the extra room buys more than the
+  shorter line length costs.
+- `two-column` — prose flows in two columns on wide screens. Suits short,
+  list-heavy reference material. It suits long-form argument poorly, because the
+  reader has to travel back up the page at every column break.
+
+Headings, code blocks and anything bleeding stay full width in every template,
+so the structure of a post is never split across a column boundary.
+
+## The frame
+
+Every post also draws a dashed rule marking where the text measure ends. It
+makes it obvious at a glance which elements are deliberately breaking out of the
+column and which have escaped by accident. Elements that do break out are marked
+with accent rules at their edges:
+
+<Bleed>
+
+| Template     | Measure | Best for                    |
+| ------------ | ------- | --------------------------- |
+| `default`    | 65ch    | Essays, most posts          |
+| `wide`       | 90ch    | Code- and table-heavy posts |
+| `two-column` | 100ch   | Short reference material    |
+
+</Bleed>
+
+Turn the frame off for an individual post with `frame: false` in frontmatter. It
+is hidden automatically on narrow screens and in print, where it would be noise.

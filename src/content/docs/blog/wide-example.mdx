@@ -1,0 +1,45 @@
+---
+title: Wide template
+date: 2026-07-31
+authors: [klezm]
+tags: [meta, components]
+excerpt: Exercises the wide template, a banner over an image, and the opt-outs.
+draft: true
+postLayout: wide
+frame: false
+giscus: false
+---
+
+import Banner from '../../../components/Banner.astro';
+import bannerImage from '../../../assets/banner-test.jpg';
+
+<Banner
+  title="Wide template"
+  subtitle="Roughly 90 characters per line."
+  image={bannerImage}
+  alt="Abstract indigo gradient"
+/>
+
+A draft on purpose: it exists to keep the less-travelled code paths exercised
+rather than to be read. Between this and `draft-example.md`, every optional
+frontmatter key is covered by something that actually renders.
+
+This post sets `postLayout: wide`, so the measure is about 90 characters instead
+of the default 65. That is the right trade for posts that are mostly code
+listings or wide tables, where the extra room buys more than the shorter line
+length costs.
+
+It also sets `frame: false`, so the dashed rule marking the text measure is not
+drawn, and `giscus: false`, so no comment thread is attached even though this is
+a real post with a date.
+
+The banner above takes an `image`, which routes through Astro's `<Image>` for
+responsive `srcset` generation and lays a gradient scrim under the text so the
+headline stays legible over any image.
+
+```ts
+// The wide measure earns its keep when lines like this would otherwise wrap.
+export const onRequest = defineRouteMiddleware((context) => {
+  context.locals.starlightRoute.hasSidebar = false;
+});
+```

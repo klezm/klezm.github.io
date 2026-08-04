@@ -1,0 +1,63 @@
+---
+/**
+ * A block with a caption — image, diagram, table or anything else that wants
+ * attribution underneath it.
+ */
+interface Props {
+  /** Caption text. For rich captions use the `caption` slot instead. */
+  caption?: string;
+  /** Let the figure break out of the prose column. */
+  bleed?: boolean;
+  /** Horizontally center the figure's content. */
+  center?: boolean;
+}
+
+const { caption, bleed = false, center = true } = Astro.props;
+const hasCaptionSlot = Astro.slots.has('caption');
+---
+
+<figure class:list={['figure', bleed && 'is-bleed', center && 'is-center']}>
+  <div class="figure-body"><slot /></div>
+  {
+    (caption || hasCaptionSlot) && (
+      <figcaption class="figure-caption">
+        {hasCaptionSlot ? <slot name="caption" /> : caption}
+      </figcaption>
+    )
+  }
+</figure>
+
+<style>
+  .figure {
+    margin-block: 1.5rem;
+  }
+
+  .figure.is-center .figure-body {
+    display: flex;
+    justify-content: center;
+  }
+
+  .figure-body > :global(img) {
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--radius-box, 0.5rem);
+  }
+
+  .figure-caption {
+    margin-top: 0.5rem;
+    color: var(--sl-color-gray-3);
+    font-size: var(--sl-text-sm);
+    line-height: 1.5;
+    text-align: center;
+  }
+
+  .figure:not(.is-center) .figure-caption {
+    text-align: start;
+  }
+
+  /* Breakout comes from the bleed grid in global.css. */
+  .figure.is-bleed {
+    width: 100%;
+    max-width: none;
+  }
+</style>

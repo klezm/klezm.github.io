@@ -1,0 +1,79 @@
+---
+/**
+ * Callout / admonition block, built on daisyUI's `d-alert`.
+ *
+ * Starlight ships its own `<Aside>`; this one exists so callouts share the
+ * daisyUI palette with the rest of the component set and can carry a title.
+ */
+interface Props {
+  type?: 'note' | 'tip' | 'info' | 'success' | 'warning' | 'danger';
+  /** Heading line. Falls back to a sensible label for the type. */
+  title?: string;
+}
+
+const { type = 'note', title } = Astro.props;
+
+const variants = {
+  note: { cls: '', label: 'Note', icon: '📝' },
+  tip: { cls: 'd-alert-success', label: 'Tip', icon: '💡' },
+  info: { cls: 'd-alert-info', label: 'Info', icon: 'ℹ️' },
+  success: { cls: 'd-alert-success', label: 'Success', icon: '✅' },
+  warning: { cls: 'd-alert-warning', label: 'Warning', icon: '⚠️' },
+  danger: { cls: 'd-alert-error', label: 'Danger', icon: '🛑' },
+} as const;
+
+const variant = variants[type];
+const heading = title ?? variant.label;
+---
+
+<aside
+  class:list={['callout', 'd-alert', 'd-alert-soft', variant.cls]}
+  aria-label={heading}
+>
+  <span class="callout-icon" aria-hidden="true">{variant.icon}</span>
+  <div class="callout-body">
+    <p class="callout-title">{heading}</p>
+    <div class="callout-content"><slot /></div>
+  </div>
+</aside>
+
+<style>
+  .callout {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: start;
+    gap: 0.75rem;
+    margin-block: 1.5rem;
+    text-align: start;
+    border-inline-start: 3px solid currentColor;
+  }
+
+  /*
+   * daisyUI's `soft` variant tints the background AND sets the text to the
+   * semantic hue. For warning that is a saturated yellow on near-white — 1.69:1,
+   * far below the 4.5:1 minimum. Body text is forced back to the normal reading
+   * color; the tint, the leading rule and the icon carry the semantics instead,
+   * so the meaning never depends on the text color alone.
+   */
+  .callout-body {
+    color: var(--sl-color-white);
+  }
+
+  .callout-icon {
+    font-size: 1.1em;
+    line-height: 1.5;
+  }
+
+  .callout-title {
+    font-weight: 600;
+    margin: 0 0 0.25rem;
+    line-height: 1.5;
+  }
+
+  .callout-content > :global(:first-child) {
+    margin-top: 0;
+  }
+  .callout-content > :global(:last-child) {
+    margin-bottom: 0;
+  }
+</style>

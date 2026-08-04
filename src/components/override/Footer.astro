@@ -1,0 +1,49 @@
+---
+/**
+ * Adds a small navigation row above Starlight's default footer.
+ *
+ * This exists because the sidebar is disabled site-wide (see
+ * `src/middleware/starlight-sidebar.ts`). Starlight only renders
+ * `MobileMenuToggle` when a sidebar is present, and that toggle is where
+ * starlight-blog puts its mobile navigation link — so without this row there is
+ * no way to reach the blog index from a post on a phone.
+ */
+import Default from '@astrojs/starlight/components/Footer.astro';
+import EditOnGitHub from '../EditOnGitHub.astro';
+
+const { entry } = Astro.locals.starlightRoute;
+const isPost = entry.id.startsWith('blog/');
+---
+
+<nav class="footer-nav" aria-label="Site">
+  <a href="/">Home</a>
+  <a href="/blog/">Blog</a>
+  <a href="/blog/tags/">Tags</a>
+  <a href="/blog/rss.xml">RSS</a>
+</nav>
+
+{isPost && <EditOnGitHub />}
+
+<Default />
+
+<style>
+  .footer-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1.25rem;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--sl-color-gray-5);
+    font-size: var(--sl-text-sm);
+  }
+
+  .footer-nav a {
+    color: var(--sl-color-gray-3);
+    text-decoration: none;
+  }
+
+  .footer-nav a:hover {
+    color: var(--sl-color-white);
+    text-decoration: underline;
+  }
+</style>

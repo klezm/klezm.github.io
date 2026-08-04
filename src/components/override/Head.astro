@@ -1,0 +1,38 @@
+---
+/**
+ * Adds the Umami analytics tag.
+ *
+ * `Head` is one of the few override slots no Starlight plugin claims, so this
+ * costs nothing from the override budget.
+ *
+ * Umami is cookieless and stores no personal data, so there is no consent
+ * banner here by design. If the provider is ever swapped for one that sets
+ * cookies, that changes and a banner becomes necessary.
+ *
+ * Configured entirely through environment variables, so no site identifier is
+ * committed and a fork or a local checkout stays un-instrumented:
+ *
+ *   PUBLIC_UMAMI_WEBSITE_ID  the site's Umami id — required to emit anything
+ *   PUBLIC_UMAMI_SRC         script URL; override when self-hosting
+ *
+ * They must keep the `PUBLIC_` prefix: Astro only exposes variables to the
+ * client bundle under that prefix.
+ */
+import Default from '@astrojs/starlight/components/Head.astro';
+
+const websiteId = import.meta.env.PUBLIC_UMAMI_WEBSITE_ID;
+const scriptSrc =
+  import.meta.env.PUBLIC_UMAMI_SRC ?? 'https://cloud.umami.is/script.js';
+
+// Never in dev — local page views are not interesting and would pollute the
+// real numbers. Absent an id there is nothing to send anyway.
+const enabled = import.meta.env.PROD && Boolean(websiteId);
+---
+
+<Default />
+
+{
+  enabled && (
+    <script is:inline defer src={scriptSrc} data-website-id={websiteId} />
+  )
+}

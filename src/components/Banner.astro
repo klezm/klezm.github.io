@@ -1,0 +1,104 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+/**
+ * Article banner — a full-width headline block, optionally over an image.
+ *
+ * Note the class is `article-banner`, never `hero`: `.hero` is one of the four
+ * class names Starlight uses internally that daisyUI would otherwise collide
+ * with, and reusing it here would reintroduce the ambiguity the `d-` prefix
+ * exists to remove.
+ */
+interface Props {
+  title: string;
+  subtitle?: string;
+  image?: ImageMetadata;
+  alt?: string;
+}
+
+const { title, subtitle, image, alt = '' } = Astro.props;
+---
+
+<section class:list={['article-banner', image && 'has-image']}>
+  {
+    image && (
+      <Image
+        class="article-banner-image"
+        src={image}
+        alt={alt}
+        widths={[480, 960, 1440]}
+        sizes="(min-width: 72rem) 72rem, 100vw"
+        loading="eager"
+      />
+    )
+  }
+  <div class="article-banner-content">
+    <h1 class="article-banner-title">{title}</h1>
+    {subtitle && <p class="article-banner-subtitle">{subtitle}</p>}
+    <slot />
+  </div>
+</section>
+
+<style>
+  .article-banner {
+    position: relative;
+    margin-block: 0 2rem;
+    padding: 2rem 1.5rem;
+    border-radius: var(--radius-box, 0.5rem);
+    background: var(--sl-color-gray-6);
+    overflow: hidden;
+  }
+
+  .article-banner.has-image {
+    padding-block: 4rem;
+  }
+
+  .article-banner-image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Scrim so the headline stays legible over any image. */
+  .article-banner.has-image::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgb(0 0 0 / 0.75), rgb(0 0 0 / 0.35));
+  }
+
+  .article-banner-content {
+    position: relative;
+    z-index: 1;
+  }
+
+  /*
+   * Over an image the text must be light in BOTH themes, so the colour is set
+   * on the heading itself rather than inherited from this wrapper.
+   *
+   * Inheriting is not enough: Starlight styles `h1` directly with
+   * `color: var(--sl-color-white)`, which resolves to near-black in light theme
+   * — a direct rule on the element always beats an inherited value, so the
+   * title rendered dark-on-dark and was effectively invisible.
+   */
+  .article-banner.has-image .article-banner-content,
+  .article-banner.has-image .article-banner-title,
+  .article-banner.has-image .article-banner-subtitle {
+    color: #fff;
+  }
+
+  .article-banner-title {
+    margin: 0;
+    font-size: var(--sl-text-h1);
+    line-height: 1.2;
+  }
+
+  .article-banner-subtitle {
+    margin: 0.5rem 0 0;
+    font-size: var(--sl-text-lg);
+    opacity: 0.85;
+  }
+</style>

@@ -1,0 +1,196 @@
+---
+/**
+ * A card for grouping content inside a post.
+ *
+ * Built on daisyUI's `d-card`. Supports an optional title, a caption slot, and
+ * horizontal or vertical stacking. Mobile-first: stacks vertically by default
+ * and only goes horizontal at >=40rem.
+ */
+interface Props {
+  /** Heading rendered at the top of the card. */
+  title?: string;
+  /** Layout direction. `horizontal` only takes effect at >=40rem. */
+  stack?: 'vertical' | 'horizontal';
+  /** Let the card break out of the prose column. */
+  bleed?: boolean;
+  /** Caps the width of the card's prose. Any CSS length. */
+  proseWidth?: string;
+}
+
+const { title, stack = 'vertical', bleed = false, proseWidth } = Astro.props;
+
+const hasCaptionSlot = Astro.slots.has('caption');
+
+/*
+ * Caption-after-a-rule.
+ *
+ * When no `caption` slot is given, a trailing `---` in the card's body splits
+ * it: everything after the final horizontal rule becomes the caption. This lets
+ * a card be written as plain Markdown without a slot attribute.
+ *
+ * Done by string surgery on the rendered slot rather than by parsing an AST —
+ * the shape being matched is a single well-known tag, and pulling in an HTML
+ * parser to find it would be far more machinery than the job needs.
+ */
+let bodyHtml = await Astro.slots.render('default');
+let captionHtml: string | null = null;
+
+if (!hasCaptionSlot) {
+  // Match the last top-level rule, however Astro chose to serialise it.
+  const rule = /<hr\s*\/?>(?![\s\S]*<hr\s*\/?>)/;
+  const match = bodyHtml.match(rule);
+
+  if (match?.index !== undefined) {
+    captionHtml = bodyHtml.slice(match.index + match[0].length).trim();
+    bodyHtml = bodyHtml.slice(0, match.index);
+    // A rule with nothing after it is just a rule.
+    if (captionHtml.length === 0) {
+      captionHtml = null;
+      bodyHtml = await Astro.slots.render('default');
+    }
+  }
+}
+
+const hasCaption = hasCaptionSlot || captionHtml !== null;
+---
+
+<figure
+  class:list={[
+    'content-card',
+    'd-card',
+    'd-card-border',
+    'bg-base-100',
+    stack === 'horizontal' && 'is-horizontal',
+    bleed && 'is-bleed',
+  ]}
+>
+  <div
+    class="d-card-body content-card-body"
+    style={proseWidth ? `--content-card-prose: ${proseWidth}` : undefined}
+  >
+    {title && <h3 class="d-card-title content-card-title">{title}</h3>}
+    {
+      /*
+      The body is a separate element from the title so horizontal stacking can
+      column-flow the content while the title stays full width above it. Putting
+      the title inside the flowing grid and spanning it with `1 / -1` does not
+      work: `grid-auto-flow: column` produces only implicit columns, and `-1`
+      resolves against the (empty) explicit grid.
+    */
+    }
+    <div class="content-card-content" set:html={bodyHtml} />
+  </div>
+  {
+    hasCaption && (
+      <figcaption class="content-card-caption">
+        {hasCaptionSlot ? (
+          <slot name="caption" />
+        ) : (
+          <Fragment set:html={captionHtml} />
+        )}
+      </figcaption>
+    )
+  }
+</figure>
+
+<style>
+  /*
+   * Plain CSS rather than `@apply` on purpose: Tailwind v4 requires every
+   * scoped <style> using @apply to start with `@reference`, which is easy to
+   * forget and fails the build. daisyUI classes in the markup do the theming.
+   */
+  .content-card {
+    margin-block: 1.5rem;
+    border-color: var(--sl-color-gray-5);
+    overflow: hidden;
+  }
+
+  .content-card-body {
+    /* Never let the card's prose outrun the readable measure. */
+    --content-card-prose: 65ch;
+    gap: 0.5rem;
+  }
+
+  .content-card-content > :global(*) {
+    max-width: min(var(--content-card-prose), 100%);
+  }
+
+  /* Tables and media are exempt — they get the full card width. */
+  .content-card-content > :global(table),
+  .content-card-content > :global(figure),
+  .content-card-content > :global(img),
+  .content-card-content > :global(pre) {
+    max-width: 100%;
+  }
+
+  .content-card-title {
+    color: var(--sl-color-white);
+    font-size: var(--sl-text-h4);
+    line-height: 1.3;
+  }
+
+  .content-card-content > :global(:first-child) {
+    margin-top: 0;
+  }
+  .content-card-content > :global(:last-child) {
+    margin-bottom: 0;
+  }
+
+  /*
+   * The caption gets a distinct background rather than a border — a border here
+   * reads as a second card edge against the card's own border.
+   */
+  .content-card-caption {
+    background: var(--sl-color-gray-6);
+    color: var(--sl-color-gray-2);
+    border-top: 1px solid var(--sl-color-gray-5);
+    padding: 0.625rem 1rem;
+    font-size: var(--sl-text-sm);
+    line-height: 1.5;
+  }
+
+  .content-card-caption > :global(:first-child) {
+    margin-top: 0;
+  }
+  .content-card-caption > :global(:last-child) {
+    margin-bottom: 0;
+  }
+
+  /* Mobile-first: horizontal only once there is room for it. */
+  @media (min-width: 40rem) {
+    .content-card.is-horizontal .content-card-content {
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: 1fr;
+      align-items: start;
+      gap: 1.5rem;
+    }
+
+    /*
+     * Stacked vertically the prose is capped at the readable measure, but in a
+     * horizontal split each column is already narrower than that — capping
+     * again would leave the columns visibly short of their track.
+     */
+    .content-card.is-horizontal .content-card-content > :global(*) {
+      max-width: 100%;
+    }
+
+    /*
+     * Each column starts its own flow, so the inherited `* + *` top margin
+     * would push every column after the first down by one paragraph gap.
+     */
+    .content-card.is-horizontal .content-card-content > :global(*) {
+      margin-top: 0;
+    }
+  }
+
+  /*
+   * The breakout itself is handled by the bleed grid in global.css, which
+   * spans `.is-bleed` across all three tracks. Nothing to do here beyond
+   * releasing the card's own width cap.
+   */
+  .content-card.is-bleed {
+    width: 100%;
+    max-width: none;
+  }
+</style>

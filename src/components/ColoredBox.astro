@@ -1,0 +1,62 @@
+---
+/**
+ * A plainly-tinted box for setting a passage apart without the semantics of a
+ * callout. Colors come from the daisyUI palette so they track the theme.
+ */
+interface Props {
+  tone?: 'primary' | 'neutral' | 'info' | 'success' | 'warning' | 'error';
+  /** Draw only a left accent bar instead of tinting the whole box. */
+  bar?: boolean;
+}
+
+const { tone = 'neutral', bar = false } = Astro.props;
+---
+
+<div class:list={['colored-box', `tone-${tone}`, bar && 'is-bar']}>
+  <slot />
+</div>
+
+<style>
+  .colored-box {
+    --box-tone: var(--color-neutral, var(--sl-color-gray-6));
+    margin-block: 1.5rem;
+    padding: 0.875rem 1.125rem;
+    border-radius: var(--radius-box, 0.5rem);
+    background: color-mix(in oklab, var(--box-tone) 12%, transparent);
+    border: 1px solid color-mix(in oklab, var(--box-tone) 35%, transparent);
+  }
+
+  .colored-box.is-bar {
+    background: none;
+    border: none;
+    border-inline-start: 3px solid var(--box-tone);
+    border-radius: 0;
+    padding-block: 0.25rem;
+  }
+
+  .tone-primary {
+    --box-tone: var(--color-primary, var(--sl-color-accent));
+  }
+  .tone-neutral {
+    --box-tone: var(--sl-color-gray-4);
+  }
+  .tone-info {
+    --box-tone: var(--color-info, #0ea5e9);
+  }
+  .tone-success {
+    --box-tone: var(--color-success, #16a34a);
+  }
+  .tone-warning {
+    --box-tone: var(--color-warning, #d97706);
+  }
+  .tone-error {
+    --box-tone: var(--color-error, #dc2626);
+  }
+
+  .colored-box > :global(:first-child) {
+    margin-top: 0;
+  }
+  .colored-box > :global(:last-child) {
+    margin-bottom: 0;
+  }
+</style>
